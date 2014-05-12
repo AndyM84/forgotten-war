@@ -1,0 +1,7 @@
+[Bb]in/
+obj/
+*.suo
+UpgradeLog*
+*.user
+/Backup*/
+/packages/
