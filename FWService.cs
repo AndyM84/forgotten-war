@@ -14,6 +14,7 @@ namespace FW
 
 		protected override void OnStart(string[] args)
 		{
+			Console.WriteLine("HI!");
 		}
 
 		protected override void OnStop()
