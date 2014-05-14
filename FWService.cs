@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace forgotten_war
+namespace FW
 {
-	public partial class Service1 : ServiceBase
+	public partial class FWService : ServiceBase
 	{
-		public Service1()
+		public FWService()
 		{
 			InitializeComponent();
 		}
@@ -23,6 +18,16 @@ namespace forgotten_war
 
 		protected override void OnStop()
 		{
+		}
+
+		public void InternalStart()
+		{
+			OnStart(null);
+		}
+
+		public void InternalStop()
+		{
+			OnStop();
 		}
 	}
 }

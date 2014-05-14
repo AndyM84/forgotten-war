@@ -1,6 +1,6 @@
-﻿namespace forgotten_war
+﻿namespace FW
 {
-	partial class Service1
+	partial class FWService
 	{
 		/// <summary> 
 		/// Required designer variable.
