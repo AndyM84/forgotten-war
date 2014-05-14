@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ServiceProcess;
 
-using FW;
+using FWServ;
 
 namespace ServiceTester
 {

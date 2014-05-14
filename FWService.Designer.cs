@@ -1,4 +1,4 @@
-﻿namespace FW
+﻿namespace FWServ
 {
 	partial class FWService
 	{

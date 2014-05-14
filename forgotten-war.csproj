@@ -7,7 +7,7 @@
     <ProjectGuid>{3DBAD4A5-B57A-4E69-89EA-2CB315A7CCB0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FW</RootNamespace>
+    <RootNamespace>FWServ</RootNamespace>
     <AssemblyName>forgotten-war</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientThread.cs" />
+    <Compile Include="Descriptor.cs" />
     <Compile Include="FWService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -52,7 +52,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SocketServer.cs" />
-    <Compile Include="SocketUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

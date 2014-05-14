@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading.Tasks;
 
-namespace FW
+namespace FWServ
 {
 	public partial class FWService : ServiceBase
 	{
