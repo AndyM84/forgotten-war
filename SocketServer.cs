@@ -14,7 +14,6 @@ namespace FWServ
 		private int AutoInc = 0;
 
 		private Socket Listener;
-		private bool Running;
 
 		public event DescriptorConnectedEventHandler UserConnected;
 		public event DescriptorDisconnectedEventHandler UserDisconnected;
@@ -24,8 +23,6 @@ namespace FWServ
 
 		public SocketServer()
 		{
-			this.Running = false;
-
 			var ipep = new IPEndPoint(IPAddress.Any, 9000);
 
 			this.Listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
