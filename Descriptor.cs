@@ -35,4 +35,16 @@ namespace FWServ
 			return this.OutputBuffer.Dequeue();
 		}
 	}
+
+	public class DescriptorArgs : EventArgs
+	{
+		public Descriptor Descriptor;
+
+		public DescriptorArgs(Descriptor descriptor)
+		{
+			this.Descriptor = descriptor;
+
+			return;
+		}
+	}
 }

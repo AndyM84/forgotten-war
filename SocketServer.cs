@@ -16,6 +16,12 @@ namespace FWServ
 		private Socket Listener;
 		private bool Running;
 
+		public event DescriptorConnectedEventHandler UserConnected;
+		public event DescriptorDisconnectedEventHandler UserDisconnected;
+		public event InputReceivedEventHandler InputReceived;
+		public event DataRecevedEventHandler DataReceived;
+		public event DataSentEventHandler DataSent;
+
 		public SocketServer()
 		{
 			this.Running = false;
