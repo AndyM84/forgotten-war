@@ -1,0 +1,11 @@
+[Bb]in/
+[Oo]bj/
+*.suo
+UpgradeLog*
+*.user
+/Backup*/
+/packages/
+*.sdf
+*.opensdf
+Debug/
+Release/
