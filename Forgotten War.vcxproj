@@ -16,6 +16,7 @@
     <ClInclude Include="source\include\Threading\Threadable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\src\Threading\Thread.cpp" />
     <ClCompile Include="source\src\Threading\Threadable.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -49,7 +50,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Personal\Projects\FW\forgotten-war\source\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

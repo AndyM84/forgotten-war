@@ -38,5 +38,8 @@
     <ClCompile Include="source\src\Threading\Threadable.cpp">
       <Filter>Source Files\Threading</Filter>
     </ClCompile>
+    <ClCompile Include="source\src\Threading\Thread.cpp">
+      <Filter>Source Files\Threading</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

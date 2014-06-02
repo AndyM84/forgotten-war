@@ -6,6 +6,7 @@ typedef void* fwlptrvoid;
 
 #if defined(FW_WINDOWS)
 
+#include <Windows.h>
 #include <process.h>
 
 typedef uintptr_t fwthreadhandle;
