@@ -2,6 +2,27 @@
 
 namespace Threading
 {
+	fwvoid Threadable::Run()
+	{
+		// TODO: Add lock mechanism here to guard against race conditions
+		this->m_Running = true;
+
+		while (this->IsRunning())
+		{
+			this->Tick();
+		}
+
+		return;
+	}
+
+	fwvoid Threadable::SignalTerminate()
+	{
+		// TODO: Add lock mechanism here to guard against race conditions
+		this->m_Running = false;
+
+		return;
+	}
+
 	fwvoid Threadable::Sleep(fwuint seconds)
 	{
 		this->Millisleep(seconds * 1000);
@@ -47,5 +68,15 @@ namespace Threading
 #endif
 
 		return;
+	}
+
+	fwbool Threadable::IsRunning()
+	{
+		fwbool ret;
+
+		// TODO: Add lock mechanism here to guard against race conditions
+		ret = this->m_Running;
+
+		return ret;
 	}
 }
