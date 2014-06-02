@@ -12,10 +12,30 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\include\Common\Types.h" />
+    <ClInclude Include="source\include\fw.h" />
+    <ClInclude Include="source\include\Logging\AppenderBase.h" />
+    <ClInclude Include="source\include\Logging\ConsoleAppender.h" />
+    <ClInclude Include="source\include\Logging\FileAppender.h" />
+    <ClInclude Include="source\include\Logging\LogData.h" />
+    <ClInclude Include="source\include\Logging\Logger.h" />
+    <ClInclude Include="source\include\Logging\LogWorker.h" />
+    <ClInclude Include="source\include\Threading\Lock.h" />
+    <ClInclude Include="source\include\Threading\LockCriticalSection.h" />
+    <ClInclude Include="source\include\Threading\LockMutex.h" />
     <ClInclude Include="source\include\Threading\Thread.h" />
     <ClInclude Include="source\include\Threading\Threadable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\src\fw.cpp" />
+    <ClCompile Include="source\src\Logging\AppenderBase.cpp" />
+    <ClCompile Include="source\src\Logging\ConsoleAppender.cpp" />
+    <ClCompile Include="source\src\Logging\FileAppender.cpp" />
+    <ClCompile Include="source\src\Logging\LogData.cpp" />
+    <ClCompile Include="source\src\Logging\Logger.cpp" />
+    <ClCompile Include="source\src\Logging\LogWorker.cpp" />
+    <ClCompile Include="source\src\Threading\Lock.cpp" />
+    <ClCompile Include="source\src\Threading\LockCriticalSection.cpp" />
+    <ClCompile Include="source\src\Threading\LockMutex.cpp" />
     <ClCompile Include="source\src\Threading\Thread.cpp" />
     <ClCompile Include="source\src\Threading\Threadable.cpp" />
   </ItemGroup>

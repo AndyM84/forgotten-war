@@ -22,6 +22,12 @@
     <Filter Include="Header Files\Threading">
       <UniqueIdentifier>{f4c93b30-d388-432d-a8bd-b83088f845d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logging">
+      <UniqueIdentifier>{e7bc2732-cbed-4df2-9fc7-bfa195343174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logging">
+      <UniqueIdentifier>{68d64e5f-f917-4439-af9a-a9a42b6d6282}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\include\Common\Types.h">
@@ -33,6 +39,36 @@
     <ClInclude Include="source\include\Threading\Threadable.h">
       <Filter>Header Files\Threading</Filter>
     </ClInclude>
+    <ClInclude Include="source\include\fw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Threading\Lock.h">
+      <Filter>Header Files\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Threading\LockCriticalSection.h">
+      <Filter>Header Files\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Threading\LockMutex.h">
+      <Filter>Header Files\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Logging\AppenderBase.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Logging\ConsoleAppender.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Logging\FileAppender.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Logging\LogData.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Logging\Logger.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="source\include\Logging\LogWorker.h">
+      <Filter>Header Files\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\src\Threading\Threadable.cpp">
@@ -40,6 +76,36 @@
     </ClCompile>
     <ClCompile Include="source\src\Threading\Thread.cpp">
       <Filter>Source Files\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\fw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Threading\Lock.cpp">
+      <Filter>Source Files\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Threading\LockCriticalSection.cpp">
+      <Filter>Source Files\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Threading\LockMutex.cpp">
+      <Filter>Source Files\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Logging\AppenderBase.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Logging\ConsoleAppender.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Logging\FileAppender.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Logging\LogData.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Logging\Logger.cpp">
+      <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Logging\LogWorker.cpp">
+      <Filter>Source Files\Logging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
