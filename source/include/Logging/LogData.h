@@ -20,8 +20,10 @@ namespace Chimera
 		{
 		public:
 			LogData();
-			LogData(LogData&& data);
 			LogData(const cxstring key, const cxstring message, const LogLevel level);
+			LogData(const LogData &other);
+			LogData& operator=(LogData other);
+			~LogData();
 
 			cxstring GetKey();
 			cxstring GetMsg(); // There is a conflict here in WinUser.h with a #define GetMessage GetMessageA

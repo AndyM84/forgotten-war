@@ -1,4 +1,4 @@
-#include "Logging/Logger.h"
+#include <Logging/Logger.h>
 
 namespace Chimera
 {
@@ -32,35 +32,45 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::SetDefaultLevel(const LogLevel level)
+		cxvoid Logger::SetDefaultLevel(const LogLevel level)
 		{
 			this->m_DefaultLevel = level;
 
 			return;
 		}
 
-		void Logger::Log(LogData *data)
+		LogLevel Logger::GetDefaultLevel()
+		{
+			return this->m_DefaultLevel;
+		}
+
+		cxstring Logger::GetName()
+		{
+			return this->m_Name;
+		}
+
+		cxvoid Logger::Log(LogData *data)
 		{
 			LogWorker::AddMessage(data);
 
 			return;
 		}
 
-		void Logger::Log(const cxchar *message)
+		cxvoid Logger::Log(const cxchar *message)
 		{
 			this->Log(new LogData(this->m_Name, message, this->m_DefaultLevel));
 
 			return;
 		}
 
-		void Logger::Log(const cxchar *message, const LogLevel level)
+		cxvoid Logger::Log(const cxchar *message, const LogLevel level)
 		{
 			this->Log(new LogData(this->m_Name, message, level));
 
 			return;
 		}
 
-		void Logger::Log(const cxstring format, ...)
+		cxvoid Logger::Log(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -74,7 +84,7 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Log(const LogLevel level, const cxstring format, ...)
+		cxvoid Logger::Log(const LogLevel level, const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -88,14 +98,14 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Critical(const cxchar *message)
+		cxvoid Logger::Critical(const cxchar *message)
 		{
 			this->Log(message, LOG_CRITICAL);
 
 			return;
 		}
 
-		void Logger::Critical(const cxstring format, ...)
+		cxvoid Logger::Critical(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -109,14 +119,14 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Error(const cxchar *message)
+		cxvoid Logger::Error(const cxchar *message)
 		{
 			this->Log(message, LOG_ERROR);
 
 			return;
 		}
 
-		void Logger::Error(const cxstring format, ...)
+		cxvoid Logger::Error(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -130,14 +140,14 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Debug(const cxchar *message)
+		cxvoid Logger::Debug(const cxchar *message)
 		{
 			this->Log(message, LOG_DEBUG);
 
 			return;
 		}
 
-		void Logger::Debug(const cxstring format, ...)
+		cxvoid Logger::Debug(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -151,14 +161,14 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Warn(const cxchar *message)
+		cxvoid Logger::Warn(const cxchar *message)
 		{
 			this->Log(message, LOG_WARN);
 
 			return;
 		}
 
-		void Logger::Warn(const cxstring format, ...)
+		cxvoid Logger::Warn(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -172,14 +182,14 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Info(const cxchar *message)
+		cxvoid Logger::Info(const cxchar *message)
 		{
 			this->Log(message, LOG_INFO);
 
 			return;
 		}
 
-		void Logger::Info(const cxstring format, ...)
+		cxvoid Logger::Info(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 
@@ -193,14 +203,14 @@ namespace Chimera
 			return;
 		}
 
-		void Logger::Trace(const cxchar *message)
+		cxvoid Logger::Trace(const cxchar *message)
 		{
 			this->Log(message, LOG_TRACE);
 
 			return;
 		}
 
-		void Logger::Trace(const cxstring format, ...)
+		cxvoid Logger::Trace(const cxstring format, ...)
 		{
 			char msg[CXLOG_MAX_MESSAGE_LENGTH];
 

@@ -19,34 +19,39 @@ namespace Chimera
 		{
 		public:
 			static Logger &GetLogger(const cxstring key);
+
+			Logger(const Logger &other);
+			Logger& operator=(Logger other);
 			~Logger();
 
-			void SetDefaultLevel(const LogLevel level);
+			cxvoid SetDefaultLevel(const LogLevel level);
+			LogLevel GetDefaultLevel();
+			cxstring GetName();
 
-			void Log(LogData *data);
+			cxvoid Log(LogData *data);
 
-			void Log(const cxchar *message);
-			void Log(const cxchar *message, const LogLevel level);
-			void Log(const cxstring format, ...);
-			void Log(const LogLevel level, const cxstring format, ...);
+			cxvoid Log(const cxchar *message);
+			cxvoid Log(const cxchar *message, const LogLevel level);
+			cxvoid Log(const cxstring format, ...);
+			cxvoid Log(const LogLevel level, const cxstring format, ...);
 
-			void Critical(const cxchar *message);
-			void Critical(const cxstring format, ...);
+			cxvoid Critical(const cxchar *message);
+			cxvoid Critical(const cxstring format, ...);
 
-			void Error(const cxchar *message);
-			void Error(const cxstring format, ...);
+			cxvoid Error(const cxchar *message);
+			cxvoid Error(const cxstring format, ...);
 
-			void Debug(const cxchar *message);
-			void Debug(const cxstring format, ...);
+			cxvoid Debug(const cxchar *message);
+			cxvoid Debug(const cxstring format, ...);
 
-			void Warn(const cxchar *message);
-			void Warn(const cxstring format, ...);
+			cxvoid Warn(const cxchar *message);
+			cxvoid Warn(const cxstring format, ...);
 
-			void Info(const cxchar *message);
-			void Info(const cxstring format, ...);
+			cxvoid Info(const cxchar *message);
+			cxvoid Info(const cxstring format, ...);
 
-			void Trace(const cxchar *message);
-			void Trace(const cxstring format, ...);
+			cxvoid Trace(const cxchar *message);
+			cxvoid Trace(const cxstring format, ...);
 
 		protected:
 			Logger(const cxstring key);
@@ -59,9 +64,8 @@ namespace Chimera
 			static LoggerMap *allLoggers;
 			static LogWorker *worker;
 
-			const cxstring m_Name;
-
 			LogLevel m_DefaultLevel;
+			cxstring m_Name;
 		};
 	};
 };

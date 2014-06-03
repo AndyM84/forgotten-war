@@ -1,4 +1,4 @@
-#include "Logging/LogData.h"
+#include <Logging/LogData.h>
 
 namespace Chimera
 {
@@ -13,13 +13,32 @@ namespace Chimera
 			return;
 		}
 
-		LogData::LogData(LogData&& data)
-			: m_Key(data.GetKey()), m_Message(data.GetMsg()), m_Level(data.GetLevel())
-		{ }
-
 		LogData::LogData(const cxstring key, const cxstring message, const LogLevel level)
 			: m_Key(key), m_Message(message), m_Level(level)
 		{ }
+
+		LogData::LogData(const LogData &other)
+		{
+			this->m_Key = other.m_Key;
+			this->m_Message = other.m_Message;
+			this->m_Level = other.m_Level;
+
+			return;
+		}
+
+		LogData& LogData::operator=(LogData other)
+		{
+			this->m_Key = other.m_Key;
+			this->m_Message = other.m_Message;
+			this->m_Level = other.m_Level;
+
+			return *this;
+		}
+
+		LogData::~LogData()
+		{
+			return;
+		}
 
 		cxstring LogData::GetKey()
 		{

@@ -1,8 +1,9 @@
 #pragma once
 
-#include <Common\Types.h>
-#include <Threading\Threadable.h>
-#include <Threading\LockMutex.h>
+#include <Common/Types.h>
+#include <Threading/Threadable.h>
+#include <Threading/LockMutex.h>
+
 #include "LogData.h"
 #include "AppenderBase.h"
 
@@ -24,11 +25,11 @@ namespace Chimera
 			static LogWorker &IntervalTime(cxuint milliseconds);
 			static LogWorker &AddMessage(LogData *message);
 
-			LogWorker();
-
 			virtual cxvoid run();
 
 		protected:
+			LogWorker();
+
 			typedef std::vector<AppenderBase*> AppenderList;
 			typedef std::vector<AppenderBase*>::iterator AppenderListIter;
 			typedef std::vector<LogData> MessageList;
@@ -36,7 +37,7 @@ namespace Chimera
 
 			static AppenderList *m_Appenders;
 			static MessageList *m_Messages;
-			static Threading::LockMutex *m_Lock;
+			static Threading::LockMutex m_Lock;
 			static LogWorker *m_WorkerInstance;
 
 			bool m_Running;
