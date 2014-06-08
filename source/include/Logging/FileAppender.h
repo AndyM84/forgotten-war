@@ -7,33 +7,30 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef CHIMERA_WINDOWS
+#if defined(FW_WINDOWS)
 #include <Windows.h>
 #endif
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	class FileAppender : public AppenderBase
 	{
-		class FileAppender : public AppenderBase
-		{
-		public:
-			FileAppender(const cxstring name);
-			FileAppender(const cxstring name, const cxstring file);
-			FileAppender(const FileAppender &other);
-			FileAppender& operator=(FileAppender other);
-			~FileAppender();
+	public:
+		FileAppender(const fwstr name);
+		FileAppender(const fwstr name, const fwstr file);
+		FileAppender(const FileAppender &other);
+		FileAppender& operator=(FileAppender other);
+		~FileAppender();
 
-			virtual cxvoid DoAppend(LogData data);
-			virtual cxvoid ReOpen();
-			virtual cxvoid Close();
+		virtual fwvoid DoAppend(LogData data);
+		virtual fwvoid ReOpen();
+		virtual fwvoid Close();
 
-		protected:
-			cxvoid Open();
-			cxvoid OutputToFile(cxstring line);
+	protected:
+		fwvoid Open();
+		fwvoid OutputToFile(fwstr line);
 
-			std::ofstream m_LogFile;
-			cxstring m_Filename;
-		};
+		std::ofstream m_LogFile;
+		fwstr m_Filename;
 	};
 };

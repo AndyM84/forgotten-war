@@ -2,30 +2,25 @@
 
 #include <Threading/Lock.h>
 
-#if defined CHIMERA_WINDOWS
-typedef HANDLE cxmutex;
-#elif defined CHIMERA_UNIX
-typedef pthread_mutex_t cxmutex;
-#elif defined CHIMERA_ORBIS
-typedef pthread_mutex_t cxmutex;
+#if defined(FW_WINDOWS)
+typedef HANDLE fwmutex;
+#elif defined(FW_UNIX)
+typedef pthread_mutex_t fwmutex;
 #endif
 
-namespace Chimera
+namespace Threading
 {
-	namespace Threading
+	class LockMutex : public Lock
 	{
-		class LockMutex : public Lock
-		{
-		public:
-			LockMutex();
-			~LockMutex();
+	public:
+		LockMutex();
+		~LockMutex();
 
-			virtual cxbool Block();
-			virtual cxbool Block(cxword timeout);
-			virtual cxvoid Release();
+		virtual fwbool Block();
+		virtual fwbool Block(fwword timeout);
+		virtual fwvoid Release();
 
-		protected:
-			cxmutex m_Mutex;
-		};
+	protected:
+		fwmutex m_Mutex;
 	};
 };

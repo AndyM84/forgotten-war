@@ -1,7 +1,7 @@
 #pragma once
 
-#define CXLOG_MAX_MESSAGE_LENGTH	4096
-#define CXLOG_DEFAULT_LOG_LEVEL		LOG_WARN
+#define FWLOG_MAX_MESSAGE_LENGTH  4096
+#define FWLOG_DEFAULT_LOG_LEVEL   LOG_WARN
 
 #include <Common/Types.h>
 #include "LogData.h"
@@ -11,61 +11,58 @@
 #include <map>
 #include <stdarg.h>
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	class Logger
 	{
-		class Logger
-		{
-		public:
-			static Logger &GetLogger(const cxstring key);
+	public:
+		static Logger &GetLogger(const fwstr key);
 
-			Logger(const Logger &other);
-			Logger& operator=(Logger other);
-			~Logger();
+		Logger(const Logger &other);
+		Logger& operator=(Logger other);
+		~Logger();
 
-			cxvoid SetDefaultLevel(const LogLevel level);
-			LogLevel GetDefaultLevel();
-			cxstring GetName();
+		fwvoid SetDefaultLevel(const LogLevel level);
+		LogLevel GetDefaultLevel();
+		fwstr GetName();
 
-			cxvoid Log(LogData *data);
+		fwvoid Log(LogData *data);
 
-			cxvoid Log(const cxchar *message);
-			cxvoid Log(const cxchar *message, const LogLevel level);
-			cxvoid Log(const cxstring format, ...);
-			cxvoid Log(const LogLevel level, const cxstring format, ...);
+		fwvoid Log(const fwchar *message);
+		fwvoid Log(const fwchar *message, const LogLevel level);
+		fwvoid Log(const fwstr format, ...);
+		fwvoid Log(const LogLevel level, const fwstr format, ...);
 
-			cxvoid Critical(const cxchar *message);
-			cxvoid Critical(const cxstring format, ...);
+		fwvoid Critical(const fwchar *message);
+		fwvoid Critical(const fwstr format, ...);
 
-			cxvoid Error(const cxchar *message);
-			cxvoid Error(const cxstring format, ...);
+		fwvoid Error(const fwchar *message);
+		fwvoid Error(const fwstr format, ...);
 
-			cxvoid Debug(const cxchar *message);
-			cxvoid Debug(const cxstring format, ...);
+		fwvoid Debug(const fwchar *message);
+		fwvoid Debug(const fwstr format, ...);
 
-			cxvoid Warn(const cxchar *message);
-			cxvoid Warn(const cxstring format, ...);
+		fwvoid Warn(const fwchar *message);
+		fwvoid Warn(const fwstr format, ...);
 
-			cxvoid Info(const cxchar *message);
-			cxvoid Info(const cxstring format, ...);
+		fwvoid Info(const fwchar *message);
+		fwvoid Info(const fwstr format, ...);
 
-			cxvoid Trace(const cxchar *message);
-			cxvoid Trace(const cxstring format, ...);
+		fwvoid Trace(const fwchar *message);
+		fwvoid Trace(const fwstr format, ...);
 
-		protected:
-			Logger(const cxstring key);
-			Logger(const cxstring key, LogLevel level);
+	protected:
+		Logger(const fwstr key);
+		Logger(const fwstr key, LogLevel level);
 
-		private:
-			typedef std::map<cxstring, Logger*> LoggerMap;
-			typedef std::pair<cxstring, Logger*> LoggerPair;
+	private:
+		typedef std::map<fwstr, Logger*> LoggerMap;
+		typedef std::pair<fwstr, Logger*> LoggerPair;
 
-			static LoggerMap *allLoggers;
-			static LogWorker *worker;
+		static LoggerMap *allLoggers;
+		static LogWorker *worker;
 
-			LogLevel m_DefaultLevel;
-			cxstring m_Name;
-		};
+		LogLevel m_DefaultLevel;
+		fwstr m_Name;
 	};
 };

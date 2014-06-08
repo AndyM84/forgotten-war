@@ -7,26 +7,23 @@
 #include <sstream>
 #include <iostream>
 
-#ifdef CHIMERA_WINDOWS
+#if defined(FW_WINDOWS)
 #include <Windows.h>
 #endif
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	class ConsoleAppender : public AppenderBase
 	{
-		class ConsoleAppender : public AppenderBase
-		{
-		public:
-			ConsoleAppender(const cxstring name);
-			ConsoleAppender(const ConsoleAppender &other);
-			ConsoleAppender& operator=(ConsoleAppender other);
-			~ConsoleAppender();
+	public:
+		ConsoleAppender(const fwstr name);
+		ConsoleAppender(const ConsoleAppender &other);
+		ConsoleAppender& operator=(ConsoleAppender other);
+		~ConsoleAppender();
 
-			virtual cxvoid DoAppend(LogData data);
+		virtual fwvoid DoAppend(LogData data);
 
-		protected:
-			cxvoid ColoredOutput(cxstring text, CONSOLE_COLORS foreground);
-		};
+	protected:
+		fwvoid ColoredOutput(fwstr text, CONSOLE_COLORS foreground);
 	};
 };

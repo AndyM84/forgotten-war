@@ -4,7 +4,7 @@ namespace Chimera
 {
 	namespace Threading
 	{
-		cxbool Lock::IsBlocked()
+		fwbool Lock::IsBlocked()
 		{
 			if (this->m_Error)
 			{
@@ -14,7 +14,7 @@ namespace Chimera
 			return this->m_Blocked;
 		}
 
-		cxbool Lock::IsError()
+		fwbool Lock::IsError()
 		{
 			return this->m_Error;
 		}

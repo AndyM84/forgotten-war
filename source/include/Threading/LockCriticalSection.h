@@ -2,30 +2,25 @@
 
 #include <Threading/Lock.h>
 
-#if defined CHIMERA_WINDOWS
-typedef CRITICAL_SECTION cxcritsec;
-#elif defined CHIMERA_UNIX
-typedef pthread_mutex_t cxcritsec;
-#elif defined CHIMERA_ORBIS
-typedef pthread_mutex_t cxcritsec;
+#if defined(FW_WINDOWS)
+typedef CRITICAL_SECTION fwcritsec;
+#elif defined(FW_UNIX)
+typedef pthread_mutex_t fwcritsec;
 #endif
 
-namespace Chimera
+namespace Threading
 {
-	namespace Threading
+	class LockCriticalSection : public Lock
 	{
-		class LockCriticalSection : public Lock
-		{
-		public:
-			LockCriticalSection();
-			~LockCriticalSection();
+	public:
+		LockCriticalSection();
+		~LockCriticalSection();
 
-			virtual cxbool Block();
-			virtual cxbool Block(cxword timeout);
-			virtual cxvoid Release();
+		virtual fwbool Block();
+		virtual fwbool Block(fwword timeout);
+		virtual fwvoid Release();
 
-		protected:
-			cxcritsec m_Critsec;
-		};
+	protected:
+		fwcritsec m_Critsec;
 	};
 };

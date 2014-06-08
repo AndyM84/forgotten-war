@@ -3,22 +3,19 @@
 #include <Common/Types.h>
 #include <Threading/Thread.h>
 
-namespace Chimera
+namespace Threading
 {
-	namespace Threading
+	class Lock
 	{
-		class Lock
-		{
-		public:
-			virtual cxbool Block() = 0;
-			virtual cxbool Block(cxword timeout) = 0;
-			virtual cxvoid Release() = 0;
+	public:
+		virtual fwbool Block() = 0;
+		virtual fwbool Block(fwword timeout) = 0;
+		virtual fwvoid Release() = 0;
 
-			cxbool IsBlocked();
-			cxbool IsError();
+		fwbool IsBlocked();
+		fwbool IsError();
 
-		protected:
-			cxbool m_Blocked, m_Error;
-		};
+	protected:
+		fwbool m_Blocked, m_Error;
 	};
 };

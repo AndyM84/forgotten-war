@@ -1,58 +1,55 @@
 #include <Logging/LogData.h>
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	LogData::LogData()
 	{
-		LogData::LogData()
-		{
-			m_Key = "";
-			m_Message = "";
-			m_Level = LOG_TRACE;
+		m_Key = "";
+		m_Message = "";
+		m_Level = LOG_TRACE;
 
-			return;
-		}
+		return;
+	}
 
-		LogData::LogData(const cxstring key, const cxstring message, const LogLevel level)
-			: m_Key(key), m_Message(message), m_Level(level)
-		{ }
+	LogData::LogData(const fwstr key, const fwstr message, const LogLevel level)
+		: m_Key(key), m_Message(message), m_Level(level)
+	{ }
 
-		LogData::LogData(const LogData &other)
-		{
-			this->m_Key = other.m_Key;
-			this->m_Message = other.m_Message;
-			this->m_Level = other.m_Level;
+	LogData::LogData(const LogData &other)
+	{
+		this->m_Key = other.m_Key;
+		this->m_Message = other.m_Message;
+		this->m_Level = other.m_Level;
 
-			return;
-		}
+		return;
+	}
 
-		LogData& LogData::operator=(LogData other)
-		{
-			this->m_Key = other.m_Key;
-			this->m_Message = other.m_Message;
-			this->m_Level = other.m_Level;
+	LogData& LogData::operator=(LogData other)
+	{
+		this->m_Key = other.m_Key;
+		this->m_Message = other.m_Message;
+		this->m_Level = other.m_Level;
 
-			return *this;
-		}
+		return *this;
+	}
 
-		LogData::~LogData()
-		{
-			return;
-		}
+	LogData::~LogData()
+	{
+		return;
+	}
 
-		cxstring LogData::GetKey()
-		{
-			return this->m_Key;
-		}
+	fwstr LogData::GetKey()
+	{
+		return this->m_Key;
+	}
 
-		cxstring LogData::GetMsg()
-		{
-			return this->m_Message;
-		}
+	fwstr LogData::GetMsg()
+	{
+		return this->m_Message;
+	}
 
-		LogLevel LogData::GetLevel()
-		{
-			return this->m_Level;
-		}
-	};
+	LogLevel LogData::GetLevel()
+	{
+		return this->m_Level;
+	}
 };

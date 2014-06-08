@@ -10,39 +10,36 @@
 #include <iostream>
 #include <vector>
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	class LogWorker : public Threading::Threadable
 	{
-		class LogWorker : public Threading::Threadable
-		{
-		public:
-			static LogWorker &GetWorker();
-			static cxvoid KillWorker();
+	public:
+		static LogWorker &GetWorker();
+		static fwvoid KillWorker();
 
-			static LogWorker &AddAppender(AppenderBase *appender);
-			static LogWorker &ChunkSize(int size);
-			static LogWorker &IntervalTime(cxuint milliseconds);
-			static LogWorker &AddMessage(LogData *message);
+		static LogWorker &AddAppender(AppenderBase *appender);
+		static LogWorker &ChunkSize(fwint size);
+		static LogWorker &IntervalTime(fwuint milliseconds);
+		static LogWorker &AddMessage(LogData *message);
 
-			virtual cxvoid run();
+		virtual fwvoid run();
 
-		protected:
-			LogWorker();
+	protected:
+		LogWorker();
 
-			typedef std::vector<AppenderBase*> AppenderList;
-			typedef std::vector<AppenderBase*>::iterator AppenderListIter;
-			typedef std::vector<LogData> MessageList;
-			typedef std::vector<LogData>::iterator MessageListIter;
+		typedef std::vector<AppenderBase*> AppenderList;
+		typedef std::vector<AppenderBase*>::iterator AppenderListIter;
+		typedef std::vector<LogData> MessageList;
+		typedef std::vector<LogData>::iterator MessageListIter;
 
-			static AppenderList *m_Appenders;
-			static MessageList *m_Messages;
-			static Threading::LockMutex m_Lock;
-			static LogWorker *m_WorkerInstance;
+		static AppenderList *m_Appenders;
+		static MessageList *m_Messages;
+		static Threading::LockMutex m_Lock;
+		static LogWorker *m_WorkerInstance;
 
-			bool m_Running;
-			int m_ChunkSize;
-			cxuint m_IntervalTime;
-		};
+		bool m_Running;
+		int m_ChunkSize;
+		fwuint m_IntervalTime;
 	};
 };

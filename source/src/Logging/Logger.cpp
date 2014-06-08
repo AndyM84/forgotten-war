@@ -1,244 +1,241 @@
 #include <Logging/Logger.h>
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	Logger::LoggerMap *Logger::allLoggers = 0;
+	LogWorker *Logger::worker = 0;
+
+	/* PUBLIC */
+
+	Logger &Logger::GetLogger(const fwstr key)
 	{
-		Logger::LoggerMap *Logger::allLoggers = 0;
-		LogWorker *Logger::worker = 0;
-
-		/* PUBLIC */
-
-		Logger &Logger::GetLogger(const cxstring key)
+		if (!allLoggers)
 		{
-			if (!allLoggers)
-			{
-				allLoggers = new LoggerMap();
-			}
-
-			LoggerMap::iterator logger = allLoggers->find(key);
-
-			if (logger == allLoggers->end())
-			{
-				allLoggers->insert(LoggerPair(key, new Logger(key)));
-				logger = allLoggers->find(key);
-			}
-
-			return *logger->second;
+			allLoggers = new LoggerMap();
 		}
 
-		Logger::~Logger()
+		LoggerMap::iterator logger = allLoggers->find(key);
+
+		if (logger == allLoggers->end())
 		{
-			return;
+			allLoggers->insert(LoggerPair(key, new Logger(key)));
+			logger = allLoggers->find(key);
 		}
 
-		cxvoid Logger::SetDefaultLevel(const LogLevel level)
-		{
-			this->m_DefaultLevel = level;
+		return *logger->second;
+	}
 
-			return;
-		}
+	Logger::~Logger()
+	{
+		return;
+	}
 
-		LogLevel Logger::GetDefaultLevel()
-		{
-			return this->m_DefaultLevel;
-		}
+	fwvoid Logger::SetDefaultLevel(const LogLevel level)
+	{
+		this->m_DefaultLevel = level;
 
-		cxstring Logger::GetName()
-		{
-			return this->m_Name;
-		}
+		return;
+	}
 
-		cxvoid Logger::Log(LogData *data)
-		{
-			LogWorker::AddMessage(data);
+	LogLevel Logger::GetDefaultLevel()
+	{
+		return this->m_DefaultLevel;
+	}
 
-			return;
-		}
+	fwstr Logger::GetName()
+	{
+		return this->m_Name;
+	}
 
-		cxvoid Logger::Log(const cxchar *message)
-		{
-			this->Log(new LogData(this->m_Name, message, this->m_DefaultLevel));
+	fwvoid Logger::Log(LogData *data)
+	{
+		LogWorker::AddMessage(data);
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Log(const cxchar *message, const LogLevel level)
-		{
-			this->Log(new LogData(this->m_Name, message, level));
+	fwvoid Logger::Log(const fwchar *message)
+	{
+		this->Log(new LogData(this->m_Name, message, this->m_DefaultLevel));
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Log(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Log(const fwchar *message, const LogLevel level)
+	{
+		this->Log(new LogData(this->m_Name, message, level));
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(new LogData(this->m_Name, msg, this->m_DefaultLevel));
+	fwvoid Logger::Log(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Log(const LogLevel level, const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+		this->Log(new LogData(this->m_Name, msg, this->m_DefaultLevel));
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(new LogData(this->m_Name, msg, level));
+	fwvoid Logger::Log(const LogLevel level, const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Critical(const cxchar *message)
-		{
-			this->Log(message, LOG_CRITICAL);
+		this->Log(new LogData(this->m_Name, msg, level));
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Critical(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Critical(const fwchar *message)
+	{
+		this->Log(message, LOG_CRITICAL);
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(msg, LOG_CRITICAL);
+	fwvoid Logger::Critical(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Error(const cxchar *message)
-		{
-			this->Log(message, LOG_ERROR);
+		this->Log(msg, LOG_CRITICAL);
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Error(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Error(const fwchar *message)
+	{
+		this->Log(message, LOG_ERROR);
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(msg, LOG_ERROR);
+	fwvoid Logger::Error(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Debug(const cxchar *message)
-		{
-			this->Log(message, LOG_DEBUG);
+		this->Log(msg, LOG_ERROR);
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Debug(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Debug(const fwchar *message)
+	{
+		this->Log(message, LOG_DEBUG);
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(msg, LOG_DEBUG);
+	fwvoid Logger::Debug(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Warn(const cxchar *message)
-		{
-			this->Log(message, LOG_WARN);
+		this->Log(msg, LOG_DEBUG);
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Warn(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Warn(const fwchar *message)
+	{
+		this->Log(message, LOG_WARN);
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(msg, LOG_WARN);
+	fwvoid Logger::Warn(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Info(const cxchar *message)
-		{
-			this->Log(message, LOG_INFO);
+		this->Log(msg, LOG_WARN);
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Info(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Info(const fwchar *message)
+	{
+		this->Log(message, LOG_INFO);
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(msg, LOG_INFO);
+	fwvoid Logger::Info(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		cxvoid Logger::Trace(const cxchar *message)
-		{
-			this->Log(message, LOG_TRACE);
+		this->Log(msg, LOG_INFO);
 
-			return;
-		}
+		return;
+	}
 
-		cxvoid Logger::Trace(const cxstring format, ...)
-		{
-			char msg[CXLOG_MAX_MESSAGE_LENGTH];
+	fwvoid Logger::Trace(const fwchar *message)
+	{
+		this->Log(message, LOG_TRACE);
 
-			va_list argptr;
-			va_start(argptr, format);
-			vsprintf(msg, format.c_str(), argptr);
-			va_end(argptr);
+		return;
+	}
 
-			this->Log(msg, LOG_TRACE);
+	fwvoid Logger::Trace(const fwstr format, ...)
+	{
+		char msg[FWLOG_MAX_MESSAGE_LENGTH];
 
-			return;
-		}
+		va_list argptr;
+		va_start(argptr, format);
+		vsprintf(msg, format.c_str(), argptr);
+		va_end(argptr);
 
-		/* /PUBLIC */
-		/* PROTECTED */
+		this->Log(msg, LOG_TRACE);
 
-		Logger::Logger(const cxstring key) : m_Name(key)
-		{
-			this->m_DefaultLevel = CXLOG_DEFAULT_LOG_LEVEL;
+		return;
+	}
 
-			return;
-		}
+	/* /PUBLIC */
+	/* PROTECTED */
 
-		Logger::Logger(const cxstring key, LogLevel level) : m_Name(key)
-		{
-			this->m_DefaultLevel = level;
-		}
+	Logger::Logger(const fwstr key) : m_Name(key)
+	{
+		this->m_DefaultLevel = FWLOG_DEFAULT_LOG_LEVEL;
 
-		/* /PROTECTED */
-	};
+		return;
+	}
+
+	Logger::Logger(const fwstr key, LogLevel level) : m_Name(key)
+	{
+		this->m_DefaultLevel = level;
+	}
+
+	/* /PROTECTED */
 };

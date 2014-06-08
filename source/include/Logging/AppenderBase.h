@@ -7,23 +7,20 @@
 #include <sstream>
 #include <iomanip>
 
-namespace Chimera
+namespace Logging
 {
-	namespace Logging
+	class AppenderBase
 	{
-		class AppenderBase
-		{
-		public:
-			virtual cxvoid DoAppend(LogData data) = 0;
-			virtual cxvoid ReOpen();
-			virtual cxvoid Close();
+	public:
+		virtual fwvoid DoAppend(LogData data) = 0;
+		virtual fwvoid ReOpen();
+		virtual fwvoid Close();
 
-		protected:
-			AppenderBase(const cxstring name);
-			~AppenderBase();
-			cxstring GetTime();
+	protected:
+		AppenderBase(const fwstr name);
+		~AppenderBase();
+		fwstr GetTime();
 
-			cxstring m_Name;
-		};
+		fwstr m_Name;
 	};
 };
