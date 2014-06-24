@@ -7,7 +7,7 @@ namespace Threading
 	class Threadable
 	{
 	public:
-		fwvoid Run();
+		virtual fwvoid Run();
 		fwvoid SignalTerminate();
 
 	protected:
