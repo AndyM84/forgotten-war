@@ -14,7 +14,7 @@ namespace Threading
 		Threadable() { };
 		~Threadable() { };
 
-		virtual fwvoid Tick() = 0;
+		virtual fwvoid Tick();
 
 		fwvoid Sleep(fwuint seconds);
 		fwvoid Millisleep(fwuint milliseconds);

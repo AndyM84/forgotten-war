@@ -23,6 +23,11 @@ namespace Threading
 		return;
 	}
 
+	fwvoid Threadable::Tick()
+	{
+		return;
+	}
+
 	fwvoid Threadable::Sleep(fwuint seconds)
 	{
 		this->Millisleep(seconds * 1000);
