@@ -1,22 +1,19 @@
 #include "Threading/Lock.h"
 
-namespace Chimera
+namespace Threading
 {
-	namespace Threading
+	fwbool Lock::IsBlocked()
 	{
-		fwbool Lock::IsBlocked()
+		if (this->m_Error)
 		{
-			if (this->m_Error)
-			{
-				return false;
-			}
-
-			return this->m_Blocked;
+			return false;
 		}
 
-		fwbool Lock::IsError()
-		{
-			return this->m_Error;
-		}
-	};
+		return this->m_Blocked;
+	}
+
+	fwbool Lock::IsError()
+	{
+		return this->m_Error;
+	}
 };
