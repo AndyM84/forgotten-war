@@ -1,7 +1,13 @@
 #pragma once
+#pragma comment(lib, "Ws2_32.lib")
 
 #include <vector>
-#include <Server/dyad.h>
+#include <iostream>
+
+extern "C" {
+	#include <Server/dyad.h>
+};
+
 
 namespace Server
 {

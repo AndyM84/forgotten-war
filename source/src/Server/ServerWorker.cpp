@@ -9,11 +9,7 @@ namespace Server
 
 	fwvoid ServerWorker::Run()
 	{
-		while (dyad_getStreamCount() > 0) {
-			dyad_update();
-		}
 
-		dyad_shutdown();
 	}
 
 	ClientList *ServerWorker::GetNewConnections()
@@ -24,5 +20,10 @@ namespace Server
 	fwvoid ServerWorker::Broadcast(ClientList *connections, fwstr message)
 	{
 
+	}
+
+	fwvoid ServerWorker::Halt()
+	{
+		dyad_shutdown();
 	}
 }

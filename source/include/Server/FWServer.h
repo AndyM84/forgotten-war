@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Common/Types.h>
-#include <Server/ServerWorker.h>
+#include <Server/ServerData.h>
 #include <vector>
 
 namespace Server
@@ -13,6 +13,8 @@ namespace Server
 		~FWServer();
 
 		fwvoid Start();
+		fwbool IsListening();
+		fwvoid Update();
 		fwvoid Stop();
 
 		static fwvoid OnAccept(dyad_Event *e);
@@ -20,9 +22,8 @@ namespace Server
 		static fwvoid OnError(dyad_Event *e);
 
 	protected:
-		int Port;
+		fwint Port;
 		dyad_Stream *Connection;
 		ClientList Connections;
-		ServerWorker *Worker;
 	};
 };

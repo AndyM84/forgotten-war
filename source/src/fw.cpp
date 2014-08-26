@@ -8,5 +8,13 @@
 
 int main()
 {
+	Server::FWServer *serv = new Server::FWServer(4000);
+	serv->Start();
+
+	while (serv->IsListening())
+	{
+		serv->Update();
+	}
+
 	return 0;
 }
