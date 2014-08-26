@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "dyad.h"
+#include <Server/dyad.h>
 
 namespace Server
 {

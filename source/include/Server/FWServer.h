@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Common/Types.h>
-#include "ServerWorker.h"
+#include <Server/ServerWorker.h>
 #include <vector>
 
 namespace Server

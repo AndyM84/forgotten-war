@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Threading/Threadable.h>
-#include "ServerData.h"
-#include "dyad.h"
+#include <Server/ServerData.h>
+#include <Server/dyad.h>
 
 namespace Server
 {
