@@ -14,7 +14,6 @@
     <ClInclude Include="source\include\Server\dyad.h" />
     <ClInclude Include="source\include\Server\FWServer.h" />
     <ClInclude Include="source\include\Server\ServerData.h" />
-    <ClInclude Include="source\include\Server\ServerWorker.h" />
     <ClInclude Include="source\include\Common\Types.h" />
     <ClInclude Include="source\include\fw.h" />
     <ClInclude Include="source\include\Logging\AppenderBase.h" />
@@ -32,7 +31,6 @@
   <ItemGroup>
     <ClCompile Include="source\src\Server\dyad.c" />
     <ClCompile Include="source\src\Server\FWServer.cpp" />
-    <ClCompile Include="source\src\Server\ServerWorker.cpp" />
     <ClCompile Include="source\src\fw.cpp" />
     <ClCompile Include="source\src\Logging\AppenderBase.cpp" />
     <ClCompile Include="source\src\Logging\ConsoleAppender.cpp" />

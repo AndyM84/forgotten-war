@@ -11,13 +11,14 @@ extern "C" {
 
 namespace Server
 {
-	struct Client
+	struct Character
 	{
 		fwstr Username;
 		time_t Connected;
-		dyad_Stream *Connection;
+		fwbool IsRegistered;
+		dyad_Stream *Stream;
 	};
 
-	typedef std::vector<Client *> ClientList;
-	typedef std::vector<Client *>::iterator ClientIterator;
+	typedef std::vector<Character *> CharList;
+	typedef std::vector<Character *>::iterator CharIterator;
 }

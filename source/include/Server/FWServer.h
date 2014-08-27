@@ -9,7 +9,7 @@ namespace Server
 	class FWServer
 	{
 	public:
-		FWServer(int port);
+		FWServer(fwstr host, int port);
 		~FWServer();
 
 		fwvoid Start();
@@ -21,9 +21,17 @@ namespace Server
 		static fwvoid OnReceive(dyad_Event *e);
 		static fwvoid OnError(dyad_Event *e);
 
+		Character *NewCharacter(dyad_Stream *stream);
+		Character *GetCharacter(dyad_Stream *stream);
+		fwvoid RemoveCharacter(Character *character);
+
+		fwvoid Broadcast(fwstr message);
+
 	protected:
+		static FWServer *Instance;
+		fwstr Host;
 		fwint Port;
 		dyad_Stream *Connection;
-		ClientList Connections;
+		CharList Characters;
 	};
 };

@@ -78,9 +78,6 @@
     <ClInclude Include="source\include\Server\dyad.h">
       <Filter>Header Files\Server</Filter>
     </ClInclude>
-    <ClInclude Include="source\include\Server\ServerWorker.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
     <ClInclude Include="source\include\Server\ServerData.h">
       <Filter>Header Files\Server</Filter>
     </ClInclude>
@@ -126,9 +123,6 @@
       <Filter>Source Files\Logging</Filter>
     </ClCompile>
     <ClCompile Include="source\src\Server\dyad.c">
-      <Filter>Source Files\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="source\src\Server\ServerWorker.cpp">
       <Filter>Source Files\Server</Filter>
     </ClCompile>
     <ClCompile Include="source\src\Server\FWServer.cpp">

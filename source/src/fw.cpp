@@ -8,7 +8,7 @@
 
 int main()
 {
-	Server::FWServer *serv = new Server::FWServer(4000);
+	Server::FWServer *serv = new Server::FWServer("127.0.0.1", 4000);
 	serv->Start();
 
 	while (serv->IsListening())
