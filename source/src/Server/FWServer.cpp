@@ -7,7 +7,7 @@ namespace Server
 	{
 		this->Host = host;
 		this->Port = port;
-		this->Characters = CharList();
+		//this->Characters = CharList();
 	}
 
 	fwvoid FWServer::Start()
@@ -18,9 +18,9 @@ namespace Server
 
 		dyad_setUpdateTimeout(0.5);
 
-		dyad_addListener(this->Connection, DYAD_EVENT_ACCEPT, OnAccept, (void *) this);
-		dyad_addListener(this->Connection, DYAD_EVENT_DATA, OnReceive, (void *) this);
-		dyad_addListener(this->Connection, DYAD_EVENT_ERROR, OnError, (void *) this);
+		dyad_addListener(this->Connection, DYAD_EVENT_ACCEPT, OnAccept, this);
+		dyad_addListener(this->Connection, DYAD_EVENT_DATA, OnReceive, this);
+		dyad_addListener(this->Connection, DYAD_EVENT_ERROR, OnError, this);
 
 		std::cout << "Listening on port " << this->Port << std::endl;
 
@@ -101,7 +101,7 @@ namespace Server
 		dyad_writef(Char->Stream, "Welcome to the server.\r\n");
 		dyad_writef(Char->Stream, "What is your username?\r\n");
 
-		dyad_addListener(Char->Stream, DYAD_EVENT_DATA, OnReceive, NULL);
+		dyad_addListener(Char->Stream, DYAD_EVENT_DATA, OnReceive, Server);
 	}
 
 	fwvoid FWServer::OnReceive(dyad_Event *e)

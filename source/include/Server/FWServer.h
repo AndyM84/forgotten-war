@@ -27,11 +27,12 @@ namespace Server
 
 		fwvoid Broadcast(fwstr message);
 
+		CharList Characters;
+
 	protected:
 		static FWServer *Instance;
 		fwstr Host;
 		fwint Port;
 		dyad_Stream *Connection;
-		CharList Characters;
 	};
 };
