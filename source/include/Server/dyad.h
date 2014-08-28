@@ -29,6 +29,7 @@ typedef void(*dyad_PanicCallback)(const char*);
 
 enum {
 	DYAD_EVENT_NULL,
+	DYAD_EVENT_DESTROY,
 	DYAD_EVENT_ACCEPT,
 	DYAD_EVENT_LISTEN,
 	DYAD_EVENT_CONNECT,
@@ -69,6 +70,7 @@ void dyad_addListener(dyad_Stream *stream, int event,
 	dyad_Callback callback, void *udata);
 void dyad_removeListener(dyad_Stream *stream, int event,
 	dyad_Callback callback, void *udata);
+void dyad_removeAllListeners(dyad_Stream *stream, int event);
 void dyad_end(dyad_Stream *stream);
 void dyad_close(dyad_Stream *stream);
 void dyad_write(dyad_Stream *stream, void *data, int size);
