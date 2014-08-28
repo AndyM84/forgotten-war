@@ -20,12 +20,13 @@ namespace Server
 		static fwvoid OnAccept(dyad_Event *e);
 		static fwvoid OnReceive(dyad_Event *e);
 		static fwvoid OnError(dyad_Event *e);
+		static fwvoid OnClientDisconnect(dyad_Event *e);
 
 		Character *NewCharacter(dyad_Stream *stream);
 		Character *GetCharacter(dyad_Stream *stream);
 		fwvoid RemoveCharacter(Character *character);
 
-		fwvoid Broadcast(fwstr message);
+		fwvoid Broadcast(dyad_Stream *from, fwstr message);
 
 		CharList Characters;
 

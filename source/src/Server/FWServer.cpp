@@ -19,7 +19,7 @@ namespace Server
 		dyad_setUpdateTimeout(0.5);
 
 		dyad_addListener(this->Connection, DYAD_EVENT_ACCEPT, OnAccept, this);
-		dyad_addListener(this->Connection, DYAD_EVENT_DATA, OnReceive, this);
+		dyad_addListener(this->Connection, DYAD_EVENT_LINE, OnReceive, this);
 		dyad_addListener(this->Connection, DYAD_EVENT_ERROR, OnError, this);
 
 		std::cout << "Listening on port " << this->Port << std::endl;
@@ -42,13 +42,18 @@ namespace Server
 		return dyad_getStreamCount() > 0;
 	}
 
-	fwvoid FWServer::Broadcast(fwstr message)
+	fwvoid FWServer::Broadcast(dyad_Stream *from, fwstr message)
 	{
+		std::cout << message << std::endl;
+
 		if (!this->Characters.empty())
 		{
-			for (CharIterator iter = this->Characters.begin(); iter != this->Characters.end(); iter++)
+			for (CharIterator iter = this->Characters.begin(); iter != this->Characters.end(); ++iter)
 			{
-				dyad_writef((*iter)->Stream, message.c_str());
+				if ((*iter)->Stream != from)
+				{
+					dyad_writef((*iter)->Stream, message.c_str());
+				}
 			}
 		}
 	}
@@ -67,7 +72,7 @@ namespace Server
 	{
 		if (!this->Characters.empty())
 		{
-			for (CharIterator iter = this->Characters.begin(); iter != this->Characters.end(); iter++)
+			for (CharIterator iter = this->Characters.begin(); iter != this->Characters.end(); ++iter)
 			{
 				if ((*iter)->Stream == stream)
 				{
@@ -85,7 +90,16 @@ namespace Server
 
 	fwvoid FWServer::RemoveCharacter(Character *character)
 	{
+		for (CharIterator iter = this->Characters.begin(); iter != this->Characters.end(); ++iter)
+		{
+			if ((*iter) == character)
+			{
+				this->Characters.erase(iter);
+				break;
+			}
+		}
 
+		return;
 	}
 
 	fwvoid FWServer::OnAccept(dyad_Event *e)
@@ -101,18 +115,23 @@ namespace Server
 		dyad_writef(Char->Stream, "Welcome to the server.\r\n");
 		dyad_writef(Char->Stream, "What is your username?\r\n");
 
-		dyad_addListener(Char->Stream, DYAD_EVENT_DATA, OnReceive, Server);
+		dyad_addListener(Char->Stream, DYAD_EVENT_LINE, OnReceive, Server);
+		dyad_addListener(Char->Stream, DYAD_EVENT_CLOSE, OnClientDisconnect, Server);
+		dyad_addListener(Char->Stream, DYAD_EVENT_TIMEOUT, OnClientDisconnect, Server);
 	}
 
 	fwvoid FWServer::OnReceive(dyad_Event *e)
 	{
 		FWServer *Server = (FWServer *)e->udata;
-		Character *Char = Server->GetCharacter(e->remote);
+		Character *Char = Server->GetCharacter(e->stream);
 
 		if (Char->IsRegistered)
 		{
-			fwstr msg = "[" + Char->Username + "]: " + e->data + "\r\n";
-			Server->Broadcast(msg);
+			if (e->data != "")
+			{
+				fwstr msg = "[" + Char->Username + "]: " + e->data;
+				Server->Broadcast(Char->Stream, msg);
+			}
 		}
 		else
 		{
@@ -121,12 +140,17 @@ namespace Server
 			int i = 0;
 			while (e->data[i])
 			{
-				if (!isalpha(e->data[i]))
+				if (!isalnum(e->data[i]))
 				{
 					Char->IsRegistered = false;
-					dyad_writef(Char->Stream, "What is your username?\r\n");
+					dyad_writef(Char->Stream, "Please provide another username?\r\n");
+
+					return;
 				}
+				else i++;
 			}
+
+			Char->Username = e->data;
 		}
 	}
 
@@ -135,5 +159,13 @@ namespace Server
 		FWServer *Server = (FWServer *)e->udata;
 
 		std::cout << "There was an error \"" << e->msg << "\"" << std::endl;
+	}
+
+	fwvoid FWServer::OnClientDisconnect(dyad_Event *e)
+	{
+		FWServer *Server = (FWServer *)e->udata;
+		Character *Char = Server->GetCharacter(e->stream);
+
+		Server->RemoveCharacter(Char);
 	}
 }
