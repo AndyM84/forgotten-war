@@ -47,16 +47,16 @@ namespace Server
 
 					if (sck == INVALID_SOCKET)
 					{
-						std::stringstream ss("SelectServer - Error while accepting a socket: ");
-						ss << this->getSocketError(this->listenSocket);
+						std::stringstream ss;
+						ss << "SelectServer - Error while accepting a socket: " << this->getSocketError(this->listenSocket);
 
 						this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 
 						continue;
 					}
 
-					std::stringstream ss("SelectServer - Client connected from: ");
-					ss << inet_ntoa(clientAddr.sin_addr);
+					std::stringstream ss;
+					ss << "SelectServer - Client connected from: " << inet_ntoa(clientAddr.sin_addr);
 
 					this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
 
@@ -72,8 +72,8 @@ namespace Server
 
 				if (FD_ISSET(this->listenSocket, &this->setExcept))
 				{
-					std::stringstream ss("SelectServer - Error while accepting socket: ");
-					ss << this->getSocketError(this->listenSocket);
+					std::stringstream ss;
+					ss << "SelectServer - Error while accepting socket: " << this->getSocketError(this->listenSocket);
 
 					this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 
@@ -95,8 +95,8 @@ namespace Server
 							{
 								if (bytes != 0)
 								{
-									std::stringstream ss("SelectServer - Error while receiving on a socket: ");
-									ss << this->getSocketError(client.sock);
+									std::stringstream ss;
+									ss << "SelectServer - Error while receiving on a socket: " << this->getSocketError(client.sock);
 
 									this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 
@@ -124,8 +124,8 @@ namespace Server
 
 								if (bytes == SOCKET_ERROR)
 								{
-									std::stringstream ss("SelectServer - Error while sending on a socket: ");
-									ss << this->getSocketError(client.sock);
+									std::stringstream ss;
+									ss << "SelectServer - Error while sending on a socket: " << this->getSocketError(client.sock);
 
 									this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 
@@ -146,8 +146,8 @@ namespace Server
 
 						if (FD_ISSET(client.sock, &this->setExcept))
 						{
-							std::stringstream ss("SelectServer - Error on a socket: ");
-							ss << this->getSocketError(client.sock);
+							std::stringstream ss;
+							ss << "SelectServer - Error on a socket: " << this->getSocketError(client.sock);
 
 							this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 
