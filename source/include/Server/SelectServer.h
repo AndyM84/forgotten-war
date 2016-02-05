@@ -15,8 +15,8 @@ namespace Server
 	class SelectServer : public Threading::Threadable
 	{
 	public:
-		SelectServer(const std::shared_ptr<ServerListener> Listener, fwint Port);
-		SelectServer(const std::shared_ptr<ServerListener> Listener, fwint Port, const std::shared_ptr<Logging::Logger> Logger);
+		SelectServer(const ServerListener &Listener, fwint Port);
+		SelectServer(const ServerListener &Listener, fwint Port, Logging::Logger &Logger);
 		~SelectServer();
 
 		virtual fwvoid Run();
@@ -28,8 +28,8 @@ namespace Server
 
 	protected:
 		// External resources
-		const std::shared_ptr<ServerListener> Listener;
-		const std::shared_ptr<Logging::Logger>Logger;
+		const ServerListener *Listener;
+		Logging::Logger *Logger;
 
 		// Internal resources
 		Threading::LockCriticalSection lock;
@@ -46,6 +46,6 @@ namespace Server
 		fwvoid initSets();
 		fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
 		fwint getSocketError(SOCKET socket);
-		fwvoid addClient(SOCKET socket, sockaddr_in address);
+		fwuint addClient(SOCKET socket, sockaddr_in address);
 	};
 }

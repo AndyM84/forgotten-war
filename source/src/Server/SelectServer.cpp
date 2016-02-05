@@ -2,12 +2,12 @@
 
 namespace Server
 {
-	SelectServer::SelectServer(const std::shared_ptr<ServerListener> Listener, fwint Port)
-		: Listener(Listener), port(Port), isInitialized(false), shouldRun(true)
+	SelectServer::SelectServer(const ServerListener &Listener, fwint Port)
+		: Listener(&Listener), port(Port), isInitialized(false), shouldRun(true)
 	{ }
 
-	SelectServer::SelectServer(const std::shared_ptr<ServerListener> Listener, fwint Port, const std::shared_ptr<Logging::Logger> Logger)
-		: Listener(Listener), port(Port), Logger(Logger), isInitialized(false), shouldRun(true)
+	SelectServer::SelectServer(const ServerListener &Listener, fwint Port, Logging::Logger &Logger)
+		: Listener(&Listener), port(Port), Logger(&Logger), isInitialized(false), shouldRun(true)
 	{ }
 
 	SelectServer::~SelectServer()
@@ -64,8 +64,10 @@ namespace Server
 					ioctlsocket(sck, FIONBIO, &noBlock);
 
 					this->lock.Block();
-					this->addClient(sck, clientAddr);
+					fwuint nId = this->addClient(sck, clientAddr);
 					this->lock.Release();
+
+					this->Listener->ClientConnected(nId);
 				}
 
 				if (FD_ISSET(this->listenSocket, &this->setExcept))
@@ -163,6 +165,7 @@ namespace Server
 								{
 									if ((*b).id == id)
 									{
+										this->Listener->ClientDisconnected((*b).id);
 										this->clients.erase(b);
 
 										break;
@@ -366,7 +369,7 @@ namespace Server
 		return optValue;
 	}
 
-	fwvoid SelectServer::addClient(SOCKET socket, sockaddr_in address)
+	fwuint SelectServer::addClient(SOCKET socket, sockaddr_in address)
 	{
 		fwuint nId = 0;
 		SocketConn conn;
@@ -385,6 +388,6 @@ namespace Server
 
 		this->clients.push_back(conn);
 
-		return;
+		return nId;
 	}
 }
