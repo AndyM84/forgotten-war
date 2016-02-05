@@ -2,6 +2,7 @@
 
 /* Standard includes */
 #include <exception>
+#include <iostream>
 
 /* FW includes */
 #include <Common/Types.h>

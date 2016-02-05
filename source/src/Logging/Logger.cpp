@@ -5,7 +5,6 @@
 namespace Logging
 {
 	Logger::LoggerMap *Logger::allLoggers = 0;
-	LogWorker *Logger::worker = 0;
 
 	/* PUBLIC */
 

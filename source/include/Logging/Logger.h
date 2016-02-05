@@ -58,7 +58,6 @@ namespace Logging
 		typedef std::pair<fwstr, Logger*> LoggerPair;
 
 		static LoggerMap *allLoggers;
-		static LogWorker *worker;
 
 		LogLevel m_DefaultLevel;
 		fwstr m_Name;

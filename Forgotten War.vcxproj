@@ -20,6 +20,7 @@
     <ClInclude Include="source\include\Logging\Logger.h" />
     <ClInclude Include="source\include\Logging\LogWorker.h" />
     <ClInclude Include="source\include\Server\SelectServer.h" />
+    <ClInclude Include="source\include\Server\ServerListener.h" />
     <ClInclude Include="source\include\Threading\Lock.h" />
     <ClInclude Include="source\include\Threading\LockCriticalSection.h" />
     <ClInclude Include="source\include\Threading\LockMutex.h" />
