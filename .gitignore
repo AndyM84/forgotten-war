@@ -9,3 +9,4 @@ UpgradeLog*
 *.opensdf
 Debug/
 Release/
+*.opendb
