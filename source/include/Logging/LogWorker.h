@@ -23,7 +23,7 @@ namespace Logging
 		static LogWorker &IntervalTime(fwuint milliseconds);
 		static LogWorker &AddMessage(LogData *message);
 
-		virtual fwvoid run();
+		virtual fwvoid Run();
 
 	protected:
 		LogWorker();

@@ -11,9 +11,12 @@ int main()
 	lt.Start();
 
 	auto l = Logging::Logger::GetLogger("FW");
+	l.SetDefaultLevel(Logging::LogLevel::LOG_TRACE);
 
-	l.Info("This is an info message.");
+	auto fw = ForgottenWar(9005, l);
+	fw.Start();
 
+	std::cout << "Waiting for newline input to close..";
 	std::cin.get();
 
 	lt.Terminate();

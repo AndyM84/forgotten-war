@@ -24,7 +24,7 @@ namespace Threading
 	FW_LIB Thread::StaticThreadEntry(void *param)
 	{
 		Thread *ptr = reinterpret_cast<Thread *>(param);
-		ptr->Start();
+		ptr->m_Target->Run();
 
 		return 0;
 	}

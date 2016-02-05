@@ -112,7 +112,7 @@ namespace Logging
 		return *m_WorkerInstance;
 	}
 
-	fwvoid LogWorker::run()
+	fwvoid LogWorker::Run()
 	{
 		if (!m_Appenders || !m_WorkerInstance)
 		{

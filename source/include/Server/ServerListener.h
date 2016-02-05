@@ -23,8 +23,8 @@ namespace Server
 	class ServerListener
 	{
 	public:
-		virtual fwvoid ClientConnected(fwuint ID) const = 0;
+		virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address) const = 0;
 		virtual fwvoid ClientReceived(fwuint ID, const SocketMessage &Message) const = 0;
-		virtual fwvoid ClientDisconnected(fwuint ID) const = 0;
+		virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address) const = 0;
 	};
 }

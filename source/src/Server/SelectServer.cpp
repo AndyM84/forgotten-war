@@ -67,7 +67,7 @@ namespace Server
 					fwuint nId = this->addClient(sck, clientAddr);
 					this->lock.Release();
 
-					this->Listener->ClientConnected(nId);
+					this->Listener->ClientConnected(nId, clientAddr);
 				}
 
 				if (FD_ISSET(this->listenSocket, &this->setExcept))
@@ -165,7 +165,7 @@ namespace Server
 								{
 									if ((*b).id == id)
 									{
-										this->Listener->ClientDisconnected((*b).id);
+										this->Listener->ClientDisconnected((*b).id, (*b).address);
 										this->clients.erase(b);
 
 										break;

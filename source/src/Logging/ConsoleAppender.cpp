@@ -34,27 +34,27 @@ namespace Logging
 
 				break;
 			case LOG_INFO:
-				ss << "INFO [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+				ss << "INFO     [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
 				this->ColoredOutput(ss.str(), CONSOLE_COLOR_WHITE);
 
 				break;
 			case LOG_WARN:
-				ss << "WARN [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+				ss << "WARN     [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
 				this->ColoredOutput(ss.str(), CONSOLE_COLOR_YELLOW);
 
 				break;
 			case LOG_DEBUG:
-				ss << "DEBUG [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+				ss << "DEBUG    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
 				this->ColoredOutput(ss.str(), CONSOLE_COLOR_CYAN);
 
 				break;
 			case LOG_TRACE:
-				ss << "TRACE [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+				ss << "TRACE    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
 				this->ColoredOutput(ss.str(), CONSOLE_COLOR_GRAY);
 
 				break;
 			case LOG_ERROR:
-				ss << "ERROR [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+				ss << "ERROR    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
 				this->ColoredOutput(ss.str(), CONSOLE_COLOR_RED);
 
 				break;

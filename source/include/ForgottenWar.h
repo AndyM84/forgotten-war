@@ -30,26 +30,55 @@ public:
 
 	}
 
-	virtual fwvoid ClientConnected(fwuint ID) const
+	fwvoid Start()
 	{
+		this->log(Logging::LogLevel::LOG_DEBUG, "Starting server.");
 
+		auto st = Threading::Thread(this->server);
+		st.Start();
+
+		std::cin.get();
+
+		st.Terminate();
+
+		return;
+	}
+
+	virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address) const
+	{
+		std::stringstream ss("New client connected from: ");
+		ss << inet_ntoa(Address.sin_addr);
+
+		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
+
+		return;
 	}
 
 	virtual fwvoid ClientReceived(fwuint ID, const Server::SocketMessage &Message) const
 	{
+		std::stringstream ss("Received message from user: ");
+		ss << Message.Message;
 
+		this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
+
+		return;
 	}
 
-	virtual fwvoid ClientDisconnected(fwuint ID) const
+	virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address) const
 	{
+		std::stringstream ss("Client disconnected: ");
+		ss << inet_ntoa(Address.sin_addr);
 
+		this->log(Logging::LogLevel::LOG_WARN, ss.str().c_str());
+
+		return;
 	}
 
 protected:
 	Logging::Logger *logger;
 	Server::SelectServer server;
 
-	fwvoid log(const Logging::LogLevel Level, const fwchar *Message)
+	fwvoid log(Logging::LogLevel Level, const fwchar *Message) const
 	{
 		if (this->logger)
 		{
