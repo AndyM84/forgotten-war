@@ -11,11 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\include\Server\dyad.h" />
-    <ClInclude Include="source\include\Server\FWServer.h" />
-    <ClInclude Include="source\include\Server\ServerData.h" />
     <ClInclude Include="source\include\Common\Types.h" />
-    <ClInclude Include="source\include\fw.h" />
     <ClInclude Include="source\include\Logging\AppenderBase.h" />
     <ClInclude Include="source\include\Logging\ConsoleAppender.h" />
     <ClInclude Include="source\include\Logging\FileAppender.h" />
@@ -29,9 +25,6 @@
     <ClInclude Include="source\include\Threading\Threadable.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\src\Server\dyad.c" />
-    <ClCompile Include="source\src\Server\FWServer.cpp" />
-    <ClCompile Include="source\src\fw.cpp" />
     <ClCompile Include="source\src\Logging\AppenderBase.cpp" />
     <ClCompile Include="source\src\Logging\ConsoleAppender.cpp" />
     <ClCompile Include="source\src\Logging\FileAppender.cpp" />

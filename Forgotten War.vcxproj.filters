@@ -28,12 +28,6 @@
     <Filter Include="Source Files\Logging">
       <UniqueIdentifier>{68d64e5f-f917-4439-af9a-a9a42b6d6282}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Server">
-      <UniqueIdentifier>{85003e5e-20d5-482d-b123-38f23d3045a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Server">
-      <UniqueIdentifier>{4fe4a8aa-af8f-457c-b6b5-248d9348d4a8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\include\Common\Types.h">
@@ -44,9 +38,6 @@
     </ClInclude>
     <ClInclude Include="source\include\Threading\Threadable.h">
       <Filter>Header Files\Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="source\include\fw.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\include\Threading\Lock.h">
       <Filter>Header Files\Threading</Filter>
@@ -75,15 +66,6 @@
     <ClInclude Include="source\include\Logging\LogWorker.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
-    <ClInclude Include="source\include\Server\dyad.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="source\include\Server\ServerData.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="source\include\Server\FWServer.h">
-      <Filter>Header Files\Server</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\src\Threading\Threadable.cpp">
@@ -91,9 +73,6 @@
     </ClCompile>
     <ClCompile Include="source\src\Threading\Thread.cpp">
       <Filter>Source Files\Threading</Filter>
-    </ClCompile>
-    <ClCompile Include="source\src\fw.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\src\Threading\Lock.cpp">
       <Filter>Source Files\Threading</Filter>
@@ -121,12 +100,6 @@
     </ClCompile>
     <ClCompile Include="source\src\Logging\LogWorker.cpp">
       <Filter>Source Files\Logging</Filter>
-    </ClCompile>
-    <ClCompile Include="source\src\Server\dyad.c">
-      <Filter>Source Files\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="source\src\Server\FWServer.cpp">
-      <Filter>Source Files\Server</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
