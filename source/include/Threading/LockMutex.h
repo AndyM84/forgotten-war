@@ -3,9 +3,9 @@
 #include <Threading/Lock.h>
 
 #if defined(FW_WINDOWS)
-typedef HANDLE fwmutex;
+	typedef HANDLE fwmutex;
 #elif defined(FW_UNIX)
-typedef pthread_mutex_t fwmutex;
+	typedef pthread_mutex_t fwmutex;
 #endif
 
 namespace Threading

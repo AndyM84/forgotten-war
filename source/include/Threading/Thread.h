@@ -6,19 +6,15 @@
 typedef void* fwlptrvoid;
 
 #if defined(FW_WINDOWS)
+	#include <Windows.h>
+	#include <process.h>
 
-#include <Windows.h>
-#include <process.h>
-
-typedef uintptr_t fwthreadhandle;
-
+	typedef uintptr_t fwthreadhandle;
 #elif defined(FW_UNIX)
+	#include <pthread.h>
+	#include <time.h>
 
-#include <pthread.h>
-#include <time.h>
-
-typedef pthread_t fwthreadhandle;
-
+	typedef pthread_t fwthreadhandle;
 #endif
 
 enum THREAD_STATUS

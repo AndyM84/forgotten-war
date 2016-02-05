@@ -66,6 +66,9 @@
     <ClInclude Include="source\include\Logging\LogWorker.h">
       <Filter>Header Files\Logging</Filter>
     </ClInclude>
+    <ClInclude Include="source\include\ForgottenWar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\src\Threading\Threadable.cpp">
@@ -100,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="source\src\Logging\LogWorker.cpp">
       <Filter>Source Files\Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\ForgottenWar.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

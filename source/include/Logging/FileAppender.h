@@ -8,7 +8,7 @@
 #include <fstream>
 
 #if defined(FW_WINDOWS)
-#include <Windows.h>
+	#include <Windows.h>
 #endif
 
 namespace Logging

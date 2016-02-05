@@ -3,9 +3,9 @@
 #include <Threading/Lock.h>
 
 #if defined(FW_WINDOWS)
-typedef CRITICAL_SECTION fwcritsec;
+	typedef CRITICAL_SECTION fwcritsec;
 #elif defined(FW_UNIX)
-typedef pthread_mutex_t fwcritsec;
+	typedef pthread_mutex_t fwcritsec;
 #endif
 
 namespace Threading

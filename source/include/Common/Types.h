@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _DEBUG
-#define FW_DEBUG 1
+	#define FW_DEBUG 1
 #endif
 
 #if defined(_WIN32)

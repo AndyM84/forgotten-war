@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\include\Common\Types.h" />
+    <ClInclude Include="source\include\ForgottenWar.h" />
     <ClInclude Include="source\include\Logging\AppenderBase.h" />
     <ClInclude Include="source\include\Logging\ConsoleAppender.h" />
     <ClInclude Include="source\include\Logging\FileAppender.h" />
@@ -25,6 +26,7 @@
     <ClInclude Include="source\include\Threading\Threadable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\src\ForgottenWar.cpp" />
     <ClCompile Include="source\src\Logging\AppenderBase.cpp" />
     <ClCompile Include="source\src\Logging\ConsoleAppender.cpp" />
     <ClCompile Include="source\src\Logging\FileAppender.cpp" />
