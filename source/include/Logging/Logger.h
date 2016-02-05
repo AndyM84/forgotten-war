@@ -18,8 +18,6 @@ namespace Logging
 	public:
 		static Logger &GetLogger(const fwstr key);
 
-		Logger(const Logger &other);
-		Logger& operator=(Logger other);
 		~Logger();
 
 		fwvoid SetDefaultLevel(const LogLevel level);

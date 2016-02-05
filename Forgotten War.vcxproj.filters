@@ -28,6 +28,12 @@
     <Filter Include="Source Files\Logging">
       <UniqueIdentifier>{68d64e5f-f917-4439-af9a-a9a42b6d6282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Server">
+      <UniqueIdentifier>{0ef3e076-568e-4335-bade-cb43829814bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server">
+      <UniqueIdentifier>{0faf20e5-91ee-48b6-931e-659639a6efad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\include\Common\Types.h">
@@ -69,6 +75,9 @@
     <ClInclude Include="source\include\ForgottenWar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\include\Server\SelectServer.h">
+      <Filter>Header Files\Server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\src\Threading\Threadable.cpp">
@@ -106,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="source\src\ForgottenWar.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\src\Server\SelectServer.cpp">
+      <Filter>Source Files\Server</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

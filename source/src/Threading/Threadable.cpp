@@ -56,7 +56,7 @@ namespace Threading
 		fwhandle timer;
 		LARGE_INTEGER ft;
 
-		ft.QuadPart = -(10 * nanoseconds);
+		ft.QuadPart = -(10 * static_cast<fwlong>(nanoseconds));
 		timer = CreateWaitableTimer(NULL, TRUE, NULL);
 		SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
 		WaitForSingleObject(timer, INFINITE);

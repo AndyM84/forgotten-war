@@ -42,19 +42,6 @@ namespace Threading
 		return;
 	}
 
-	fwvoid Thread::Pause()
-	{
-		this->m_ThreadStatus = THREAD_PAUSED;
-
-#ifdef FW_WINDOWS
-		SuspendThread((HANDLE)this->m_Handle);
-#else
-		// TODO: Figure out how to do this on Linux
-#endif
-
-		return;
-	}
-
 	fwvoid Thread::Terminate()
 	{
 		this->m_ThreadStatus = THREAD_TERMINATED;

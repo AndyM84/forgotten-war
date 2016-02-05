@@ -20,7 +20,13 @@ namespace Logging
 	fwstr AppenderBase::GetTime()
 	{
 		time_t t = time(0);
-		struct std::tm* now = localtime(&t);
+#if defined(FW_WINDOWS)
+		struct std::tm *now, tmp;
+		localtime_s(&tmp, &t);
+		now = &tmp;
+#elif defined(FW_UNIX)
+		struct std::tm *now = localtime(&t);
+#endif
 		std::stringstream ss;
 
 		ss << std::setfill('0') << std::setw(2) << now->tm_mday << "/"

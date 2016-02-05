@@ -35,8 +35,6 @@ namespace Threading
 		Thread(Threadable &target);
 
 		fwvoid Start();
-		fwvoid Pause();
-		fwvoid Resume();
 		fwvoid Terminate();
 		THREAD_STATUS GetStatus();
 

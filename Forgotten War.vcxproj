@@ -19,6 +19,7 @@
     <ClInclude Include="source\include\Logging\LogData.h" />
     <ClInclude Include="source\include\Logging\Logger.h" />
     <ClInclude Include="source\include\Logging\LogWorker.h" />
+    <ClInclude Include="source\include\Server\SelectServer.h" />
     <ClInclude Include="source\include\Threading\Lock.h" />
     <ClInclude Include="source\include\Threading\LockCriticalSection.h" />
     <ClInclude Include="source\include\Threading\LockMutex.h" />
@@ -33,6 +34,7 @@
     <ClCompile Include="source\src\Logging\LogData.cpp" />
     <ClCompile Include="source\src\Logging\Logger.cpp" />
     <ClCompile Include="source\src\Logging\LogWorker.cpp" />
+    <ClCompile Include="source\src\Server\SelectServer.cpp" />
     <ClCompile Include="source\src\Threading\Lock.cpp" />
     <ClCompile Include="source\src\Threading\LockCriticalSection.cpp" />
     <ClCompile Include="source\src\Threading\LockMutex.cpp" />
