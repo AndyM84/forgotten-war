@@ -92,7 +92,7 @@ namespace Server
 							char buf[MAX_RECV_LENGTH];
 							fwint bytes = recv(client.sock, buf, 4096, 0);
 
-							if (bytes == 0 || bytes == SOCKET_ERROR)
+							if (bytes == 0 || bytes == SOCKET_ERROR || bytes > 4095)
 							{
 								if (bytes != 0)
 								{
