@@ -10,3 +10,4 @@ UpgradeLog*
 Debug/
 Release/
 *.opendb
+ipch/

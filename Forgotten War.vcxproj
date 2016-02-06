@@ -56,11 +56,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)GameCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)GameCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

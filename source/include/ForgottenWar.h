@@ -9,6 +9,7 @@
 /* FW includes */
 #include <CommonCore.h>
 #include <ServerCore.h>
+#include <GameCore.h>
 
 enum PlayerStates
 {
