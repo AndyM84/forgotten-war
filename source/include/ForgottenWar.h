@@ -46,17 +46,19 @@ public:
 		return;
 	}
 
-	virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address) const
+	virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address)
 	{
 		std::stringstream ss;
 		ss << "New client connected from: " << inet_ntoa(Address.sin_addr);
 
 		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
 
+		this->server.Send(ID, "This is a test message!\n");
+
 		return;
 	}
 
-	virtual fwvoid ClientReceived(fwuint ID, const Server::SocketMessage &Message) const
+	virtual fwvoid ClientReceived(fwuint ID, const Server::SocketMessage &Message)
 	{
 		std::stringstream ss;
 		ss << "Received message from user: " << Message.Message;
@@ -66,7 +68,7 @@ public:
 		return;
 	}
 
-	virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address) const
+	virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address)
 	{
 		std::stringstream ss;
 		ss << "Client disconnected: " << inet_ntoa(Address.sin_addr);
@@ -80,7 +82,7 @@ protected:
 	Logging::Logger *logger;
 	Server::SelectServer server;
 
-	fwvoid log(Logging::LogLevel Level, const fwchar *Message) const
+	fwvoid log(Logging::LogLevel Level, const fwchar *Message)
 	{
 		if (this->logger)
 		{

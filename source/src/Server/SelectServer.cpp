@@ -2,11 +2,11 @@
 
 namespace Server
 {
-	SelectServer::SelectServer(const ServerListener &Listener, fwint Port)
+	SelectServer::SelectServer(ServerListener &Listener, fwint Port)
 		: Listener(&Listener), port(Port), isInitialized(false), shouldRun(true)
 	{ }
 
-	SelectServer::SelectServer(const ServerListener &Listener, fwint Port, Logging::Logger &Logger)
+	SelectServer::SelectServer(ServerListener &Listener, fwint Port, Logging::Logger &Logger)
 		: Listener(&Listener), port(Port), Logger(&Logger), isInitialized(false), shouldRun(true)
 	{ }
 
@@ -303,6 +303,8 @@ namespace Server
 
 	fwvoid SelectServer::Stop()
 	{
+
+
 		return;
 	}
 
@@ -375,6 +377,7 @@ namespace Server
 		SocketConn conn;
 		conn.sock = socket;
 		conn.address = address;
+		conn.buffer = "";
 
 		for (auto client : this->clients)
 		{

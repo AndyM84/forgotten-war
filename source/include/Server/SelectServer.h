@@ -15,8 +15,8 @@ namespace Server
 	class SelectServer : public Threading::Threadable
 	{
 	public:
-		SelectServer(const ServerListener &Listener, fwint Port);
-		SelectServer(const ServerListener &Listener, fwint Port, Logging::Logger &Logger);
+		SelectServer(ServerListener &Listener, fwint Port);
+		SelectServer(ServerListener &Listener, fwint Port, Logging::Logger &Logger);
 		~SelectServer();
 
 		virtual fwvoid Run();
@@ -28,7 +28,7 @@ namespace Server
 
 	protected:
 		// External resources
-		const ServerListener *Listener;
+		ServerListener *Listener;
 		Logging::Logger *Logger;
 
 		// Internal resources
