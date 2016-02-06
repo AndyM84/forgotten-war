@@ -161,7 +161,7 @@ namespace Server
 						{
 							for (size_t i = 0; i < this->clients.size(); ++i)
 							{
-								for (auto b = this->clients.begin(); b != this->clients.end(); ++b)
+								for (auto b = this->clients.begin(); b != this->clients.end();)
 								{
 									if ((*b).id == id)
 									{
@@ -170,6 +170,8 @@ namespace Server
 
 										break;
 									}
+
+									++b;
 								}
 							}
 						}
@@ -254,23 +256,23 @@ namespace Server
 	{
 		this->lock.Block();
 
-		for (auto client : this->clients)
+		for (auto client = this->clients.begin(); client != this->clients.end(); ++client)
 		{
-			if (client.id == ID)
+			if ((*client).id == ID)
 			{
-				if (strlen(client.buffer) > 0)
+				if (strlen((*client).buffer) > 0)
 				{
-					fwstr buffer = client.buffer;
+					fwstr buffer = (*client).buffer;
 					buffer += Message;
 
-					client.buffer = const_cast<fwchar*>(buffer.c_str());
+					(*client).buffer = const_cast<fwchar*>(buffer.c_str());
 				}
 				else
 				{
-					client.buffer = const_cast<fwchar*>(Message.c_str());
+					(*client).buffer = const_cast<fwchar*>(Message.c_str());
 				}
 
-				client.totalBytes = strlen(client.buffer) + 1;
+				(*client).totalBytes = strlen((*client).buffer) + 1;
 
 				break;
 			}
