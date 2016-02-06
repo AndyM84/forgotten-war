@@ -89,7 +89,8 @@ namespace Server
 					{
 						if (FD_ISSET(client.sock, &this->setRead))
 						{
-							fwint bytes = recv(client.sock, client.buffer, 4096, 0);
+							char buf[MAX_RECV_LENGTH];
+							fwint bytes = recv(client.sock, buf, 4096, 0);
 
 							if (bytes == 0 || bytes == SOCKET_ERROR)
 							{
@@ -106,6 +107,11 @@ namespace Server
 								continue;
 							}
 
+							// TODO: Fix this so it isn't so shitstack-y
+							char tmp[MAX_RECV_LENGTH];
+							strncpy(tmp, buf, bytes);
+
+							client.buffer = tmp;
 							client.totalBytes = bytes;
 							client.sentBytes = 0;
 

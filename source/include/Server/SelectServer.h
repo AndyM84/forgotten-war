@@ -10,6 +10,8 @@
 #include <sstream>
 #include <vector>
 
+#define MAX_RECV_LENGTH 4096
+
 namespace Server
 {
 	class SelectServer : public Threading::Threadable
