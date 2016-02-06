@@ -112,6 +112,10 @@ public:
 				{
 					this->showChat((*playerIter).second, msg.substr(4));
 				}
+				else if (msg == "quit")
+				{
+					this->doQuit((*playerIter).first, (*playerIter).second);
+				}
 
 				break;
 			default:
@@ -195,6 +199,19 @@ protected:
 		ss << "[OOC] " << Speaker.Name << ": " << Message << "\n";
 
 		this->broadcastMessage(ss.str());
+
+		return;
+	}
+
+	fwvoid doQuit(fwuint ID, const PlayerData Player)
+	{
+		std::stringstream ss;
+		ss << Player.Name << " has left the game!\n";
+		this->broadcastMessageToOthers(ID, ss.str());
+
+		this->server.Send(ID, "Thanks for playing!\n");
+		this->players.erase(ID);
+		this->server.Close(ID);
 
 		return;
 	}
