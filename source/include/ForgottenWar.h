@@ -133,6 +133,13 @@ public:
 
 		this->log(Logging::LogLevel::LOG_WARN, ss.str().c_str());
 
+		auto playerIter = this->players.find(ID);
+
+		if (playerIter != this->players.end() && (*playerIter).second.State == Connected)
+		{
+			this->doVoid((*playerIter).first, (*playerIter).second);
+		}
+
 		return;
 	}
 
@@ -212,6 +219,17 @@ protected:
 		this->server.Send(ID, "Thanks for playing!\n");
 		this->players.erase(ID);
 		this->server.Close(ID);
+
+		return;
+	}
+
+	fwvoid doVoid(fwuint ID, const PlayerData Player)
+	{
+		std::stringstream ss;
+		ss << Player.Name << " has left the game!\n";
+		this->broadcastMessageToOthers(ID, ss.str());
+
+		this->players.erase(ID);
 
 		return;
 	}
