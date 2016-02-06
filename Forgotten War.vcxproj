@@ -11,41 +11,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\include\Common\Types.h" />
     <ClInclude Include="source\include\ForgottenWar.h" />
-    <ClInclude Include="source\include\Logging\AppenderBase.h" />
-    <ClInclude Include="source\include\Logging\ConsoleAppender.h" />
-    <ClInclude Include="source\include\Logging\FileAppender.h" />
-    <ClInclude Include="source\include\Logging\LogData.h" />
-    <ClInclude Include="source\include\Logging\Logger.h" />
-    <ClInclude Include="source\include\Logging\LogWorker.h" />
-    <ClInclude Include="source\include\Server\SelectServer.h" />
-    <ClInclude Include="source\include\Server\ServerListener.h" />
-    <ClInclude Include="source\include\Threading\Lock.h" />
-    <ClInclude Include="source\include\Threading\LockCriticalSection.h" />
-    <ClInclude Include="source\include\Threading\LockMutex.h" />
-    <ClInclude Include="source\include\Threading\Thread.h" />
-    <ClInclude Include="source\include\Threading\Threadable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\src\ForgottenWar.cpp" />
-    <ClCompile Include="source\src\Logging\AppenderBase.cpp" />
-    <ClCompile Include="source\src\Logging\ConsoleAppender.cpp" />
-    <ClCompile Include="source\src\Logging\FileAppender.cpp" />
-    <ClCompile Include="source\src\Logging\LogData.cpp" />
-    <ClCompile Include="source\src\Logging\Logger.cpp" />
-    <ClCompile Include="source\src\Logging\LogWorker.cpp" />
-    <ClCompile Include="source\src\Server\SelectServer.cpp" />
-    <ClCompile Include="source\src\Threading\Lock.cpp" />
-    <ClCompile Include="source\src\Threading\LockCriticalSection.cpp" />
-    <ClCompile Include="source\src\Threading\LockMutex.cpp" />
-    <ClCompile Include="source\src\Threading\Thread.cpp" />
-    <ClCompile Include="source\src\Threading\Threadable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="CommonCore\CommonCore.vcxproj">
+      <Project>{ab18ecf8-3528-42e2-81f9-beef02e7d8ae}</Project>
+    </ProjectReference>
+    <ProjectReference Include="ServerCore\ServerCore.vcxproj">
+      <Project>{87ceef0d-347a-4011-b6c8-ef7d25994833}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{541E732F-DF01-48B4-A5B5-6EFEA9DDC69D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ForgottenWar</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,11 +56,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)source\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)source\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -262,7 +262,7 @@ namespace Server
 
 	fwvoid SelectServer::Stop()
 	{
-
+		this->shouldRun = false;
 
 		return;
 	}
