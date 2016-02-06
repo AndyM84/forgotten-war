@@ -107,11 +107,8 @@ namespace Server
 								continue;
 							}
 
-							// TODO: Fix this so it isn't so shitstack-y
-							char tmp[MAX_RECV_LENGTH];
-							strncpy(tmp, buf, bytes);
-
-							client.buffer = tmp;
+							buf[bytes] = 0;
+							client.buffer = buf;
 							client.totalBytes = bytes;
 							client.sentBytes = 0;
 
