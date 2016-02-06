@@ -85,69 +85,37 @@ namespace Server
 					this->lock.Block();
 					std::vector<int> idsToRemove;
 
-					for (auto client = this->clients.begin(); client != this->clients.end(); ++client)
+					for (auto client : this->clients)
 					{
-						if (FD_ISSET((*client).sock, &this->setRead))
+						if (FD_ISSET(client.sock, &this->setRead))
 						{
-							fwint bytes = recv((*client).sock, (*client).buffer, 4096, 0);
+							fwint bytes = recv(client.sock, client.buffer, 4096, 0);
 
 							if (bytes == 0 || bytes == SOCKET_ERROR)
 							{
 								if (bytes != 0)
 								{
 									std::stringstream ss;
-									ss << "SelectServer - Error while receiving on a socket: " << this->getSocketError((*client).sock);
+									ss << "SelectServer - Error while receiving on a socket: " << this->getSocketError(client.sock);
 
 									this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
-
-									continue;
 								}
 
-								idsToRemove.push_back((*client).id);
+								idsToRemove.push_back(client.id);
 
 								continue;
 							}
 
-							(*client).totalBytes = bytes;
-							(*client).sentBytes = 0;
+							client.totalBytes = bytes;
+							client.sentBytes = 0;
 
-							this->Listener->ClientReceived((*client).id, SocketMessage { (*client).buffer, (fwuint)bytes });
+							this->Listener->ClientReceived(client.id, SocketMessage { client.buffer, (fwuint)bytes });
 						}
 
-						if (FD_ISSET((*client).sock, &this->setWrite))
-						{
-							fwint bytes = 0;
-
-							if (((*client).totalBytes - (*client).sentBytes) > 0)
-							{
-								bytes = send((*client).sock, (*client).buffer + (*client).sentBytes, (*client).totalBytes - (*client).sentBytes, 0);
-
-								if (bytes == SOCKET_ERROR)
-								{
-									std::stringstream ss;
-									ss << "SelectServer - Error while sending on a socket: " << this->getSocketError((*client).sock);
-
-									this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
-
-									continue;
-								}
-
-								if (bytes == ((*client).totalBytes - (*client).sentBytes))
-								{
-									(*client).totalBytes = 0;
-									(*client).sentBytes = 0;
-								}
-								else
-								{
-									(*client).sentBytes += bytes;
-								}
-							}
-						}
-
-						if (FD_ISSET((*client).sock, &this->setExcept))
+						if (FD_ISSET(client.sock, &this->setExcept))
 						{
 							std::stringstream ss;
-							ss << "SelectServer - Error on a socket: " << this->getSocketError((*client).sock);
+							ss << "SelectServer - Error on a socket: " << this->getSocketError(client.sock);
 
 							this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 
@@ -161,7 +129,7 @@ namespace Server
 						{
 							for (size_t i = 0; i < this->clients.size(); ++i)
 							{
-								for (auto b = this->clients.begin(); b != this->clients.end();)
+								for (auto b = this->clients.begin(); b != this->clients.end(); ++b)
 								{
 									if ((*b).id == id)
 									{
@@ -170,8 +138,6 @@ namespace Server
 
 										break;
 									}
-
-									++b;
 								}
 							}
 						}
@@ -256,23 +222,11 @@ namespace Server
 	{
 		this->lock.Block();
 
-		for (auto client = this->clients.begin(); client != this->clients.end(); ++client)
+		for (auto client : this->clients)
 		{
-			if ((*client).id == ID)
+			if (client.id == ID)
 			{
-				if (strlen((*client).buffer) > 0)
-				{
-					fwstr buffer = (*client).buffer;
-					buffer += Message;
-
-					(*client).buffer = const_cast<fwchar*>(buffer.c_str());
-				}
-				else
-				{
-					(*client).buffer = const_cast<fwchar*>(Message.c_str());
-				}
-
-				(*client).totalBytes = strlen((*client).buffer) + 1;
+				send(client.sock, Message.c_str(), Message.length(), 0);
 
 				break;
 			}
@@ -334,18 +288,18 @@ namespace Server
 
 			this->lock.Block();
 
-			for (auto client = this->clients.begin(); client != this->clients.end(); ++client)
+			for (auto client : this->clients)
 			{
-				if ((*client).sentBytes < (*client).totalBytes)
+				if (client.sentBytes < client.totalBytes)
 				{
-					FD_SET((*client).sock, &this->setWrite);
+					FD_SET(client.sock, &this->setWrite);
 				}
 				else
 				{
-					FD_SET((*client).sock, &this->setRead);
+					FD_SET(client.sock, &this->setRead);
 				}
 
-				FD_SET((*client).sock, &this->setExcept);
+				FD_SET(client.sock, &this->setExcept);
 			}
 
 			this->lock.Release();
