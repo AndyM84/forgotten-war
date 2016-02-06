@@ -1,6 +1,7 @@
 #pragma once
 
 /* Standard includes */
+#include <algorithm>
 #include <exception>
 #include <iostream>
 #include <map>
@@ -80,24 +81,37 @@ public:
 		this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
 
 		auto playerIter = this->players.find(ID);
+		auto msg = this->cleanString(Message.Message);
 
-		// TODO: Fix to handle things like newlines/carriage returns properly
-		if (playerIter != this->players.end() && Message.NumBytes > 1)
+		if (playerIter != this->players.end() && msg.length() > 0)
 		{
 			std::stringstream ss;
+			auto cmd = this->getCommand(msg);
 
 			switch ((*playerIter).second.State)
 			{
 			case Connecting:
-				(*playerIter).second.Name = Message.Message;
+				(*playerIter).second.Name = msg;
 				(*playerIter).second.State = Connected;
 
-				ss << "\n\nWelcome to the MUD, " << Message.Message << std::endl;
+				ss << "\n\nWelcome to the MUD, " << msg << std::endl;
 				this->server.Send(ID, ss.str());
+
+				ss.clear();
+				ss << msg << " has joined the game!" << std::endl;
+
+				this->broadcastMessageToOthers((*playerIter).first, ss.str());
 
 				break;
 			case Connected:
-				this->broadcastMessage((*playerIter).second, Message.Message);
+				if (msg == "who")
+				{
+					this->showWho((*playerIter).first);
+				}
+				else if (cmd == "ooc")
+				{
+					this->showChat((*playerIter).second, msg.substr(4));
+				}
 
 				break;
 			default:
@@ -141,16 +155,85 @@ protected:
 		return;
 	}
 
-	fwvoid broadcastMessage(const PlayerData Speaker, fwstr Message)
+	fwstr getCommand(fwstr Message)
+	{
+		fwint pos = Message.find(' ');
+
+		if (pos == (fwint)std::string::npos)
+		{
+			return "";
+		}
+
+		return Message.substr(0, pos);
+	}
+
+	fwvoid showWho(fwuint ID)
+	{
+		std::stringstream ss;
+		ss << "\nWho's Online\n------------\n";
+
+		for (auto player : this->players)
+		{
+			ss << player.second.Name;
+
+			if (player.first == ID)
+			{
+				ss << " (You)";
+			}
+
+			ss << "\n";
+		}
+
+		this->server.Send(ID, ss.str());
+
+		return;
+	}
+
+	fwvoid showChat(const PlayerData Speaker, fwstr Message)
+	{
+		std::stringstream ss;
+		ss << "[OOC] " << Speaker.Name << ": " << Message << "\n";
+
+		this->broadcastMessage(ss.str());
+
+		return;
+	}
+
+	fwvoid broadcastMessage(fwstr Message)
 	{
 		for (auto player : this->players)
 		{
-			std::stringstream ss;
-			ss << "[" << Speaker.Name << "] " << Message << std::endl;
-
-			this->server.Send(player.first, ss.str());
+			this->server.Send(player.first, Message.c_str());
 		}
 
 		return;
+	}
+
+	fwvoid broadcastMessageToOthers(fwuint ID, fwstr Message)
+	{
+		for (auto player : this->players)
+		{
+			if (player.first != ID)
+			{
+				this->server.Send(player.first, Message.c_str());
+			}
+		}
+
+		return;
+	}
+
+	fwstr cleanString(fwstr Input)
+	{
+		for (fwint p = Input.find('\n'); p != (fwint)std::string::npos; p = Input.find('\n'))
+		{
+			Input.erase(p, 1);
+		}
+
+		for (fwint p = Input.find('\r'); p != (fwint)std::string::npos; p = Input.find('\r'))
+		{
+			Input.erase(p, 1);
+		}
+
+		return Input;
 	}
 };
