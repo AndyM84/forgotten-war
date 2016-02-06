@@ -3,6 +3,7 @@
 /* Standard includes */
 #include <exception>
 #include <iostream>
+#include <map>
 
 /* FW includes */
 #include <Common/Types.h>
@@ -13,6 +14,19 @@
 #include <Threading/LockCriticalSection.h>
 #include <Threading/Threadable.h>
 #include <Server/SelectServer.h>
+
+enum PlayerStates
+{
+	Connecting,
+	Connected
+};
+
+struct PlayerData
+{
+	fwstr Name;
+	sockaddr_in Sockaddr;
+	PlayerStates State;
+};
 
 class ForgottenWar : public Server::ServerListener
 {
@@ -53,7 +67,7 @@ public:
 
 		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
 
-		this->server.Send(ID, "This is a test message!\n");
+		this->addPlayer(ID, Address);
 
 		return;
 	}
@@ -64,6 +78,32 @@ public:
 		ss << "Received message from user: " << Message.Message;
 
 		this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
+
+		auto playerIter = this->players.find(ID);
+
+		// TODO: Fix to handle things like newlines/carriage returns properly
+		if (playerIter != this->players.end() && Message.NumBytes > 1)
+		{
+			std::stringstream ss;
+
+			switch ((*playerIter).second.State)
+			{
+			case Connecting:
+				(*playerIter).second.Name = Message.Message;
+				(*playerIter).second.State = Connected;
+
+				ss << "\n\nWelcome to the MUD, " << Message.Message << std::endl;
+				this->server.Send(ID, ss.str());
+
+				break;
+			case Connected:
+				this->broadcastMessage((*playerIter).second, Message.Message);
+
+				break;
+			default:
+				break;
+			}
+		}
 
 		return;
 	}
@@ -81,12 +121,34 @@ public:
 protected:
 	Logging::Logger *logger;
 	Server::SelectServer server;
+	std::map<fwuint, PlayerData> players;
 
 	fwvoid log(Logging::LogLevel Level, const fwchar *Message)
 	{
 		if (this->logger)
 		{
 			this->logger->Log(Message, Level);
+		}
+
+		return;
+	}
+
+	fwvoid addPlayer(fwuint ID, sockaddr_in Address)
+	{
+		this->players.insert(std::pair<fwuint, PlayerData>(ID, PlayerData { "N/A", Address, Connecting }));
+		this->server.Send(ID, "Please enter your name: ");
+
+		return;
+	}
+
+	fwvoid broadcastMessage(const PlayerData Speaker, fwstr Message)
+	{
+		for (auto player : this->players)
+		{
+			std::stringstream ss;
+			ss << "[" << Speaker.Name << "] " << Message << std::endl;
+
+			this->server.Send(player.first, ss.str());
 		}
 
 		return;
