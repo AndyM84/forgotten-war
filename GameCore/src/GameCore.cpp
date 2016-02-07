@@ -25,7 +25,7 @@ fwvoid GameCore::ClientReceived(fwuint ID, const fwstr Message)
 	return;
 }
 
-fwvoid GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
+fwuint GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 {
 	return;
 }

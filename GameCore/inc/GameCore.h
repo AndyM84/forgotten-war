@@ -10,5 +10,5 @@ public:
 	virtual fwvoid Run();
 	virtual fwuint ClientConnected(fwuint ID, const sockaddr_in Address);
 	virtual fwvoid ClientReceived(fwuint ID, const fwstr Message);
-	virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address);
+	virtual fwuint ClientDisconnected(fwuint ID, const sockaddr_in Address);
 };

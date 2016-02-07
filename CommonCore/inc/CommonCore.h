@@ -17,6 +17,9 @@
 #include <Libraries/Library.h>
 #include <Libraries/Librarian.h>
 
+/* N2f */
+#include <N2f/N2f.h>
+
 /* A custom type */
 // NOTE!
 //   So this whole dynamic library thing...it's not so great when you get
@@ -30,6 +33,6 @@ namespace Libraries
 		virtual fwvoid Run() = 0;
 		virtual fwuint ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
 		virtual fwvoid ClientReceived(fwuint ID, const fwstr Message) = 0;
-		virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
+		virtual fwuint ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
 	};
 }
