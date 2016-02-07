@@ -3,6 +3,7 @@
 #include <Common/Types.h>
 #include <N2f/BaseClasses/DispatchBase.h>
 #include <memory>
+#include <string.h>
 
 namespace N2f
 {
