@@ -15,9 +15,9 @@ fwvoid GameCore::Run()
 	return;
 }
 
-fwvoid GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
+fwuint GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 {
-	return;
+	return 0;
 }
 
 fwvoid GameCore::ClientReceived(fwuint ID, const fwstr Message)

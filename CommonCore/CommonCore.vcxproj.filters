@@ -31,6 +31,24 @@
     <Filter Include="Header Files\Libraries">
       <UniqueIdentifier>{f4e28093-9eae-4188-b905-c6bd62255932}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\N2f">
+      <UniqueIdentifier>{5b4910df-ef48-4d0a-a092-c9a17cfb3003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N2f\BaseClasses">
+      <UniqueIdentifier>{33522355-c62b-4f60-982b-67613610ac2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\N2f\Helpers">
+      <UniqueIdentifier>{e5aadbb7-f7c8-4e22-bdf1-d80e164e5e0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N2f">
+      <UniqueIdentifier>{4f07b78b-61df-4289-953d-daf8f9d3832e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N2f\BaseClasses">
+      <UniqueIdentifier>{0f84978c-0941-404e-927f-50742d3533c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\N2f\Helpers">
+      <UniqueIdentifier>{5e238bf8-02cb-416a-9fd4-3691fd439a2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\Common\Types.h">
@@ -78,6 +96,18 @@
     <ClInclude Include="inc\Libraries\Librarian.h">
       <Filter>Header Files\Libraries</Filter>
     </ClInclude>
+    <ClInclude Include="inc\N2f\BaseClasses\DispatchBase.h">
+      <Filter>Header Files\N2f\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\N2f\BaseClasses\NodeBase.h">
+      <Filter>Header Files\N2f\BaseClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\N2f\Helpers\ChainHelper.h">
+      <Filter>Header Files\N2f\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\N2f\N2f.h">
+      <Filter>Header Files\N2f</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logging\AppenderBase.cpp">
@@ -112,6 +142,15 @@
     </ClCompile>
     <ClCompile Include="src\Threading\Threadable.cpp">
       <Filter>Source Files\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="src\N2f\BaseClasses\DispatchBase.cpp">
+      <Filter>Source Files\N2f\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="src\N2f\BaseClasses\NodeBase.cpp">
+      <Filter>Source Files\N2f\BaseClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="src\N2f\Helpers\ChainHelper.cpp">
+      <Filter>Source Files\N2f\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

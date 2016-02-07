@@ -28,7 +28,7 @@ namespace Libraries
 	{
 	public:
 		virtual fwvoid Run() = 0;
-		virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
+		virtual fwuint ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
 		virtual fwvoid ClientReceived(fwuint ID, const fwstr Message) = 0;
 		virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
 	};
