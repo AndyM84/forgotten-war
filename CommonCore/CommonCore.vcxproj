@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="inc\CommonCore.h" />
     <ClInclude Include="inc\Common\Types.h" />
+    <ClInclude Include="inc\Libraries\Librarian.h" />
+    <ClInclude Include="inc\Libraries\Library.h" />
     <ClInclude Include="inc\Logging\AppenderBase.h" />
     <ClInclude Include="inc\Logging\ConsoleAppender.h" />
     <ClInclude Include="inc\Logging\FileAppender.h" />

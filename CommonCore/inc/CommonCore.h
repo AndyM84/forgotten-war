@@ -12,3 +12,24 @@
 #include <Threading/LockCriticalSection.h>
 #include <Threading/LockMutex.h>
 #include <Threading/Thread.h>
+
+/* Library system */
+#include <Libraries/Library.h>
+#include <Libraries/Librarian.h>
+
+/* A custom type */
+// NOTE!
+//   So this whole dynamic library thing...it's not so great when you get
+//   down to it.  In the future, we'll avoid these things whenever
+//   possible, but for now we have a somewhat decent example.
+namespace Libraries
+{
+	class GameLibrary : public Library, public Threading::Threadable
+	{
+	public:
+		virtual fwvoid Run() = 0;
+		virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
+		virtual fwvoid ClientReceived(fwuint ID, const fwstr Message) = 0;
+		virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
+	};
+}

@@ -28,7 +28,7 @@
     <Filter Include="Source Files\Threading">
       <UniqueIdentifier>{63ce0e16-840b-4c36-93e0-3c6296e93d9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Modules">
+    <Filter Include="Header Files\Libraries">
       <UniqueIdentifier>{f4e28093-9eae-4188-b905-c6bd62255932}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -71,6 +71,12 @@
     </ClInclude>
     <ClInclude Include="inc\CommonCore.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Libraries\Library.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Libraries\Librarian.h">
+      <Filter>Header Files\Libraries</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
