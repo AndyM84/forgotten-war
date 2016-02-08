@@ -5,26 +5,15 @@
 #include <exception>
 #include <iostream>
 #include <map>
+#include <string>
 
 /* FW includes */
 #include <CommonCore.h>
 #include <ServerCore.h>
-#include <GameCore.h>
 
-enum PlayerStates
-{
-	Connecting,
-	Connected
-};
+#define GAME_CORE "GameCore.dll"
 
-struct PlayerData
-{
-	fwstr Name;
-	sockaddr_in Sockaddr;
-	PlayerStates State;
-};
-
-class ForgottenWar : public Server::ServerListener
+class ForgottenWar : public Server::ServerListener, public FWSender
 {
 public:
 	ForgottenWar(fwint Port)
@@ -37,7 +26,12 @@ public:
 
 	~ForgottenWar()
 	{
+		if (this->librarian != NULL)
+		{
+			delete this->librarian;
+		}
 
+		return;
 	}
 
 	fwvoid Start()
@@ -49,19 +43,20 @@ public:
 		auto st = Threading::Thread(this->server);
 		st.Start();
 
-		auto librarian = Libraries::Librarian<Libraries::GameLibrary>();
+		this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
 
 		if (this->logger)
 		{
-			librarian.SetLogger(*this->logger);
+			librarian->SetLogger(*this->logger);
 		}
 
-		auto game = librarian.Load("GameCore.dll");
-		game->Setup();
+		this->game = librarian->Load(GAME_CORE);
+		this->game->Setup();
+		this->game->AddCallbacks(this->sendToClient);
 
 		std::cin.get();
 
-		librarian.Unload("GameCore.dll");
+		librarian->Unload(GAME_CORE);
 		this->server.Stop();
 		st.Terminate();
 
@@ -72,10 +67,16 @@ public:
 	{
 		std::stringstream ss;
 		ss << "New client connected from: " << inet_ntoa(Address.sin_addr);
-
 		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
 
-		this->addPlayer(ID, Address);
+		if (this->game != NULL)
+		{
+			auto gId = this->game->ClientConnected(ID, Address);
+
+			ss.clear();
+			ss << "Game returned the following ID for user fd #" << ID << "(" << inet_ntoa(Address.sin_addr) << ": " << gId.plyrid;
+			this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
+		}
 
 		return;
 	}
@@ -84,50 +85,37 @@ public:
 	{
 		std::stringstream ss;
 		ss << "Received message from user: " << Message.Message;
-
 		this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
 
-		auto playerIter = this->players.find(ID);
-		auto msg = this->cleanString(Message.Message);
+		auto clientIter = this->clients.find(ID);
+		auto msg = Message.Message;
 
-		if (playerIter != this->players.end() && msg.length() > 0)
+		if (clientIter != this->clients.end() && msg.length() > 0)
 		{
-			std::stringstream ss;
-			auto cmd = this->getCommand(msg);
+			std::transform(msg.begin(), msg.end(), msg.begin(), ::tolower);
 
-			switch ((*playerIter).second.State)
+			if (msg.substr(0, 7) == "hotboot" && this->game->ClientIsAdmin(ID))
 			{
-			case Connecting:
-				(*playerIter).second.Name = msg;
-				(*playerIter).second.State = Connected;
-
-				ss << "\n\nWelcome to the MUD, " << msg << std::endl;
-				this->server.Send(ID, ss.str());
-
-				ss.clear();
-				ss << msg << " has joined the game!" << std::endl;
-
-				this->broadcastMessageToOthers((*playerIter).first, ss.str());
-
-				break;
-			case Connected:
-				if (msg == "who")
+				this->broadcastMessage("One moment while we change the server.");
+				
+				if (this->game != NULL)
 				{
-					this->showWho((*playerIter).first);
-				}
-				else if (cmd == "ooc")
-				{
-					this->showChat((*playerIter).second, msg.substr(4));
-				}
-				else if (msg == "quit")
-				{
-					this->doQuit((*playerIter).first, (*playerIter).second);
-				}
+					this->game->SaveState();
 
-				break;
-			default:
-				break;
+					this->librarian->Unload(GAME_CORE);
+					this->game = this->librarian->Load(GAME_CORE);
+					this->game->Setup();
+					this->game->AddCallbacks(&this->sendToClient);
+					this->game->RestoreState();
+
+					return;
+				}
 			}
+		}
+
+		if (this->game != NULL)
+		{
+			this->game->ClientReceived(ID, Message.Message);
 		}
 
 		return;
@@ -137,14 +125,23 @@ public:
 	{
 		std::stringstream ss;
 		ss << "Client disconnected: " << inet_ntoa(Address.sin_addr);
-
 		this->log(Logging::LogLevel::LOG_WARN, ss.str().c_str());
 
-		auto playerIter = this->players.find(ID);
-
-		if (playerIter != this->players.end() && (*playerIter).second.State == Connected)
+		if (this->game != NULL)
 		{
-			this->doVoid((*playerIter).first, (*playerIter).second);
+			this->game->ClientDisconnected(ID, Address);
+		}
+
+		return;
+	}
+
+	virtual fwvoid sendToClient(fwuint ID, fwstr Message)
+	{
+		auto client = this->clients.find(ID);
+
+		if (client != this->clients.end())
+		{
+			this->server.Send(ID, Message);
 		}
 
 		return;
@@ -153,7 +150,9 @@ public:
 protected:
 	Logging::Logger *logger;
 	Server::SelectServer server;
-	std::map<fwuint, PlayerData> players;
+	Libraries::GameLibrary *game;
+	std::map<fwuint, fwclient> clients;
+	Libraries::Librarian<Libraries::GameLibrary> *librarian;
 
 	fwvoid log(Logging::LogLevel Level, const fwchar *Message)
 	{
@@ -165,85 +164,9 @@ protected:
 		return;
 	}
 
-	fwvoid addPlayer(fwuint ID, sockaddr_in Address)
-	{
-		this->players.insert(std::pair<fwuint, PlayerData>(ID, PlayerData { "N/A", Address, Connecting }));
-		this->server.Send(ID, "Please enter your name: ");
-
-		return;
-	}
-
-	fwstr getCommand(fwstr Message)
-	{
-		fwint pos = Message.find(' ');
-
-		if (pos == (fwint)std::string::npos)
-		{
-			return "";
-		}
-
-		return Message.substr(0, pos);
-	}
-
-	fwvoid showWho(fwuint ID)
-	{
-		std::stringstream ss;
-		ss << "\nWho's Online\n------------\n";
-
-		for (auto player : this->players)
-		{
-			ss << player.second.Name;
-
-			if (player.first == ID)
-			{
-				ss << " (You)";
-			}
-
-			ss << "\n";
-		}
-
-		this->server.Send(ID, ss.str());
-
-		return;
-	}
-
-	fwvoid showChat(const PlayerData Speaker, fwstr Message)
-	{
-		std::stringstream ss;
-		ss << "[OOC] " << Speaker.Name << ": " << Message << "\n";
-
-		this->broadcastMessage(ss.str());
-
-		return;
-	}
-
-	fwvoid doQuit(fwuint ID, const PlayerData Player)
-	{
-		std::stringstream ss;
-		ss << Player.Name << " has left the game!\n";
-		this->broadcastMessageToOthers(ID, ss.str());
-
-		this->server.Send(ID, "Thanks for playing!\n");
-		this->players.erase(ID);
-		this->server.Close(ID);
-
-		return;
-	}
-
-	fwvoid doVoid(fwuint ID, const PlayerData Player)
-	{
-		std::stringstream ss;
-		ss << Player.Name << " has left the game!\n";
-		this->broadcastMessageToOthers(ID, ss.str());
-
-		this->players.erase(ID);
-
-		return;
-	}
-
 	fwvoid broadcastMessage(fwstr Message)
 	{
-		for (auto player : this->players)
+		for (auto player : this->clients)
 		{
 			this->server.Send(player.first, Message.c_str());
 		}
@@ -253,7 +176,7 @@ protected:
 
 	fwvoid broadcastMessageToOthers(fwuint ID, fwstr Message)
 	{
-		for (auto player : this->players)
+		for (auto player : this->clients)
 		{
 			if (player.first != ID)
 			{
@@ -262,20 +185,5 @@ protected:
 		}
 
 		return;
-	}
-
-	fwstr cleanString(fwstr Input)
-	{
-		for (fwint p = Input.find('\n'); p != (fwint)std::string::npos; p = Input.find('\n'))
-		{
-			Input.erase(p, 1);
-		}
-
-		for (fwint p = Input.find('\r'); p != (fwint)std::string::npos; p = Input.find('\r'))
-		{
-			Input.erase(p, 1);
-		}
-
-		return Input;
 	}
 };

@@ -21,19 +21,47 @@ fwvoid GameCore::Run()
 	return;
 }
 
-fwuint GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
+fwvoid GameCore::SaveState()
 {
-	return 0;
-}
 
-fwvoid GameCore::ClientReceived(fwuint ID, const fwstr Message)
-{
+
 	return;
 }
 
-fwuint GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
+fwclient *GameCore::RestoreState()
 {
-	return 0;
+	return NULL;
+}
+
+fwbool GameCore::ClientIsAdmin(fwuint ID)
+{
+	return true;
+}
+
+fwvoid GameCore::AddCallbacks(const FWSendMethod &send)
+{
+	this->send = &send;
+
+	return;
+}
+
+fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
+{
+	return fwclient { ID, 0, Address, CCLIENT_CONNECTED };
+}
+
+fwclient GameCore::ClientReceived(fwuint ID, const fwstr Message)
+{
+	//std::stringstream ss;
+	//ss << "You send the following message: " << Message << "\n\n";
+	//this->send(ID, ss.str());
+
+	return fwclient { ID, 0, NULL, CCLIENT_CONNECTED };
+}
+
+fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
+{
+	return fwclient { ID, 0, Address, CCLIENT_INVALID };
 }
 
 FW_INIT_LIBRARY(GameCore);

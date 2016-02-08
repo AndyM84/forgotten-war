@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Dispatches">
+      <UniqueIdentifier>{dbb6bca2-0505-4509-9443-9b1b512ccce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Nodes">
+      <UniqueIdentifier>{0dcacfed-c8c1-413d-a912-939bffefc142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{330764b1-56e1-4eaf-871a-5fd8b15ca440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dispatches">
+      <UniqueIdentifier>{f7135546-a601-44a2-af9f-37a2f073e827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Nodes">
+      <UniqueIdentifier>{a4bed74d-7f3a-4137-a391-9f94285c6bc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{30be6c18-79d0-4e60-ad16-386c2e7caeb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameCore.h">

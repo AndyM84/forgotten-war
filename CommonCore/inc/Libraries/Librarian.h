@@ -43,6 +43,20 @@ namespace Libraries
 			return;
 		}
 
+		~Librarian()
+		{
+			if (!this->libraries.empty())
+			{
+				for (LibraryMap::iterator iter = this->libraries.begin(); iter != this->libraries.end(); )
+				{
+					this->Unload((*iter).first);
+					this->libraries.erase(iter);
+				}
+			}
+
+			return;
+		}
+
 		fwvoid SetLogger(Logging::Logger &Logger)
 		{
 			this->Logger = &Logger;
