@@ -21,6 +21,20 @@ namespace Libraries
 	template<class T>
 	class Librarian
 	{
+	protected:
+		typedef T *(*FW_DLL_ENTRY)();
+
+		struct FW_LIBRARY_DESCRIPTOR
+		{
+			T *ptr;
+			std::wstring fileName;
+			FW_LIBRARY_STATUS status;
+			fwinstance instance;
+			FW_DLL_ENTRY entry;
+		};
+
+		typedef std::map<fwstr, FW_LIBRARY_DESCRIPTOR*> LibraryMap;
+
 	public:
 		Librarian()
 		{
@@ -31,7 +45,7 @@ namespace Libraries
 
 		fwvoid SetLogger(Logging::Logger &Logger)
 		{
-			this->Logger = Logger;
+			this->Logger = &Logger;
 
 			return;
 		}
@@ -70,7 +84,12 @@ namespace Libraries
 
 			lib->ptr = lib->entry();
 			lib->status = LIBRARY_SUCCESS;
-			this->libraries.insert(std::pair<const fwstr, FW_LIBRARY_DESCRIPTOR>(lib->fileName, lib));
+
+			std::pair<fwstr, FW_LIBRARY_DESCRIPTOR*> tmp;
+			tmp.first = path;
+			tmp.second = lib;
+
+			this->libraries.insert(tmp);
 
 			std::stringstream ss;
 			ss << "Librarian - Successfully loaded the '" << path << "' library";
@@ -102,19 +121,8 @@ namespace Libraries
 		}
 
 	protected:
-		typedef T *(*FW_DLL_ENTRY)();
-
-		struct FW_LIBRARY_DESCRIPTOR
-		{
-			T *ptr;
-			std::wstring fileName;
-			FW_LIBRARY_STATUS status;
-			fwinstance instance;
-			FW_DLL_ENTRY entry;
-		};
-
-		std::map<const fwstr, FW_LIBRARY_DESCRIPTOR> libraries;
 		Logging::Logger *Logger;
+		LibraryMap libraries;
 		fwbool isValid;
 
 		fwvoid log(Logging::LogLevel Level, const fwstr Message)
