@@ -105,16 +105,15 @@ namespace Libraries
 				return false;
 			}
 
-			std::wstring tmp(path.begin(), path.end());
-			auto lib = this->libraries.find(tmp);
+			auto lib = this->libraries.find(path);
 
 			if (lib == this->libraries.end())
 			{
 				return false;
 			}
 
-			(*lib)->ptr->Destroy();
-			FreeLibrary((*lib)->instance);
+			(*lib).second->ptr->Destroy();
+			FreeLibrary((*lib).second->instance);
 			this->libraries.erase(lib);
 
 			return true;

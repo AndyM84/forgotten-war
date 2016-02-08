@@ -61,6 +61,7 @@ public:
 
 		std::cin.get();
 
+		librarian.Unload("GameCore.dll");
 		this->server.Stop();
 		st.Terminate();
 
