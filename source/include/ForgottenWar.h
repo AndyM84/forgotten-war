@@ -49,6 +49,16 @@ public:
 		auto st = Threading::Thread(this->server);
 		st.Start();
 
+		auto librarian = Libraries::Librarian<Libraries::GameLibrary>();
+
+		if (this->logger)
+		{
+			librarian.SetLogger(*this->logger);
+		}
+
+		auto game = librarian.Load("GameCore.dll");
+		game->Setup();
+
 		std::cin.get();
 
 		this->server.Stop();

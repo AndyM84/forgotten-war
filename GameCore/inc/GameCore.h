@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CommonCore.h>
+#include <iostream>
 
 class GameCore : public Libraries::GameLibrary
 {

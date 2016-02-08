@@ -2,16 +2,22 @@
 
 fwbool GameCore::Setup()
 {
-	return false;
+	std::cout << "I have been setup!" << std::endl;
+
+	return true;
 }
 
 fwbool GameCore::Destroy()
 {
-	return false;
+	std::cout << "I have been destroyed!" << std::endl;
+
+	return true;
 }
 
 fwvoid GameCore::Run()
 {
+	std::cout << "I have been run!" << std::endl;
+
 	return;
 }
 
@@ -27,7 +33,7 @@ fwvoid GameCore::ClientReceived(fwuint ID, const fwstr Message)
 
 fwuint GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 {
-	return;
+	return 0;
 }
 
 FW_INIT_LIBRARY(GameCore);
