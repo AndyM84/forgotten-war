@@ -66,9 +66,6 @@ namespace Libraries
 
 		T *Load(const std::string path)
 		{
-			FW_LIBRARY_DESCRIPTOR *lib = new FW_LIBRARY_DESCRIPTOR();
-			lib->fileName = std::wstring(path.begin(), path.end());
-
 			if (!this->isValid)
 			{
 				this->log(Logging::LogLevel::LOG_ERROR, "Librarian - Cannot load library, librarian wasn't properly initialized");
@@ -76,7 +73,27 @@ namespace Libraries
 				return NULL;
 			}
 
-			lib->instance = ::LoadLibrary(lib->fileName.c_str());
+			FW_LIBRARY_DESCRIPTOR *lib = new FW_LIBRARY_DESCRIPTOR();
+			lib->fileName = std::wstring(path.begin(), path.end());
+
+			auto dotPos = path.find_last_of('.');
+
+			if (dotPos == std::string::npos)
+			{
+				this->log(Logging::LogLevel::LOG_ERROR, "Librarian - Invalid filename provided for load call");
+
+				return NULL;
+			}
+
+			std::stringstream fileCopy;
+			fileCopy << "copy " << path << " " << path.substr(0, dotPos) << "_Loaded" << path.substr(dotPos);
+			system(fileCopy.str().c_str());
+
+			std::wstringstream tmpFileName;
+			auto wDotPos = lib->fileName.find_last_of('.');
+			tmpFileName << lib->fileName.substr(0, wDotPos) << "_Loaded" << lib->fileName.substr(wDotPos);
+
+			lib->instance = ::LoadLibrary(tmpFileName.str().c_str());
 
 			if (lib->instance == NULL)
 			{
@@ -128,6 +145,12 @@ namespace Libraries
 
 			(*lib).second->ptr->Destroy();
 			FreeLibrary((*lib).second->instance);
+
+			std::stringstream delFile;
+			auto dotPos = path.find_last_of('.');
+			delFile << "del " << path.substr(0, dotPos) << "_Loaded" << path.substr(dotPos);
+			system(delFile.str().c_str());
+
 			this->libraries.erase(lib);
 
 			return true;

@@ -28,9 +28,9 @@ fwvoid GameCore::SaveState()
 	return;
 }
 
-fwclient *GameCore::RestoreState()
+fwvoid GameCore::RestoreState(std::vector<fwclient> clients)
 {
-	return NULL;
+	return;
 }
 
 fwbool GameCore::ClientIsAdmin(fwuint ID)
@@ -38,9 +38,9 @@ fwbool GameCore::ClientIsAdmin(fwuint ID)
 	return true;
 }
 
-fwvoid GameCore::AddCallbacks(const FWSendMethod &send)
+fwvoid GameCore::AddCallbacks(FWSender &send)
 {
-	this->send = &send;
+	this->sender = &send;
 
 	return;
 }
@@ -52,9 +52,9 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 
 fwclient GameCore::ClientReceived(fwuint ID, const fwstr Message)
 {
-	//std::stringstream ss;
-	//ss << "You send the following message: " << Message << "\n\n";
-	//this->send(ID, ss.str());
+	std::stringstream ss;
+	ss << "You send the following message: " << Message << "\n\n";
+	this->sender->sendToClient(ID, ss.str());
 
 	return fwclient { ID, 0, NULL, CCLIENT_CONNECTED };
 }

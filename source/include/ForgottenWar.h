@@ -52,7 +52,7 @@ public:
 
 		this->game = librarian->Load(GAME_CORE);
 		this->game->Setup();
-		this->game->AddCallbacks(this->sendToClient);
+		this->game->AddCallbacks(*this);
 
 		std::cin.get();
 
@@ -105,8 +105,19 @@ public:
 					this->librarian->Unload(GAME_CORE);
 					this->game = this->librarian->Load(GAME_CORE);
 					this->game->Setup();
-					this->game->AddCallbacks(&this->sendToClient);
-					this->game->RestoreState();
+					this->game->AddCallbacks(*this);
+
+					std::vector<fwclient> ccopy;
+
+					if (!this->clients.empty())
+					{
+						for (auto client : this->clients)
+						{
+							ccopy.push_back(client.second);
+						}
+
+						this->game->RestoreState(ccopy);
+					}
 
 					return;
 				}
