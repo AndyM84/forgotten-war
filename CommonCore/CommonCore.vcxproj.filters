@@ -108,6 +108,9 @@
     <ClInclude Include="inc\N2f\N2f.h">
       <Filter>Header Files\N2f</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ServerMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logging\AppenderBase.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="src\N2f\Helpers\ChainHelper.cpp">
       <Filter>Source Files\N2f\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerMessage.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

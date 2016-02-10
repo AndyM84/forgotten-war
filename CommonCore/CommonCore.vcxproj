@@ -33,6 +33,7 @@
     <ClInclude Include="inc\N2f\BaseClasses\NodeBase.h" />
     <ClInclude Include="inc\N2f\Helpers\ChainHelper.h" />
     <ClInclude Include="inc\N2f\N2f.h" />
+    <ClInclude Include="inc\ServerMessage.h" />
     <ClInclude Include="inc\Threading\Lock.h" />
     <ClInclude Include="inc\Threading\LockCriticalSection.h" />
     <ClInclude Include="inc\Threading\LockMutex.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="src\N2f\BaseClasses\DispatchBase.cpp" />
     <ClCompile Include="src\N2f\BaseClasses\NodeBase.cpp" />
     <ClCompile Include="src\N2f\Helpers\ChainHelper.cpp" />
+    <ClCompile Include="src\ServerMessage.cpp" />
     <ClCompile Include="src\Threading\Lock.cpp" />
     <ClCompile Include="src\Threading\LockCriticalSection.cpp" />
     <ClCompile Include="src\Threading\LockMutex.cpp" />
