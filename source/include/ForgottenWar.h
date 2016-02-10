@@ -47,16 +47,20 @@ public:
 
 		if (this->logger)
 		{
-			librarian->SetLogger(*this->logger);
+			this->librarian->SetLogger(*this->logger);
 		}
 
-		this->game = librarian->Load(GAME_CORE);
-		this->game->Setup();
-		this->game->AddCallbacks(*this);
+		this->game = this->librarian->Load(GAME_CORE);
+
+		if (this->game)
+		{
+			this->game->Setup();
+			this->game->AddCallbacks(*this);
+		}
 
 		std::cin.get();
 
-		librarian->Unload(GAME_CORE);
+		this->librarian->Unload(GAME_CORE);
 		this->server.Stop();
 		st.Terminate();
 
@@ -72,6 +76,7 @@ public:
 		if (this->game != NULL)
 		{
 			auto gId = this->game->ClientConnected(ID, Address);
+			this->clients.insert(std::pair<fwuint, fwclient>(ID, gId));
 
 			ss.clear();
 			ss << "Game returned the following ID for user fd #" << ID << "(" << inet_ntoa(Address.sin_addr) << ": " << gId.plyrid;

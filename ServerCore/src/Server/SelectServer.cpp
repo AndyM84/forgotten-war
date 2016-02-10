@@ -293,15 +293,7 @@ namespace Server
 
 			for (auto client : this->clients)
 			{
-				if (client.sentBytes < client.totalBytes)
-				{
-					FD_SET(client.sock, &this->setWrite);
-				}
-				else
-				{
-					FD_SET(client.sock, &this->setRead);
-				}
-
+				FD_SET(client.sock, &this->setRead);
 				FD_SET(client.sock, &this->setExcept);
 			}
 
