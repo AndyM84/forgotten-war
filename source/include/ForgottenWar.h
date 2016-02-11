@@ -100,13 +100,12 @@ public:
 		if (clientIter != this->clients.end() && msg.IsValid())
 		{
 			if (msg.GetCmd() == "hotboot")
-			{
-				this->broadcastMessage("One moment while we change the server.");
-				
+			{				
 				if (this->game != NULL)
 				{
-					this->game->SaveState();
+					this->broadcastMessage("One moment while we change the server.\n\n");
 
+					this->game->SaveState();
 					this->librarian->Unload(GAME_CORE);
 					this->game = this->librarian->Load(GAME_CORE);
 					this->game->Setup();
@@ -123,6 +122,8 @@ public:
 
 						this->game->RestoreState(ccopy);
 					}
+
+					this->broadcastMessage("Thank you for flying FW Air, we hope you enjoyed the turbulence.\n\n");
 
 					return;
 				}

@@ -27,6 +27,8 @@ public:
 	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
 
 	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
+	fwvoid BroadcastToAllButClient(const fwclient Client, const fwstr Message) const;
+	fwvoid BroadcastToAll(const fwstr Message) const;
 	const fwclient GetClient(fwuint ID) const;
 	const std::vector<fwclient> GetClients() const;
 

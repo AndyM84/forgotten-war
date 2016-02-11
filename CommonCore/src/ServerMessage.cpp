@@ -32,12 +32,15 @@ fwvoid ServerMessage::Initialize(const fwstr Message)
 
 		if (ch == ' ')
 		{
-			this->tokens.push_back(tmp);
+			if (tmp.length() > 0)
+			{
+				this->tokens.push_back(tmp);
 
-			this->raw += tmp;
-			this->raw += ' ';
+				this->raw += tmp;
+				this->raw += ' ';
 
-			tmp.clear();
+				tmp.clear();
+			}
 
 			continue;
 		}
@@ -48,6 +51,7 @@ fwvoid ServerMessage::Initialize(const fwstr Message)
 	if (!tmp.empty())
 	{
 		this->tokens.push_back(tmp);
+		this->raw += tmp;
 	}
 
 	if (this->tokens.empty())
