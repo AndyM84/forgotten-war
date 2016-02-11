@@ -51,7 +51,7 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 
 	for (auto client : this->clients)
 	{
-		if (client.second.plyrid > nId)
+		if (client.second.plyrid >= nId)
 		{
 			nId = client.second.plyrid + 1;
 		}
