@@ -2,6 +2,7 @@
 
 #include <CommonCore.h>
 #include <iostream>
+#include <map>
 
 // Utility macros
 #define UMIN(a, b)               ((a) < (b) ? (a) : (b))
@@ -22,6 +23,13 @@ public:
 	virtual fwbool ClientIsAdmin(fwuint ID);
 	virtual fwvoid AddCallbacks(FWSender &send);
 	virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address);
-	virtual fwclient ClientReceived(fwuint ID, const fwstr Message);
+	virtual fwclient ClientReceived(fwuint ID, ServerMessage Message);
 	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
+
+	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
+	const fwclient GetClient(fwuint ID) const;
+	const std::vector<fwclient> GetClients() const;
+
+protected:
+	std::map<fwuint, fwclient> clients;
 };

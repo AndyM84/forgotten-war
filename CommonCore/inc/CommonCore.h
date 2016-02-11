@@ -20,6 +20,9 @@
 /* N2f */
 #include <N2f/N2f.h>
 
+// Server message
+#include <ServerMessage.h>
+
 /* Mapping between game player and socket descriptor */
 enum ConnectedClientStates
 {
@@ -36,8 +39,7 @@ struct fwclient
 	ConnectedClientStates state;
 };
 
-// This is an awful hack to allow FW and GameCore to communicate without a proper
-// circular reference.  I disgust myself sometimes
+/* To allow the DLL to communicate back */
 class FWSender
 {
 public:
@@ -56,7 +58,7 @@ namespace Libraries
 		virtual fwbool ClientIsAdmin(fwuint ID) = 0;
 		virtual fwvoid AddCallbacks(FWSender &send) = 0;
 		virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
-		virtual fwclient ClientReceived(fwuint ID, const fwstr Message) = 0;
+		virtual fwclient ClientReceived(fwuint ID, ServerMessage Message) = 0;
 		virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
 
 	protected:

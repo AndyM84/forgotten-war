@@ -77,7 +77,7 @@ public:
 			this->clients.insert(std::pair<fwuint, fwclient>(ID, gId));
 
 			ss.clear();
-			ss << "ForgottenWar - Game returned the following ID for user fd #" << ID << "(" << inet_ntoa(Address.sin_addr) << ": " << gId.plyrid;
+			ss << "ForgottenWar - Game returned the following ID for user fd #" << ID << " (" << inet_ntoa(Address.sin_addr) << "): " << gId.plyrid;
 			this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
 		}
 		else
@@ -94,13 +94,12 @@ public:
 		std::stringstream ss;
 
 		auto clientIter = this->clients.find(ID);
-		auto msg = Message.Message;
+		auto msg = ServerMessage();
+		msg.Initialize(Message.Message);
 
-		if (clientIter != this->clients.end() && msg.length() > 0)
+		if (clientIter != this->clients.end() && msg.IsValid())
 		{
-			std::transform(msg.begin(), msg.end(), msg.begin(), ::tolower);
-
-			if (msg.substr(0, 7) == "hotboot" && this->game->ClientIsAdmin(ID))
+			if (msg.GetCmd() == "hotboot")
 			{
 				this->broadcastMessage("One moment while we change the server.");
 				
@@ -132,7 +131,7 @@ public:
 
 		if (this->game != NULL)
 		{
-			this->game->ClientReceived(ID, Message.Message);
+			this->game->ClientReceived(ID, msg);
 		}
 		else
 		{

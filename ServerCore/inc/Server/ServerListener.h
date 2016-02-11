@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Common/Types.h>
+#include <CommonCore.h>
 
 namespace Server
 {

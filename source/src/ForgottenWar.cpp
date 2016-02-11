@@ -10,7 +10,7 @@ int main()
 	lt.Start();
 
 	auto l = Logging::Logger::GetLogger("FW");
-	l.SetReportingLevel(Logging::LogLevel::LOG_ERROR | Logging::LogLevel::LOG_CRITICAL | Logging::LogLevel::LOG_WARN);
+	//l.SetReportingLevel(Logging::LogLevel::LOG_ERROR | Logging::LogLevel::LOG_CRITICAL | Logging::LogLevel::LOG_WARN);
 
 	auto fw = ForgottenWar(9005, l);
 	fw.Start();

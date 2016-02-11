@@ -3,6 +3,8 @@
 #include <Common/Types.h>
 #include <N2f/N2f.h>
 
+#include <algorithm>
+
 class ServerMessage : public N2f::DispatchBase
 {
 public:
@@ -10,14 +12,15 @@ public:
 
 	virtual fwvoid Initialize();
 	virtual fwvoid Initialize(const fwstr Message);
-	virtual const fwstr GetCmd();
-	virtual const fwstr GetRaw();
-	virtual const fwstr GetSansCmd();
-	virtual const std::vector<fwstr> GetTokens();
+	virtual const fwstr GetCmd() const;
+	virtual const fwstr GetRaw() const;
+	virtual const fwstr GetSansCmd() const;
+	virtual const std::vector<fwstr> GetTokens() const;
 	virtual fwint NumResults();
 	virtual fwvoid SetResult();
 
 protected:
 	std::vector<fwstr> tokens;
 	fwstr raw, cmd, sansCmd;
+	bool hasLinefeed;
 };
