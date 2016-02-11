@@ -70,8 +70,6 @@ public:
 	virtual fwvoid ClientConnected(fwuint ID, const sockaddr_in Address)
 	{
 		std::stringstream ss;
-		ss << "New client connected from: " << inet_ntoa(Address.sin_addr);
-		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
 
 		if (this->game != NULL)
 		{
@@ -79,7 +77,12 @@ public:
 			this->clients.insert(std::pair<fwuint, fwclient>(ID, gId));
 
 			ss.clear();
-			ss << "Game returned the following ID for user fd #" << ID << "(" << inet_ntoa(Address.sin_addr) << ": " << gId.plyrid;
+			ss << "ForgottenWar - Game returned the following ID for user fd #" << ID << "(" << inet_ntoa(Address.sin_addr) << ": " << gId.plyrid;
+			this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
+		}
+		else
+		{
+			ss << "ForgottenWar - New client connected from: " << inet_ntoa(Address.sin_addr);
 			this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
 		}
 
@@ -89,8 +92,6 @@ public:
 	virtual fwvoid ClientReceived(fwuint ID, const Server::SocketMessage &Message)
 	{
 		std::stringstream ss;
-		ss << "Received message from user: " << Message.Message;
-		this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
 
 		auto clientIter = this->clients.find(ID);
 		auto msg = Message.Message;
@@ -133,6 +134,11 @@ public:
 		{
 			this->game->ClientReceived(ID, Message.Message);
 		}
+		else
+		{
+			ss << "ForgottenWar - Received message from user: " << Message.Message;
+			this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
+		}
 
 		return;
 	}
@@ -140,12 +146,15 @@ public:
 	virtual fwvoid ClientDisconnected(fwuint ID, const sockaddr_in Address)
 	{
 		std::stringstream ss;
-		ss << "Client disconnected: " << inet_ntoa(Address.sin_addr);
-		this->log(Logging::LogLevel::LOG_WARN, ss.str().c_str());
 
 		if (this->game != NULL)
 		{
 			this->game->ClientDisconnected(ID, Address);
+		}
+		else
+		{
+			ss << "ForgottenWar - Client disconnected: " << inet_ntoa(Address.sin_addr);
+			this->log(Logging::LogLevel::LOG_WARN, ss.str().c_str());
 		}
 
 		return;

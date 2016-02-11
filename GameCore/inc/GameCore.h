@@ -3,6 +3,14 @@
 #include <CommonCore.h>
 #include <iostream>
 
+// Utility macros
+#define UMIN(a, b)               ((a) < (b) ? (a) : (b))
+#define UMAX(a, b)               ((a) > (b) ? (a) : (b))
+#define URANGE(a, b, c)          ((b) < (a) ? (a) : ((b) > (c) ? (c) : (b)))
+#define IS_SET(flag, bit)        ((flag) & (bit))
+#define SET_BIT(var, bit)        ((var) |= (bit))
+#define REMOVE_BIT(var, bit)     ((var) &= ~(bit))
+
 class GameCore : public Libraries::GameLibrary
 {
 public:

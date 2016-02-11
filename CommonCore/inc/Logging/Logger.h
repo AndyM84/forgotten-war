@@ -1,7 +1,8 @@
 #pragma once
 
-#define FWLOG_MAX_MESSAGE_LENGTH  4096
-#define FWLOG_DEFAULT_LOG_LEVEL   LOG_WARN
+#define FWLOG_MAX_MESSAGE_LENGTH       4096
+#define FWLOG_DEFAULT_LOG_LEVEL        LOG_WARN
+#define FWLOG_DEFAULT_REPORTING_LEVEL  LOG_ALL
 
 #include <Common/Types.h>
 #include "LogData.h"
@@ -20,6 +21,8 @@ namespace Logging
 
 		~Logger();
 
+		fwvoid SetReportingLevel(const int level);
+		fwvoid SetReportingLevel(const LogLevel level);
 		fwvoid SetDefaultLevel(const LogLevel level);
 		LogLevel GetDefaultLevel();
 		fwstr GetName();
@@ -52,6 +55,7 @@ namespace Logging
 	protected:
 		Logger(const fwstr key);
 		Logger(const fwstr key, LogLevel level);
+		Logger(const fwstr key, LogLevel level, LogLevel reporting);
 
 	private:
 		typedef std::map<fwstr, Logger*> LoggerMap;
@@ -60,6 +64,7 @@ namespace Logging
 		static LoggerMap *allLoggers;
 
 		LogLevel m_DefaultLevel;
+		int m_ReportingLevel;
 		fwstr m_Name;
 	};
 };

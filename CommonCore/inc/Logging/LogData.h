@@ -6,12 +6,13 @@ namespace Logging
 {
 	enum LogLevel
 	{
-		LOG_CRITICAL = 0,
-		LOG_ERROR,
-		LOG_DEBUG,
-		LOG_WARN,
-		LOG_INFO,
-		LOG_TRACE
+		LOG_CRITICAL = 1,
+		LOG_ERROR = 2,
+		LOG_DEBUG = 4,
+		LOG_WARN = 8,
+		LOG_INFO = 16,
+		LOG_TRACE = 32,
+		LOG_ALL = 63
 	};
 
 	class LogData

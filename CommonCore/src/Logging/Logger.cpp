@@ -31,6 +31,20 @@ namespace Logging
 		return;
 	}
 
+	fwvoid Logger::SetReportingLevel(const int level)
+	{
+		this->m_ReportingLevel = level;
+
+		return;
+	}
+
+	fwvoid Logger::SetReportingLevel(const LogLevel level)
+	{
+		this->m_ReportingLevel = static_cast<int>(level);
+
+		return;
+	}
+
 	fwvoid Logger::SetDefaultLevel(const LogLevel level)
 	{
 		this->m_DefaultLevel = level;
@@ -50,7 +64,10 @@ namespace Logging
 
 	fwvoid Logger::Log(LogData *data)
 	{
-		LogWorker::AddMessage(data);
+		if (this->m_ReportingLevel & data->GetLevel())
+		{
+			LogWorker::AddMessage(data);
+		}
 
 		return;
 	}
@@ -226,16 +243,31 @@ namespace Logging
 	/* /PUBLIC */
 	/* PROTECTED */
 
-	Logger::Logger(const fwstr key) : m_Name(key)
+	Logger::Logger(const fwstr key)
+		: m_Name(key)
 	{
 		this->m_DefaultLevel = FWLOG_DEFAULT_LOG_LEVEL;
+		this->m_ReportingLevel = FWLOG_DEFAULT_REPORTING_LEVEL;
 
 		return;
 	}
 
-	Logger::Logger(const fwstr key, LogLevel level) : m_Name(key)
+	Logger::Logger(const fwstr key, LogLevel level)
+		: m_Name(key)
 	{
 		this->m_DefaultLevel = level;
+		this->m_ReportingLevel = FWLOG_DEFAULT_REPORTING_LEVEL;
+
+		return;
+	}
+
+	Logger::Logger(const fwstr key, LogLevel level, LogLevel reporting)
+		: m_Name(key)
+	{
+		this->m_DefaultLevel = level;
+		this->m_ReportingLevel = reporting;
+
+		return;
 	}
 
 	/* /PROTECTED */

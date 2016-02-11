@@ -3,15 +3,14 @@
 int main()
 {
 	// Setup logging
-	auto consolelogger = Logging::ConsoleAppender("FW");
 	auto logworker = Logging::LogWorker::GetWorker();
-	logworker.AddAppender(&consolelogger);
+	logworker.AddAppender(new Logging::ConsoleAppender("FW"));
 
 	auto lt = Threading::Thread(logworker);
 	lt.Start();
 
 	auto l = Logging::Logger::GetLogger("FW");
-	l.SetDefaultLevel(Logging::LogLevel::LOG_TRACE);
+	l.SetReportingLevel(Logging::LogLevel::LOG_ERROR | Logging::LogLevel::LOG_CRITICAL | Logging::LogLevel::LOG_WARN);
 
 	auto fw = ForgottenWar(9005, l);
 	fw.Start();
