@@ -96,7 +96,7 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message) const
 
 	fwstr tmp;
 
-	if (tmp[0] != '\n' && tmp[0] != '\r')
+	if (Message[0] != '\n' && Message[0] != '\r')
 	{
 		tmp += "\n\n";
 	}
