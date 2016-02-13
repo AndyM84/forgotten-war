@@ -1,7 +1,6 @@
 #pragma once
 
 #include <CommonCore.h>
-#include <Game.h>
 
 #include <iostream>
 #include <map>
