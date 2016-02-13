@@ -40,8 +40,8 @@ public:
 
 		this->server.Initialize();
 
-		auto st = Threading::Thread(this->server);
-		st.Start();
+		this->serverThread = std::make_shared<Threading::Thread>(Threading::Thread(this->server));
+		this->serverThread->Start();
 
 		this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
 
@@ -56,14 +56,23 @@ public:
 		{
 			this->game->Setup();
 			this->game->AddCallbacks(*this);
+
+			this->gameThread = std::make_shared<Threading::Thread>(Threading::Thread(this->game->GetThreadable()));
+			this->gameThread->Start();
 		}
 
 		std::cin.get();
 
-		this->game->Destroy();
-		this->librarian->Unload(GAME_CORE);
+		if (this->game)
+		{
+			this->game->Destroy();
+			this->gameThread->Terminate();
+
+			this->librarian->Unload(GAME_CORE);
+		}
+
 		this->server.Stop();
-		st.Terminate();
+		this->serverThread->Terminate();
 
 		return;
 	}
@@ -179,6 +188,7 @@ protected:
 	Libraries::GameLibrary *game;
 	std::map<fwuint, fwclient> clients;
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;
+	std::shared_ptr<Threading::Thread> serverThread, gameThread;
 
 	fwvoid log(Logging::LogLevel Level, const fwchar *Message)
 	{

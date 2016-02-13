@@ -1,5 +1,18 @@
 #include <GameCore.h>
 
+fwvoid GameCore::Run()
+{
+	for (int i = 0; i < 10; ++i)
+	{
+		std::cout << "I am alive!" << std::endl;
+		this->Sleep(1);
+	}
+
+	std::cout << "I am done being alive.  What a day to live." << std::endl;
+
+	return;
+}
+
 fwbool GameCore::Setup()
 {
 	std::cout << "I have been setup!" << std::endl;
@@ -16,9 +29,6 @@ fwbool GameCore::Destroy()
 
 fwvoid GameCore::GameLoop()
 {
-	auto gt = Threading::Thread(Game());
-	gt.Start();
-
 	return;
 }
 
@@ -86,6 +96,11 @@ fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 	this->clients.erase(iter);
 
 	return fwclient { ID, client.plyrid, Address, CCLIENT_INVALID };
+}
+
+Threading::Threadable &GameCore::GetThreadable()
+{
+	return *this;
 }
 
 fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message) const
