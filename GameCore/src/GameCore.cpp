@@ -2,19 +2,35 @@
 
 fwvoid GameCore::Run()
 {
-	for (int i = 0; i < 10; ++i)
+	while (this->gameRunning)
 	{
-		std::cout << "I am alive!" << std::endl;
-		this->Sleep(1);
-	}
+		this->playerLock.Block();
 
-	std::cout << "I am done being alive.  What a day to live." << std::endl;
+		// loop through all players and process
+		for (auto p : this->players)
+		{
+			auto buffer = p.second->GetNextMessage();
+
+			if (buffer)
+			{
+				std::stringstream ss;
+				ss << "You sent the following: " << buffer->GetRaw();
+				this->SendToClient(p.second->GetClient(), ss.str());
+			}
+		}
+
+		this->playerLock.Release();
+
+		this->Millisleep(30);
+	}
 
 	return;
 }
 
 fwbool GameCore::Setup()
 {
+	this->gameRunning = true;
+
 	std::cout << "I have been setup!" << std::endl;
 
 	return true;
@@ -22,20 +38,15 @@ fwbool GameCore::Setup()
 
 fwbool GameCore::Destroy()
 {
+	this->gameRunning = false;
+
 	std::cout << "I have been destroyed!" << std::endl;
 
 	return true;
 }
 
-fwvoid GameCore::GameLoop()
-{
-	return;
-}
-
 fwvoid GameCore::SaveState()
 {
-
-
 	return;
 }
 
@@ -58,19 +69,24 @@ fwvoid GameCore::AddCallbacks(FWSender &send)
 
 fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 {
+	this->playerLock.Block();
+
 	fwuint nId = 0;
 
-	for (auto client : this->clients)
+	for (auto player : this->players)
 	{
-		if (client.second.plyrid >= nId)
+		if (player.second->GetID() >= nId)
 		{
-			nId = client.second.plyrid + 1;
+			nId = player.second->GetID() + 1;
 		}
 	}
 
-	this->clients.insert(std::pair<const fwuint, fwclient>(nId, fwclient { ID, nId, Address, CCLIENT_CONNECTED }));
+	auto plyr = std::make_shared<Player>(nId, ID, Address, CCLIENT_CONNECTED);
+	this->players.insert(std::pair<const fwuint, std::shared_ptr<Player>>(nId, plyr));
 
-	return fwclient { ID, nId, Address, CCLIENT_CONNECTED };
+	this->playerLock.Release();
+
+	return plyr->GetClient();
 }
 
 fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
@@ -80,22 +96,31 @@ fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
 		return fwclient{ ID, 0, NULL, CCLIENT_INVALID };
 	}
 
-	auto client = this->GetClient(ID);
+	this->playerLock.Block();
+	auto player = this->GetPlayer(ID);
+	player->AddBufferMessage(std::make_shared<ServerMessage>(Message));
+	this->playerLock.Release();
 
-	std::stringstream ss;
-	ss << "You sent the following message: " << Message.GetRaw();
-	this->SendToClient(client, ss.str());
-
-	return client;
+	return player->GetClient();
 }
 
 fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 {
-	auto client = this->GetClient(ID);
-	auto iter = this->clients.find(ID);
-	this->clients.erase(iter);
+	auto iter = this->players.find(ID);
 
-	return fwclient { ID, client.plyrid, Address, CCLIENT_INVALID };
+	if (iter != this->players.end())
+	{
+		this->playerLock.Block();
+
+		fwuint plyrid = (*iter).second->GetID();
+		this->players.erase(iter);
+
+		this->playerLock.Release();
+
+		return fwclient { ID, plyrid, Address, CCLIENT_DISCONNECTED };
+	}
+
+	return fwclient { ID, 0, NULL, CCLIENT_INVALID };
 }
 
 Threading::Threadable &GameCore::GetThreadable()
@@ -129,18 +154,18 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message) const
 	return;
 }
 
-fwvoid GameCore::BroadcastToAllButClient(const fwclient Client, const fwstr Message) const
+fwvoid GameCore::BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message) const
 {
 	if (Message.empty())
 	{
 		return;
 	}
 
-	for (auto c : this->clients)
+	for (auto p : this->players)
 	{
-		if (c.second.plyrid != Client.plyrid)
+		if (p.second->GetID() != Client->GetID())
 		{
-			this->SendToClient(c.second, Message);
+			this->SendToClient(p.second->GetClient(), Message);
 		}
 	}
 
@@ -154,21 +179,21 @@ fwvoid GameCore::BroadcastToAll(const fwstr Message) const
 		return;
 	}
 
-	for (auto client : this->clients)
+	for (auto p : this->players)
 	{
-		this->SendToClient(client.second, Message);
+		this->SendToClient(p.second->GetClient(), Message);
 	}
 
 	return;
 }
 
-const fwclient GameCore::GetClient(fwuint ID) const
+const std::shared_ptr<Player> GameCore::GetPlayer(fwuint ID) const
 {
-	auto client = this->clients.find(ID);
+	auto client = this->players.find(ID);
 
-	if (client == this->clients.end())
+	if (client == this->players.end())
 	{
-		return fwclient();
+		return NULL;
 	}
 
 	return (*client).second;
@@ -178,9 +203,9 @@ const std::vector<fwclient> GameCore::GetClients() const
 {
 	std::vector<fwclient> tmp;
 
-	for (auto client : this->clients)
+	for (auto client : this->players)
 	{
-		tmp.push_back(client.second);
+		tmp.push_back(client.second->GetClient());
 	}
 
 	return tmp;

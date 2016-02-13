@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CommonCore.h>
+#include <Player.h>
 
 #include <iostream>
 #include <map>
@@ -19,7 +20,6 @@ public:
 	virtual fwvoid Run();
 	virtual fwbool Setup();
 	virtual fwbool Destroy();
-	virtual fwvoid GameLoop();
 	virtual fwvoid SaveState();
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
 	virtual fwbool ClientIsAdmin(fwuint ID);
@@ -30,13 +30,13 @@ public:
 	virtual Threading::Threadable &GetThreadable();
 
 	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
-	fwvoid BroadcastToAllButClient(const fwclient Client, const fwstr Message) const;
+	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message) const;
 	fwvoid BroadcastToAll(const fwstr Message) const;
-	const fwclient GetClient(fwuint ID) const;
+	const std::shared_ptr<Player> GetPlayer(fwuint ID) const;
 	const std::vector<fwclient> GetClients() const;
 
 protected:
-	Threading::LockCriticalSection clientLock;
-	std::map<fwuint, fwclient> clients;
+	std::map<fwuint, std::shared_ptr<Player>> players;
+	Threading::LockCriticalSection playerLock;
 	fwbool gameRunning;
 };

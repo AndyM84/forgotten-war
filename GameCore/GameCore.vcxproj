@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameCore.h" />
+    <ClInclude Include="inc\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonCore\CommonCore.vcxproj">
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp" />
+    <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

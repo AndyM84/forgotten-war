@@ -65,9 +65,7 @@ public:
 
 		if (this->game)
 		{
-			this->game->Destroy();
 			this->gameThread->Terminate();
-
 			this->librarian->Unload(GAME_CORE);
 		}
 
@@ -116,10 +114,14 @@ public:
 					this->broadcastMessage("One moment while we change the server.\n\n");
 
 					this->game->SaveState();
+					this->gameThread->Terminate();
 					this->librarian->Unload(GAME_CORE);
 					this->game = this->librarian->Load(GAME_CORE);
 					this->game->Setup();
 					this->game->AddCallbacks(*this);
+
+					this->gameThread = std::make_shared<Threading::Thread>(Threading::Thread(this->game->GetThreadable()));
+					this->gameThread->Start();
 
 					std::vector<fwclient> ccopy;
 

@@ -28,7 +28,8 @@ enum ConnectedClientStates
 {
 	CCLIENT_INVALID,
 	CCLIENT_CONNECTING,
-	CCLIENT_CONNECTED
+	CCLIENT_CONNECTED,
+	CCLIENT_DISCONNECTED
 };
 
 struct fwclient
@@ -52,7 +53,6 @@ namespace Libraries
 	class GameLibrary : public Library
 	{
 	public:
-		virtual fwvoid GameLoop() = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;
 		virtual fwbool ClientIsAdmin(fwuint ID) = 0;
