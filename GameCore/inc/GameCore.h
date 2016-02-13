@@ -1,6 +1,8 @@
 #pragma once
 
 #include <CommonCore.h>
+#include <Game.h>
+
 #include <iostream>
 #include <map>
 
@@ -17,7 +19,7 @@ class GameCore : public Libraries::GameLibrary
 public:
 	virtual fwbool Setup();
 	virtual fwbool Destroy();
-	virtual fwvoid Run();
+	virtual fwvoid GameLoop();
 	virtual fwvoid SaveState();
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
 	virtual fwbool ClientIsAdmin(fwuint ID);
@@ -33,5 +35,7 @@ public:
 	const std::vector<fwclient> GetClients() const;
 
 protected:
+	Threading::LockCriticalSection clientLock;
 	std::map<fwuint, fwclient> clients;
+	fwbool gameRunning;
 };

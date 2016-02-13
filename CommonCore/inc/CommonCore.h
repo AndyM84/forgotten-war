@@ -49,10 +49,10 @@ public:
 /* A custom type */
 namespace Libraries
 {
-	class GameLibrary : public Library, public Threading::Threadable
+	class GameLibrary : public Library
 	{
 	public:
-		virtual fwvoid Run() = 0;
+		virtual fwvoid GameLoop() = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;
 		virtual fwbool ClientIsAdmin(fwuint ID) = 0;

@@ -14,9 +14,10 @@ fwbool GameCore::Destroy()
 	return true;
 }
 
-fwvoid GameCore::Run()
+fwvoid GameCore::GameLoop()
 {
-	std::cout << "I have been run!" << std::endl;
+	auto gt = Threading::Thread(Game());
+	gt.Start();
 
 	return;
 }

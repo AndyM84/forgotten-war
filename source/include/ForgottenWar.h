@@ -60,6 +60,7 @@ public:
 
 		std::cin.get();
 
+		this->game->Destroy();
 		this->librarian->Unload(GAME_CORE);
 		this->server.Stop();
 		st.Terminate();

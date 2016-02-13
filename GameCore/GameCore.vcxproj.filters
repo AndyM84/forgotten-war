@@ -36,9 +36,15 @@
     <ClInclude Include="inc\GameCore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
