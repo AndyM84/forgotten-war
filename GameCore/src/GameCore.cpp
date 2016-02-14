@@ -325,6 +325,10 @@ fwvoid GameCore::log(const Logging::LogLevel Level, const fwchar *Message)
 	{
 		this->sender->sendLog(Level, Message);
 	}
+	else
+	{
+		std::cout << Message << std::endl;
+	}
 
 	return;
 }
