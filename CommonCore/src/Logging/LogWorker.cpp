@@ -159,6 +159,8 @@ namespace Logging
 				}
 			}
 
+			delete chunk;
+
 			this->Millisleep(m_WorkerInstance->m_IntervalTime);
 		}
 
