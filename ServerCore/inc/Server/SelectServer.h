@@ -21,8 +21,6 @@ namespace Server
 		SelectServer(ServerListener &Listener, fwint Port, Logging::Logger &Logger);
 		~SelectServer();
 
-		virtual fwvoid Run();
-
 		fwvoid Initialize();
 		fwvoid Send(const fwuint ID, fwstr Message);
 		fwvoid Close(const fwuint ID);
@@ -45,6 +43,7 @@ namespace Server
 		fd_set setRead;
 		fwint port;
 
+		virtual fwvoid Tick();
 		fwvoid initSets();
 		fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
 		fwint getSocketError(SOCKET socket);

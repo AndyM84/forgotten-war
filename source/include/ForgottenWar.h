@@ -64,6 +64,7 @@ public:
 
 		if (this->game)
 		{
+			this->game = NULL;
 			this->librarian->Unload(GAME_CORE);
 		}
 

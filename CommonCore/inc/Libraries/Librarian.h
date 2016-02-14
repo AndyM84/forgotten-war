@@ -29,7 +29,7 @@ namespace Libraries
 			T *ptr;
 			std::wstring fileName;
 			FW_LIBRARY_STATUS status;
-			fwinstance instance;
+			HMODULE instance;
 			FW_DLL_ENTRY entry;
 		};
 
@@ -93,7 +93,7 @@ namespace Libraries
 			auto wDotPos = lib->fileName.find_last_of('.');
 			tmpFileName << lib->fileName.substr(0, wDotPos) << "_Loaded" << lib->fileName.substr(wDotPos);
 
-			lib->instance = ::LoadLibrary(tmpFileName.str().c_str());
+			lib->instance = LoadLibraryW(tmpFileName.str().c_str());
 
 			if (lib->instance == NULL)
 			{
@@ -143,8 +143,12 @@ namespace Libraries
 				return false;
 			}
 
-			(*lib).second->ptr->Destroy();
-			(*lib).second->ptr = NULL;
+			if ((*lib).second->ptr)
+			{
+				(*lib).second->ptr->Destroy();
+				delete (*lib).second->ptr;
+				(*lib).second->ptr = NULL;
+			}
 
 			FreeLibrary((*lib).second->instance);
 

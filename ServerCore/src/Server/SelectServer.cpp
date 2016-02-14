@@ -23,7 +23,7 @@ namespace Server
 		return;
 	}
 
-	fwvoid SelectServer::Run()
+	fwvoid SelectServer::Tick()
 	{
 		if (!this->isInitialized)
 		{
