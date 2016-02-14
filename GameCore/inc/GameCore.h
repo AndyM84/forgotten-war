@@ -21,7 +21,7 @@ public:
 	~GameCore();
 
 	/* Threading::Threadable methods */
-	virtual fwvoid Run();
+	virtual fwvoid Tick();
 
 	/* Libraries::Library methods */
 	virtual fwbool Setup();
@@ -48,8 +48,8 @@ public:
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
-	std::shared_ptr<Threading::Thread> gameThread;
-	std::shared_ptr<Logging::Logger> Logger;
+	Threading::Thread *gameThread;
+	Logging::Logger *Logger;
 	Threading::LockMutex playerLock;
 	fwbool gameRunning, isRunning;
 

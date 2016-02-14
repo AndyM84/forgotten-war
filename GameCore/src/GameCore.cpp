@@ -2,92 +2,99 @@
 
 GameCore::~GameCore()
 {
-	this->Logger.reset();
-	this->gameThread.reset();
+	this->Logger = NULL;
+
+	delete this->gameThread;
+	this->gameThread = NULL;
 
 	return;
 }
 
-fwvoid GameCore::Run()
+fwvoid GameCore::Tick()
 {
-	this->isRunning = true;
-
-	while (this->gameRunning)
+	// process dem peeps
+	for (auto p : this->players)
 	{
-		// process dem peeps
-		for (auto p : this->players)
+		if (p.second->GetState() == PLAYER_DISCONNECTED || p.second->GetState() == PLAYER_INVALID)
 		{
-			if (p.second->GetState() == PLAYER_DISCONNECTED || p.second->GetState() == PLAYER_INVALID)
+			continue;
+		}
+
+		this->playerLock.Block();
+		auto buf = p.second->GetNextMessage();
+		this->playerLock.Release();
+
+		if (buf)
+		{
+			std::stringstream ss;
+
+			ss << "GameCore - Processing message from #" << p.first << ": " << buf->GetRaw();
+			this->log(Logging::LogLevel::LOG_DEBUG, ss.str().c_str());
+
+			auto cmd = buf->GetCmd();
+
+			// Assign their name if it's needed
+			if (p.second->GetState() == PLAYER_AWAITINGNAME)
 			{
+				auto toks = buf->GetTokens();
+
+				p.second->SetName(toks[0]);
+				p.second->SetState(PLAYER_CONNECTED);
+
 				continue;
 			}
 
-			this->playerLock.Block();
-			auto buf = p.second->GetNextMessage();
-			this->playerLock.Release();
-
-			if (buf)
+			// doWho
+			if (cmd == "who")
 			{
-				auto cmd = buf->GetCmd();
+				ss = std::stringstream("");
+				ss << "\nWho's Online\n------------\n";
 
-				// Assign their name if it's needed
-				if (p.second->GetState() == PLAYER_CONNECTING)
+				for (auto pl : this->players)
 				{
-					auto toks = buf->GetTokens();
+					ss << pl.second->GetName();
 
-					p.second->SetName(toks[0]);
-					p.second->SetState(PLAYER_CONNECTED);
-
-					continue;
-				}
-
-				// doWho
-				if (cmd == "who")
-				{
-					std::stringstream ss;
-					ss << "\nWho's Online\n------------\n";
-
-					for (auto pl : this->players)
+					if (pl.first == p.first)
 					{
-						ss << pl.second->GetName();
-
-						if (pl.first == p.first)
-						{
-							ss << " (You)";
-						}
+						ss << " (You)";
 					}
-
-					ss << "\n\n";
-
-					this->SendToClient(p.second->GetClient(), ss.str());
 				}
-				// doOoc
-				else if (cmd == "ooc")
-				{
-					std::stringstream ss;
-					ss << "[OOC] " << p.second->GetName() << ": " << buf->GetSansCmd() << "\n\n";
 
-					this->BroadcastToAll(ss.str());
-				}
-				// doQuit
-				else if (cmd == "quit")
-				{
-					std::stringstream ss;
-					ss << p.second->GetName() << " has left the game!\n";
-					this->BroadcastToAllButPlayer(p.second, ss.str());
+				ss << "\n\n";
 
-					this->SendToClient(p.second->GetClient(), "Thanks for playing!\n");
-					p.second->SetState(PLAYER_DISCONNECTED);
-					this->CloseClient(p.second->GetClient());
-				}
+				this->SendToClient(p.second->GetClient(), ss.str());
+			}
+			// doOoc
+			else if (cmd == "ooc")
+			{
+				ss = std::stringstream("");
+				ss << "[OOC] " << p.second->GetName() << ": " << buf->GetSansCmd() << "\n\n";
+
+				this->BroadcastToAll(ss.str());
+			}
+			// doQuit
+			else if (cmd == "quit")
+			{
+				ss = std::stringstream("");
+				ss << p.second->GetName() << " has left the game!\n";
+				this->BroadcastToAllButPlayer(p.second, ss.str());
+
+				this->SendToClient(p.second->GetClient(), "Thanks for playing!\n");
+				p.second->SetState(PLAYER_DISCONNECTED);
+				this->CloseClient(p.second->GetClient());
 			}
 		}
-
-		this->Millisleep(30);
+		else
+		{
+			if (p.second->GetState() == PLAYER_CONNECTING)
+			{
+				this->SendToClient(p.second->GetClient(), "Please enter your name: ");
+				p.second->SetState(PLAYER_AWAITINGNAME);
+			}
+		}
 	}
 
-	this->isRunning = false;
-	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - We have run our course");
+	this->Millisleep(30);
 
 	return;
 }
@@ -99,7 +106,7 @@ fwbool GameCore::Setup()
 
 fwbool GameCore::Setup(const Logging::Logger &Logger)
 {
-	this->Logger = std::make_shared<Logging::Logger>(Logger);
+	this->Logger = const_cast<Logging::Logger*>(&Logger);
 	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - Logger setup, ready to run");
 
 	return true;
@@ -111,14 +118,15 @@ fwbool GameCore::Destroy()
 
 	if (this->gameThread)
 	{
-		this->gameThread->Terminate();
-
 		while (this->isRunning)
 		{
 			this->Sleep(1);
 		}
 
 		this->gameThread->CloseThread();
+
+		delete this->gameThread;
+		this->gameThread = NULL;
 	}
 
 	this->sender = NULL;
@@ -134,7 +142,7 @@ fwvoid GameCore::GameStart()
 {
 	this->gameRunning = true;
 
-	this->gameThread = std::make_shared<Threading::Thread>(*this);
+	this->gameThread = new Threading::Thread(*this);
 	this->gameThread->Start();
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - I have been started!");
@@ -172,8 +180,6 @@ fwvoid GameCore::AddCallbacks(FWSender &send)
 
 fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 {
-	this->playerLock.Block();
-
 	fwuint nId = 0;
 
 	for (auto player : this->players)
@@ -184,12 +190,12 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 		}
 	}
 
+	this->playerLock.Block();
+
 	auto plyr = std::make_shared<Player>(nId, ID, Address, CCLIENT_CONNECTING);
 	this->players.insert(std::pair<const fwuint, std::shared_ptr<Player>>(nId, plyr));
 
 	this->playerLock.Release();
-
-	this->SendToClient(plyr->GetClient(), "Please enter your name: ");
 
 	return plyr->GetClient();
 }

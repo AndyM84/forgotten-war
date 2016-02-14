@@ -3,6 +3,23 @@
 Player::Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in Address, const ConnectedClientStates State)
 	: client(fwclient { ClientID, PlayerID, Address, State }), id(PlayerID)
 {
+	switch (State)
+	{
+	case CCLIENT_CONNECTED:
+		this->SetState(PLAYER_CONNECTED);
+		break;
+	case CCLIENT_CONNECTING:
+		this->SetState(PLAYER_CONNECTING);
+		break;
+	case CCLIENT_DISCONNECTED:
+		this->SetState(PLAYER_DISCONNECTED);
+		break;
+	case CCLIENT_INVALID:
+	default:
+		this->SetState(PLAYER_INVALID);
+		break;
+	}
+
 	return;
 }
 
@@ -62,6 +79,7 @@ Player &Player::SetState(PLAYER_STATES State)
 	switch (this->state)
 	{
 	case PLAYER_CONNECTING:
+	case PLAYER_AWAITINGNAME:
 		this->client.state = CCLIENT_CONNECTING;
 		break;
 	case PLAYER_CONNECTED:
