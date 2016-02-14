@@ -151,8 +151,6 @@ namespace Server
 			}
 		}
 
-		this->log(Logging::LogLevel::LOG_DEBUG, "SelectServer - Done with loop for some reason");
-
 		return;
 	}
 
@@ -231,7 +229,7 @@ namespace Server
 		{
 			if (client.id == ID)
 			{
-				send(client.sock, Message.c_str(), Message.length(), 0);
+				send(client.sock, Message.c_str(), (int)Message.length(), 0);
 
 				break;
 			}
@@ -265,6 +263,7 @@ namespace Server
 	fwvoid SelectServer::Stop()
 	{
 		this->shouldRun = false;
+		this->log(Logging::LogLevel::LOG_DEBUG, "SelectServer - Shutting down select server");
 
 		return;
 	}
