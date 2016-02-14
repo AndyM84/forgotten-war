@@ -80,7 +80,7 @@ public:
 		if (this->game != NULL)
 		{
 			auto gId = this->game->ClientConnected(ID, Address);
-			this->clients.insert(std::pair<fwuint, fwclient>(ID, gId));
+			this->clients.insert(std::pair<fwuint, fwclient>(ID, fwclient(gId)));
 
 			ss.clear();
 			ss << "ForgottenWar - Game returned the following ID for user fd #" << ID << " (" << inet_ntoa(Address.sin_addr) << "): " << gId.plyrid;

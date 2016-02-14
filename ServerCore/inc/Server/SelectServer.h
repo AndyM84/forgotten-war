@@ -34,8 +34,8 @@ namespace Server
 		Logging::Logger *Logger;
 
 		// Internal resources
-		Threading::LockCriticalSection lock;
 		std::vector<SocketConn> clients;
+		Threading::LockMutex lock;
 		fwbool isInitialized;
 		SOCKET listenSocket;
 		SOCKET clientSocket;

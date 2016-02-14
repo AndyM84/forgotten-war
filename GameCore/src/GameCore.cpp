@@ -10,10 +10,26 @@ GameCore::~GameCore()
 
 fwvoid GameCore::Run()
 {
-	for (int i = 0; i < 5; ++i)
+	while (this->gameRunning)
 	{
-		this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - Pingaling!");
-		this->Sleep(1);
+		this->playerLock.Block();
+
+		// process dem peeps
+		for (auto p : this->players)
+		{
+			auto buf = p.second->GetNextMessage();
+
+			if (buf)
+			{
+				std::stringstream ss;
+				ss << "You send message: " << buf->GetRaw();
+				this->SendToClient(p.second->GetClient(), ss.str());
+			}
+		}
+
+		this->playerLock.Release();
+
+		this->Millisleep(30);
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - We have run our course");
@@ -45,6 +61,9 @@ fwbool GameCore::Destroy()
 		this->gameThread->Terminate();
 		this->gameThread = NULL;
 	}
+
+	this->sender = NULL;
+	this->players.clear();
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - I have been destroyed!");
 
@@ -122,10 +141,16 @@ fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
 
 	this->playerLock.Block();
 	auto player = this->GetPlayer(ID);
-	player->AddBufferMessage(std::make_shared<ServerMessage>(Message));
+
+	if (player)
+	{
+		auto msg = Message;
+		player->AddBufferMessage(std::make_shared<ServerMessage>(msg));
+	}
+
 	this->playerLock.Release();
 
-	return player->GetClient();
+	return (player) ? player->GetClient() : fwclient { ID, 0, NULL, CCLIENT_INVALID };
 }
 
 fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)

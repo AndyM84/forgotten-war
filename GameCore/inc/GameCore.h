@@ -48,8 +48,8 @@ public:
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
 	std::shared_ptr<Threading::Thread> gameThread;
-	Threading::LockCriticalSection playerLock;
 	std::shared_ptr<Logging::Logger> Logger;
+	Threading::LockMutex playerLock;
 	fwbool gameRunning;
 
 	fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
