@@ -186,7 +186,7 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 
 	this->playerLock.Release();
 
-	return plyr->GetClient();
+	return fwclient(plyr->GetClient());
 }
 
 fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
@@ -207,7 +207,7 @@ fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
 
 	this->playerLock.Release();
 
-	return (player) ? player->GetClient() : fwclient { ID, 0, NULL, CCLIENT_INVALID };
+	return (player) ? fwclient(player->GetClient()) : fwclient { ID, 0, NULL, CCLIENT_INVALID };
 }
 
 fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
