@@ -2,6 +2,14 @@
 
 GameCore::~GameCore()
 {
+	for (auto p : this->players)
+	{
+		p.second.reset();
+		p.second = NULL;
+	}
+
+	this->players.clear();
+
 	delete this->gameThread;
 	this->gameThread = NULL;
 
