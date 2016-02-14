@@ -144,6 +144,8 @@ namespace Libraries
 			}
 
 			(*lib).second->ptr->Destroy();
+			(*lib).second->ptr = NULL;
+
 			FreeLibrary((*lib).second->instance);
 
 			std::stringstream delFile;

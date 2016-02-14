@@ -1,32 +1,35 @@
 #include <GameCore.h>
 
-fwbool GameCore::GameLoop()
+GameCore::~GameCore()
 {
-	this->playerLock.Block();
+	this->Logger.reset();
+	this->gameThread.reset();
 
-	// loop through all players and process
-	for (auto p : this->players)
+	return;
+}
+
+fwvoid GameCore::Run()
+{
+	for (int i = 0; i < 5; ++i)
 	{
-		auto buffer = p.second->GetNextMessage();
-
-		if (buffer)
-		{
-			std::stringstream ss;
-			ss << "You sent the following: " << buffer->GetRaw();
-			this->SendToClient(p.second->GetClient(), ss.str());
-		}
+		this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - Pingaling!");
+		this->Sleep(1);
 	}
 
-	this->playerLock.Release();
+	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - We have run our course");
 
-	return true;
+	return;
 }
 
 fwbool GameCore::Setup()
 {
-	this->gameRunning = true;
+	return true;
+}
 
-	std::cout << "I have been setup!" << std::endl;
+fwbool GameCore::Setup(const Logging::Logger &Logger)
+{
+	this->Logger = std::make_shared<Logging::Logger>(Logger);
+	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - Logger setup, ready to run");
 
 	return true;
 }
@@ -37,9 +40,27 @@ fwbool GameCore::Destroy()
 	this->gameRunning = false;
 	this->playerLock.Release();
 
-	std::cout << "I have been destroyed!" << std::endl;
+	if (this->gameThread)
+	{
+		this->gameThread->Terminate();
+		this->gameThread = NULL;
+	}
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - I have been destroyed!");
 
 	return true;
+}
+
+fwvoid GameCore::GameStart()
+{
+	this->gameRunning = true;
+
+	this->gameThread = std::make_shared<Threading::Thread>(*this);
+	this->gameThread->Start();
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - I have been started!");
+
+	return;
 }
 
 fwvoid GameCore::SaveState()
@@ -49,6 +70,12 @@ fwvoid GameCore::SaveState()
 
 fwvoid GameCore::RestoreState(std::vector<fwclient> clients)
 {
+	for (auto c : clients)
+	{
+		auto plyr = std::make_shared<Player>(c.plyrid, c.sockfd, c.addr, c.state);
+		this->players.insert(std::pair<fwuint, std::shared_ptr<Player>>(c.plyrid, plyr));
+	}
+
 	return;
 }
 
@@ -203,9 +230,15 @@ const std::vector<fwclient> GameCore::GetClients() const
 	return tmp;
 }
 
-const fwbool GameCore::GameRunning() const
+fwvoid GameCore::log(const Logging::LogLevel Level, const fwchar *Message)
 {
-	return this->gameRunning;
+	if (this->Logger)
+	{
+		//this->Logger->Log(Level, Message);
+		std::cout << Message << std::endl;
+	}
+
+	return;
 }
 
 FW_INIT_LIBRARY(GameCore);

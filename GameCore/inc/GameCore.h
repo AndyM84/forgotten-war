@@ -14,12 +14,22 @@
 #define SET_BIT(var, bit)        ((var) |= (bit))
 #define REMOVE_BIT(var, bit)     ((var) &= ~(bit))
 
-class GameCore : public Libraries::GameLibrary
+class GameCore : public Libraries::GameLibrary, public Threading::Threadable
 {
 public:
-	virtual fwbool GameLoop();
+	/* Destructor */
+	~GameCore();
+
+	/* Threading::Threadable methods */
+	virtual fwvoid Run();
+
+	/* Libraries::Library methods */
 	virtual fwbool Setup();
 	virtual fwbool Destroy();
+
+	/* Libraries::GameLibrary methods */
+	virtual fwbool Setup(const Logging::Logger &Logger);
+	virtual fwvoid GameStart();
 	virtual fwvoid SaveState();
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
 	virtual fwbool ClientIsAdmin(fwuint ID);
@@ -28,15 +38,19 @@ public:
 	virtual fwclient ClientReceived(fwuint ID, ServerMessage Message);
 	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
 
+	/* GameCore methods */
 	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
 	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message) const;
 	fwvoid BroadcastToAll(const fwstr Message) const;
 	const std::shared_ptr<Player> GetPlayer(fwuint ID) const;
 	const std::vector<fwclient> GetClients() const;
-	const fwbool GameRunning() const;
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
+	std::shared_ptr<Threading::Thread> gameThread;
 	Threading::LockCriticalSection playerLock;
+	std::shared_ptr<Logging::Logger> Logger;
 	fwbool gameRunning;
+
+	fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
 };

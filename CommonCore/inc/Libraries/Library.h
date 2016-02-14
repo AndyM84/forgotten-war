@@ -16,6 +16,7 @@ namespace Libraries
 	class FW_LIB_EXPORT Library
 	{
 	public:
+		virtual ~Library();
 		virtual fwbool Setup() = 0;
 		virtual fwbool Destroy() = 0;
 	};

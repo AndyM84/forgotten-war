@@ -36,7 +36,7 @@ public:
 
 	fwvoid Start()
 	{
-		this->log(Logging::LogLevel::LOG_DEBUG, "Starting server.");
+		this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Loading GameCore library");
 
 		this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
 
@@ -45,49 +45,19 @@ public:
 			this->librarian->SetLogger(*this->logger);
 		}
 
+		this->game = this->librarian->Load(GAME_CORE);
+
+		this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Starting server");
 		this->server.Initialize();
 
 		this->serverThread = std::make_shared<Threading::Thread>(Threading::Thread(this->server));
 		this->serverThread->Start();
 
-		this->game = this->librarian->Load(GAME_CORE);
-
 		if (this->game)
 		{
-			this->runGame = true;
-
-			while (this->runGame)
-			{
-				this->game->Setup();
-				this->game->AddCallbacks(*this);
-
-				if (!this->clients.empty())
-				{
-					std::vector<fwclient> ccopy;
-
-					for (auto client : this->clients)
-					{
-						ccopy.push_back(client.second);
-					}
-
-					this->game->RestoreState(ccopy);
-				}
-
-				while (this->game->GameRunning() && !this->doHotboot)
-				{
-					if (!this->game->GameLoop())
-					{
-						break;
-					}
-				}
-
-				this->doHotboot = false;
-				this->game->SaveState();
-				this->librarian->Unload(GAME_CORE);
-				this->game = this->librarian->Load(GAME_CORE);
-
-				this->broadcastMessage("Thank you for flying FW Air, we hope you enjoyed the turbulence.\n\n");
-			}
+			this->game->Setup(*this->logger);
+			this->game->AddCallbacks(*this);
+			this->game->GameStart();
 		}
 
 		std::cin.get();
@@ -136,25 +106,55 @@ public:
 		if (clientIter != this->clients.end() && msg.IsValid())
 		{
 			if (msg.GetCmd() == "hotboot")
-			{				
+			{
 				if (this->game != NULL)
 				{
+					ss.clear();
+					ss << "ForgottenWar - Hotboot requested by #" << (*clientIter).second.sockfd << " (" << inet_ntoa((*clientIter).second.addr.sin_addr) << ")";
+					this->log(Logging::LogLevel::LOG_DEBUG, ss.str().c_str());
+
 					this->broadcastMessage("One moment while we change the server.\n\n");
-					this->doHotboot = true;
 
-					return;
+					this->game->SaveState();
+					this->librarian->Unload(GAME_CORE);
 				}
-			}
-		}
 
-		if (this->game != NULL)
-		{
-			this->game->ClientReceived(ID, msg);
-		}
-		else
-		{
-			ss << "ForgottenWar - Received message from user: " << Message.Message;
-			this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
+				this->game = this->librarian->Load(GAME_CORE);
+				this->game->Setup(*this->logger);
+				this->game->AddCallbacks(*this);
+
+				if (!this->clients.empty())
+				{
+					this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Found orphaned clients during hotboot, restoring GameCore state");
+
+					std::vector<fwclient> ccopy;
+
+					for (auto c : this->clients)
+					{
+						ccopy.push_back(c.second);
+					}
+
+					this->game->RestoreState(ccopy);
+				}
+
+				this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Starting the wee babby GameCore");
+				this->game->GameStart();
+
+				this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Hotboot completed successfully");
+				this->broadcastMessage("Thank you for flying FW Air, we hope you enjoyed the turbulence.\n\n");
+
+				return;
+			}
+
+			if (this->game != NULL)
+			{
+				this->game->ClientReceived(ID, msg);
+			}
+			else
+			{
+				ss << "ForgottenWar - Received message from user: " << Message.Message;
+				this->log(Logging::LogLevel::LOG_INFO, ss.str().c_str());
+			}
 		}
 
 		return;
@@ -190,13 +190,12 @@ public:
 	}
 
 protected:
-	Logging::Logger *logger;
-	fwbool runGame, doHotboot;
-	Server::SelectServer server;
-	Libraries::GameLibrary *game;
-	std::map<fwuint, fwclient> clients;
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;
 	std::shared_ptr<Threading::Thread> serverThread;
+	std::map<fwuint, fwclient> clients;
+	Libraries::GameLibrary *game;
+	Server::SelectServer server;
+	Logging::Logger *logger;
 
 	fwvoid log(Logging::LogLevel Level, const fwchar *Message)
 	{

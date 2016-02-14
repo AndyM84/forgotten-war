@@ -49,6 +49,9 @@
     <Filter Include="Source Files\N2f\Helpers">
       <UniqueIdentifier>{5e238bf8-02cb-416a-9fd4-3691fd439a2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Libraries">
+      <UniqueIdentifier>{ca617610-3b86-4dd8-8d19-7de8da0ddd66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\Common\Types.h">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="src\ServerMessage.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Libraries\Library.cpp">
+      <Filter>Source Files\Libraries</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

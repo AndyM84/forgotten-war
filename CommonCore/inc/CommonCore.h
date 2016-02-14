@@ -53,6 +53,18 @@ namespace Libraries
 	class GameLibrary : public Library
 	{
 	public:
+		virtual ~GameLibrary()
+		{
+			if (this->sender)
+			{
+				this->sender = NULL;
+			}
+
+			return;
+		}
+
+		virtual fwbool Setup(const Logging::Logger &Logger) = 0;
+		virtual fwvoid GameStart() = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;
 		virtual fwbool ClientIsAdmin(fwuint ID) = 0;
@@ -60,8 +72,6 @@ namespace Libraries
 		virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
 		virtual fwclient ClientReceived(fwuint ID, ServerMessage Message) = 0;
 		virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
-		virtual const fwbool GameRunning() const = 0;
-		virtual fwbool GameLoop() = 0;
 
 	protected:
 		FWSender *sender;
