@@ -40,6 +40,7 @@ public:
 
 	/* GameCore methods */
 	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
+	fwvoid GameCore::CloseClient(const fwclient Client) const;
 	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message) const;
 	fwvoid BroadcastToAll(const fwstr Message) const;
 	const std::shared_ptr<Player> GetPlayer(fwuint ID) const;
@@ -50,7 +51,7 @@ protected:
 	std::shared_ptr<Threading::Thread> gameThread;
 	std::shared_ptr<Logging::Logger> Logger;
 	Threading::LockMutex playerLock;
-	fwbool gameRunning;
+	fwbool gameRunning, isRunning;
 
 	fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
 };

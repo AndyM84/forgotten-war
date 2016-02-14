@@ -148,7 +148,8 @@ public:
 
 			if (this->game != NULL)
 			{
-				this->game->ClientReceived(ID, msg);
+				auto cl = this->game->ClientReceived(ID, msg);
+				(*clientIter).second.state = cl.state;
 			}
 			else
 			{
@@ -166,7 +167,14 @@ public:
 
 		if (this->game != NULL)
 		{
-			this->game->ClientDisconnected(ID, Address);
+			auto cl = this->game->ClientDisconnected(ID, Address);
+
+			auto iter = this->clients.find(ID);
+
+			if (iter != this->clients.end())
+			{
+				(*iter).second.state = cl.state;
+			}
 		}
 		else
 		{
@@ -184,6 +192,18 @@ public:
 		if (client != this->clients.end())
 		{
 			this->server.Send(ID, Message);
+		}
+
+		return;
+	}
+
+	virtual fwvoid closeClient(fwuint ID)
+	{
+		auto client = this->clients.find(ID);
+
+		if (client != this->clients.end())
+		{
+			this->server.Close(ID);
 		}
 
 		return;

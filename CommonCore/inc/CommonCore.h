@@ -45,6 +45,7 @@ class FWSender
 {
 public:
 	virtual fwvoid sendToClient(fwuint ID, fwstr Message) = 0;
+	virtual fwvoid closeClient(fwuint ID) = 0;
 };
 
 /* A custom type */

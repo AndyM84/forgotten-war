@@ -30,10 +30,51 @@ std::shared_ptr<ServerMessage> Player::GetNextMessage()
 	return front;
 }
 
+const fwstr Player::GetName() const
+{
+	return this->name;
+}
+
+const PLAYER_STATES Player::GetState() const
+{
+	return this->state;
+}
+
 // Actions
-fwvoid Player::AddBufferMessage(const std::shared_ptr<ServerMessage> Message)
+Player &Player::AddBufferMessage(const std::shared_ptr<ServerMessage> Message)
 {
 	this->buffer.push(Message);
 
-	return;
+	return *this;
+}
+
+Player &Player::SetName(fwstr Name)
+{
+	this->name = Name;
+
+	return *this;
+}
+
+Player &Player::SetState(PLAYER_STATES State)
+{
+	this->state = State;
+
+	switch (this->state)
+	{
+	case PLAYER_CONNECTING:
+		this->client.state = CCLIENT_CONNECTING;
+		break;
+	case PLAYER_CONNECTED:
+		this->client.state = CCLIENT_CONNECTED;
+		break;
+	case PLAYER_DISCONNECTED:
+		this->client.state = CCLIENT_DISCONNECTED;
+		break;
+	case PLAYER_INVALID:
+	default:
+		this->client.state = CCLIENT_INVALID;
+		break;
+	}
+
+	return *this;
 }

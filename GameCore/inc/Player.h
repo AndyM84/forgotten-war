@@ -4,6 +4,14 @@
 
 #include <queue>
 
+enum PLAYER_STATES
+{
+	PLAYER_INVALID,
+	PLAYER_CONNECTING,
+	PLAYER_CONNECTED,
+	PLAYER_DISCONNECTED
+};
+
 class Player
 {
 public:
@@ -13,12 +21,18 @@ public:
 	const fwclient GetClient() const;
 	const fwuint GetID() const;
 	std::shared_ptr<ServerMessage> GetNextMessage();
+	const fwstr GetName() const;
+	const PLAYER_STATES GetState() const;
 
 	// Actions
-	fwvoid AddBufferMessage(std::shared_ptr<ServerMessage> Message);
+	Player &AddBufferMessage(std::shared_ptr<ServerMessage> Message);
+	Player &SetName(fwstr Name);
+	Player &SetState(PLAYER_STATES State);
 
 protected:
 	std::queue<std::shared_ptr<ServerMessage>> buffer;
-	const fwclient client;
+	PLAYER_STATES state;
+	fwclient client;
 	const fwuint id;
+	fwstr name;
 };
