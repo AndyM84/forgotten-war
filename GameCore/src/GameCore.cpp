@@ -12,12 +12,12 @@ fwvoid GameCore::Run()
 {
 	while (this->gameRunning)
 	{
-		this->playerLock.Block();
-
 		// process dem peeps
 		for (auto p : this->players)
 		{
+			this->playerLock.Block();
 			auto buf = p.second->GetNextMessage();
+			this->playerLock.Release();
 
 			if (buf)
 			{
@@ -26,8 +26,6 @@ fwvoid GameCore::Run()
 				this->SendToClient(p.second->GetClient(), ss.str());
 			}
 		}
-
-		this->playerLock.Release();
 
 		this->Millisleep(30);
 	}

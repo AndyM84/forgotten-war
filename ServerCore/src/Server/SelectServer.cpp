@@ -82,7 +82,6 @@ namespace Server
 
 				if (this->clients.size() > 0)
 				{
-					this->lock.Block();
 					std::vector<int> idsToRemove;
 
 					for (auto client : this->clients)
@@ -108,9 +107,12 @@ namespace Server
 							}
 
 							buf[bytes] = 0;
+
+							this->lock.Block();
 							client.buffer = buf;
 							client.totalBytes = bytes;
 							client.sentBytes = 0;
+							this->lock.Release();
 
 							this->Listener->ClientReceived(client.id, SocketMessage { client.buffer, (fwuint)bytes });
 						}
@@ -145,11 +147,11 @@ namespace Server
 							}
 						}
 					}
-
-					this->lock.Release();
 				}
 			}
 		}
+
+		this->log(Logging::LogLevel::LOG_DEBUG, "SelectServer - Done with loop for some reason");
 
 		return;
 	}
