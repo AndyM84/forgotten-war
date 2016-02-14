@@ -38,11 +38,6 @@ public:
 	{
 		this->log(Logging::LogLevel::LOG_DEBUG, "Starting server.");
 
-		this->server.Initialize();
-
-		this->serverThread = std::make_shared<Threading::Thread>(Threading::Thread(this->server));
-		this->serverThread->Start();
-
 		this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
 
 		if (this->logger)
@@ -50,22 +45,55 @@ public:
 			this->librarian->SetLogger(*this->logger);
 		}
 
+		this->server.Initialize();
+
+		this->serverThread = std::make_shared<Threading::Thread>(Threading::Thread(this->server));
+		this->serverThread->Start();
+
 		this->game = this->librarian->Load(GAME_CORE);
 
 		if (this->game)
 		{
-			this->game->Setup();
-			this->game->AddCallbacks(*this);
+			this->runGame = true;
 
-			this->gameThread = std::make_shared<Threading::Thread>(Threading::Thread(this->game->GetThreadable()));
-			this->gameThread->Start();
+			while (this->runGame)
+			{
+				this->game->Setup();
+				this->game->AddCallbacks(*this);
+
+				if (!this->clients.empty())
+				{
+					std::vector<fwclient> ccopy;
+
+					for (auto client : this->clients)
+					{
+						ccopy.push_back(client.second);
+					}
+
+					this->game->RestoreState(ccopy);
+				}
+
+				while (this->game->GameRunning() && !this->doHotboot)
+				{
+					if (!this->game->GameLoop())
+					{
+						break;
+					}
+				}
+
+				this->doHotboot = false;
+				this->game->SaveState();
+				this->librarian->Unload(GAME_CORE);
+				this->game = this->librarian->Load(GAME_CORE);
+
+				this->broadcastMessage("Thank you for flying FW Air, we hope you enjoyed the turbulence.\n\n");
+			}
 		}
 
 		std::cin.get();
 
 		if (this->game)
 		{
-			this->gameThread->Terminate();
 			this->librarian->Unload(GAME_CORE);
 		}
 
@@ -112,30 +140,7 @@ public:
 				if (this->game != NULL)
 				{
 					this->broadcastMessage("One moment while we change the server.\n\n");
-
-					this->game->SaveState();
-					this->gameThread->Terminate();
-					this->librarian->Unload(GAME_CORE);
-					this->game = this->librarian->Load(GAME_CORE);
-					this->game->Setup();
-					this->game->AddCallbacks(*this);
-
-					this->gameThread = std::make_shared<Threading::Thread>(Threading::Thread(this->game->GetThreadable()));
-					this->gameThread->Start();
-
-					std::vector<fwclient> ccopy;
-
-					if (!this->clients.empty())
-					{
-						for (auto client : this->clients)
-						{
-							ccopy.push_back(client.second);
-						}
-
-						this->game->RestoreState(ccopy);
-					}
-
-					this->broadcastMessage("Thank you for flying FW Air, we hope you enjoyed the turbulence.\n\n");
+					this->doHotboot = true;
 
 					return;
 				}
@@ -186,11 +191,12 @@ public:
 
 protected:
 	Logging::Logger *logger;
+	fwbool runGame, doHotboot;
 	Server::SelectServer server;
 	Libraries::GameLibrary *game;
 	std::map<fwuint, fwclient> clients;
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;
-	std::shared_ptr<Threading::Thread> serverThread, gameThread;
+	std::shared_ptr<Threading::Thread> serverThread;
 
 	fwvoid log(Logging::LogLevel Level, const fwchar *Message)
 	{

@@ -14,10 +14,10 @@
 #define SET_BIT(var, bit)        ((var) |= (bit))
 #define REMOVE_BIT(var, bit)     ((var) &= ~(bit))
 
-class GameCore : public Libraries::GameLibrary, public Threading::Threadable
+class GameCore : public Libraries::GameLibrary
 {
 public:
-	virtual fwvoid Run();
+	virtual fwbool GameLoop();
 	virtual fwbool Setup();
 	virtual fwbool Destroy();
 	virtual fwvoid SaveState();
@@ -27,13 +27,13 @@ public:
 	virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address);
 	virtual fwclient ClientReceived(fwuint ID, ServerMessage Message);
 	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
-	virtual Threading::Threadable &GetThreadable();
 
 	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
 	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message) const;
 	fwvoid BroadcastToAll(const fwstr Message) const;
 	const std::shared_ptr<Player> GetPlayer(fwuint ID) const;
 	const std::vector<fwclient> GetClients() const;
+	const fwbool GameRunning() const;
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;

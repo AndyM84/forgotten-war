@@ -60,7 +60,8 @@ namespace Libraries
 		virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
 		virtual fwclient ClientReceived(fwuint ID, ServerMessage Message) = 0;
 		virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
-		virtual Threading::Threadable &GetThreadable() = 0;
+		virtual const fwbool GameRunning() const = 0;
+		virtual fwbool GameLoop() = 0;
 
 	protected:
 		FWSender *sender;

@@ -1,30 +1,25 @@
 #include <GameCore.h>
 
-fwvoid GameCore::Run()
+fwbool GameCore::GameLoop()
 {
-	while (this->gameRunning)
+	this->playerLock.Block();
+
+	// loop through all players and process
+	for (auto p : this->players)
 	{
-		this->playerLock.Block();
+		auto buffer = p.second->GetNextMessage();
 
-		// loop through all players and process
-		for (auto p : this->players)
+		if (buffer)
 		{
-			auto buffer = p.second->GetNextMessage();
-
-			if (buffer)
-			{
-				std::stringstream ss;
-				ss << "You sent the following: " << buffer->GetRaw();
-				this->SendToClient(p.second->GetClient(), ss.str());
-			}
+			std::stringstream ss;
+			ss << "You sent the following: " << buffer->GetRaw();
+			this->SendToClient(p.second->GetClient(), ss.str());
 		}
-
-		this->playerLock.Release();
-
-		this->Millisleep(30);
 	}
 
-	return;
+	this->playerLock.Release();
+
+	return true;
 }
 
 fwbool GameCore::Setup()
@@ -38,7 +33,9 @@ fwbool GameCore::Setup()
 
 fwbool GameCore::Destroy()
 {
+	this->playerLock.Block();
 	this->gameRunning = false;
+	this->playerLock.Release();
 
 	std::cout << "I have been destroyed!" << std::endl;
 
@@ -123,11 +120,6 @@ fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 	return fwclient { ID, 0, NULL, CCLIENT_INVALID };
 }
 
-Threading::Threadable &GameCore::GetThreadable()
-{
-	return *this;
-}
-
 fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message) const
 {
 	if (Message.empty())
@@ -209,6 +201,11 @@ const std::vector<fwclient> GameCore::GetClients() const
 	}
 
 	return tmp;
+}
+
+const fwbool GameCore::GameRunning() const
+{
+	return this->gameRunning;
 }
 
 FW_INIT_LIBRARY(GameCore);

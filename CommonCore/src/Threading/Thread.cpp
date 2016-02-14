@@ -47,6 +47,11 @@ namespace Threading
 		this->m_ThreadStatus = THREAD_TERMINATED;
 		this->m_Target->SignalTerminate();
 
+#ifdef FW_WINDOWS
+		TerminateThread((HANDLE)this->m_Handle, 0);
+#else
+#endif
+
 		return;
 	}
 
