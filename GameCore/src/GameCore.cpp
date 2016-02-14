@@ -117,9 +117,12 @@ fwbool GameCore::Destroy()
 		{
 			this->Sleep(1);
 		}
+
+		this->gameThread->CloseThread();
 	}
 
 	this->sender = NULL;
+	this->Logger = NULL;
 	this->players.clear();
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - I have been destroyed!");

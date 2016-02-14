@@ -36,6 +36,7 @@ namespace Threading
 
 		fwvoid Start();
 		fwvoid Terminate();
+		fwvoid CloseThread();
 		THREAD_STATUS GetStatus();
 
 	protected:

@@ -47,8 +47,18 @@ namespace Threading
 		this->m_ThreadStatus = THREAD_TERMINATED;
 		this->m_Target->SignalTerminate();
 
+		return;
+	}
+
+	fwvoid Thread::CloseThread()
+	{
+		if (this->m_Handle == NULL)
+		{
+			return;
+		}
+
 #ifdef FW_WINDOWS
-		//TerminateThread((HANDLE)this->m_Handle, 0);
+		TerminateThread((HANDLE)this->m_Handle, 0);
 #else
 #endif
 

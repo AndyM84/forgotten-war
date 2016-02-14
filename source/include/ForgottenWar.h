@@ -116,6 +116,8 @@ public:
 					this->broadcastMessage("One moment while we change the server.\n\n");
 
 					this->game->SaveState();
+					this->game = NULL;
+
 					this->librarian->Unload(GAME_CORE);
 				}
 
