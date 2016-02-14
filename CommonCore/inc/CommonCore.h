@@ -65,6 +65,7 @@ namespace Libraries
 			return;
 		}
 
+		virtual fwvoid GameTick() = 0;
 		virtual fwvoid GameStart() = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;

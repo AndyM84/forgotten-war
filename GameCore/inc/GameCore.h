@@ -20,14 +20,12 @@ public:
 	/* Destructor */
 	~GameCore();
 
-	/* Threading::Threadable methods */
-	virtual fwvoid Tick();
-
 	/* Libraries::Library methods */
 	virtual fwbool Setup();
 	virtual fwbool Destroy();
 
 	/* Libraries::GameLibrary methods */
+	virtual fwvoid GameTick();
 	virtual fwvoid GameStart();
 	virtual fwvoid SaveState();
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
@@ -50,6 +48,9 @@ protected:
 	Threading::LockMutex playerLock;
 	Threading::Thread *gameThread;
 	fwbool gameRunning, isRunning;
+
+	/* Threading::Threadable methods */
+	virtual fwvoid Tick();
 
 	fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
 };
