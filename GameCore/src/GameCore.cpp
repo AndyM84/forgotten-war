@@ -2,8 +2,6 @@
 
 GameCore::~GameCore()
 {
-	this->Logger = NULL;
-
 	delete this->gameThread;
 	this->gameThread = NULL;
 
@@ -104,14 +102,6 @@ fwbool GameCore::Setup()
 	return true;
 }
 
-fwbool GameCore::Setup(const Logging::Logger &Logger)
-{
-	this->Logger = const_cast<Logging::Logger*>(&Logger);
-	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - Logger setup, ready to run");
-
-	return true;
-}
-
 fwbool GameCore::Destroy()
 {
 	this->gameRunning = false;
@@ -130,7 +120,6 @@ fwbool GameCore::Destroy()
 	}
 
 	this->sender = NULL;
-	this->Logger = NULL;
 	this->players.clear();
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "GameCore - I have been destroyed!");
@@ -332,10 +321,9 @@ const std::vector<fwclient> GameCore::GetClients() const
 
 fwvoid GameCore::log(const Logging::LogLevel Level, const fwchar *Message)
 {
-	if (this->Logger)
+	if (this->sender)
 	{
-		//this->Logger->Log(Level, Message);
-		std::cout << Message << std::endl;
+		this->sender->sendLog(Level, Message);
 	}
 
 	return;

@@ -46,6 +46,7 @@ class FWSender
 public:
 	virtual fwvoid sendToClient(fwuint ID, fwstr Message) = 0;
 	virtual fwvoid closeClient(fwuint ID) = 0;
+	virtual fwvoid sendLog(Logging::LogLevel Level, const fwchar *Message) = 0;
 };
 
 /* A custom type */
@@ -64,7 +65,6 @@ namespace Libraries
 			return;
 		}
 
-		virtual fwbool Setup(const Logging::Logger &Logger) = 0;
 		virtual fwvoid GameStart() = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;

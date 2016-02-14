@@ -55,8 +55,8 @@ public:
 
 		if (this->game)
 		{
-			this->game->Setup(*this->logger);
 			this->game->AddCallbacks(*this);
+			this->game->Setup();
 			this->game->GameStart();
 		}
 
@@ -122,7 +122,6 @@ public:
 				}
 
 				this->game = this->librarian->Load(GAME_CORE);
-				this->game->Setup(*this->logger);
 				this->game->AddCallbacks(*this);
 
 				if (!this->clients.empty())
@@ -140,6 +139,7 @@ public:
 				}
 
 				this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Starting the wee babby GameCore");
+				this->game->Setup();
 				this->game->GameStart();
 
 				this->log(Logging::LogLevel::LOG_DEBUG, "ForgottenWar - Hotboot completed successfully");
@@ -207,6 +207,13 @@ public:
 		{
 			this->server.Close(ID);
 		}
+
+		return;
+	}
+
+	virtual fwvoid sendLog(Logging::LogLevel Level, const fwchar *Message)
+	{
+		this->log(Level, Message);
 
 		return;
 	}

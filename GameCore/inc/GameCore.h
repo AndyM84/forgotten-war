@@ -28,7 +28,6 @@ public:
 	virtual fwbool Destroy();
 
 	/* Libraries::GameLibrary methods */
-	virtual fwbool Setup(const Logging::Logger &Logger);
 	virtual fwvoid GameStart();
 	virtual fwvoid SaveState();
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
@@ -48,9 +47,8 @@ public:
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
-	Threading::Thread *gameThread;
-	Logging::Logger *Logger;
 	Threading::LockMutex playerLock;
+	Threading::Thread *gameThread;
 	fwbool gameRunning, isRunning;
 
 	fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
