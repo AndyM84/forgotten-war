@@ -43,15 +43,16 @@ public:
 	/* Public method for GameCore to send logs through */
 	virtual fwvoid SendLog(Logging::LogLevel Level, const fwchar *Message);
 
+	fwvoid Initialize();
 	fwvoid GameLoop();
 
 protected:
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;
 	std::shared_ptr<Threading::Thread> serverThread;
+	std::shared_ptr<Logging::Logger> logger;
 	std::map<fwuint, fwclient> clients;
 	Libraries::GameLibrary *game;
 	Server::SelectServer *server;
-	Logging::Logger *logger;
 
 	/* Protected methods */
 

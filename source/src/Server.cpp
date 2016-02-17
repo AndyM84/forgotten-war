@@ -22,6 +22,9 @@ VOID ReportSvcStatus(DWORD, DWORD, DWORD);
 VOID SvcInit(DWORD, LPTSTR *);
 VOID SvcReportEvent(LPTSTR);
 
+// auto waitRes = WaitForSingleObject(myStopCall, 15);
+// if (waitRes == WAIT_OBJECT_0) { /* time to do something */ }
+
 
 //
 // Purpose: 
@@ -76,7 +79,7 @@ VOID SvcInstall()
 	SC_HANDLE schService;
 	TCHAR szPath[MAX_PATH];
 
-	if (!GetModuleFileName("", szPath, MAX_PATH))
+	if (!GetModuleFileName(NULL, szPath, MAX_PATH))
 	{
 		printf("Cannot install service (%d)\n", GetLastError());
 		return;
@@ -320,14 +323,14 @@ VOID SvcReportEvent(LPTSTR szFunction)
 		lpszStrings[1] = Buffer;
 
 		ReportEvent(hEventSource,        // event log handle
-			EVENTLOG_ERROR_TYPE, // event type
-			0,                   // event category
-			SVC_ERROR,           // event identifier
-			NULL,                // no security identifier
-			2,                   // size of lpszStrings array
-			0,                   // no binary data
-			lpszStrings,         // array of strings
-			NULL);               // no binary data
+			EVENTLOG_ERROR_TYPE,					 // event type
+			0,														 // event category
+			SERVICE_ERROR_CRITICAL,        // event identifier
+			NULL,											     // no security identifier
+			2,												     // size of lpszStrings array
+			0,												     // no binary data
+			lpszStrings,							     // array of strings
+			NULL);									       // no binary data
 
 		DeregisterEventSource(hEventSource);
 	}
