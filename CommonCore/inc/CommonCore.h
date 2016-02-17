@@ -40,14 +40,25 @@ struct fwclient
 	ConnectedClientStates state;
 };
 
-/* To allow the DLL to communicate back */
-class FWSender
+namespace FW
 {
-public:
-	virtual fwvoid sendToClient(fwuint ID, fwstr Message) = 0;
-	virtual fwvoid closeClient(fwuint ID) = 0;
-	virtual fwvoid sendLog(Logging::LogLevel Level, const fwchar *Message) = 0;
-};
+	enum GAME_STATES
+	{
+		FWGAME_INVALID,
+		FWGAME_STARTING,
+		FWGAME_HOTBOOTING,
+		FWGAME_STOPPING
+	};
+
+	/* To allow the DLL to communicate back */
+	class CoreArbiter
+	{
+	public:
+		virtual fwvoid sendToClient(fwuint ID, fwstr Message) = 0;
+		virtual fwvoid closeClient(fwuint ID) = 0;
+		virtual fwvoid sendLog(Logging::LogLevel Level, const fwchar *Message) = 0;
+	};
+}
 
 /* A custom type */
 namespace Libraries
@@ -65,17 +76,15 @@ namespace Libraries
 			return;
 		}
 
-		virtual fwvoid GameTick() = 0;
-		virtual fwvoid GameStart() = 0;
+		virtual FW::GAME_STATES GameLoop(fwfloat Delta) = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;
-		virtual fwbool ClientIsAdmin(fwuint ID) = 0;
-		virtual fwvoid AddCallbacks(FWSender &send) = 0;
+		virtual fwvoid AddArbiter(FW::CoreArbiter &send) = 0;
 		virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
 		virtual fwclient ClientReceived(fwuint ID, ServerMessage Message) = 0;
 		virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
 
 	protected:
-		FWSender *sender;
+		FW::CoreArbiter *arbiter;
 	};
 }

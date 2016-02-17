@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\src\ForgottenWar.cpp" />
+    <ClCompile Include="source\src\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="CommonCore\CommonCore.vcxproj">

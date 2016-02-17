@@ -14,7 +14,7 @@
 #define SET_BIT(var, bit)        ((var) |= (bit))
 #define REMOVE_BIT(var, bit)     ((var) &= ~(bit))
 
-class GameCore : public Libraries::GameLibrary, public Threading::Threadable
+class GameCore : public Libraries::GameLibrary
 {
 public:
 	/* Destructor */
@@ -25,32 +25,24 @@ public:
 	virtual fwbool Destroy();
 
 	/* Libraries::GameLibrary methods */
-	virtual fwvoid GameTick();
-	virtual fwvoid GameStart();
+	virtual FW::GAME_STATES GameLoop(fwfloat Delta);
 	virtual fwvoid SaveState();
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
-	virtual fwbool ClientIsAdmin(fwuint ID);
-	virtual fwvoid AddCallbacks(FWSender &send);
+	virtual fwvoid AddArbiter(FW::CoreArbiter &send);
 	virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address);
 	virtual fwclient ClientReceived(fwuint ID, ServerMessage Message);
 	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
 
 	/* GameCore methods */
-	fwvoid SendToClient(const fwclient Client, const fwstr Message) const;
-	fwvoid GameCore::CloseClient(const fwclient Client) const;
-	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message) const;
-	fwvoid BroadcastToAll(const fwstr Message) const;
-	const std::shared_ptr<Player> GetPlayer(fwuint ID) const;
-	const std::vector<fwclient> GetClients() const;
+	fwvoid Log(const Logging::LogLevel Level, const fwchar *Message);
+	fwvoid SendToClient(const fwclient Client, const fwstr Message);
+	fwvoid CloseClient(const fwclient Client);
+	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message);
+	fwvoid BroadcastToAll(const fwstr Message);
+	std::vector<fwclient> GetClients();
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
 	Threading::LockMutex playerLock;
 	Threading::Thread *gameThread;
-	fwbool gameRunning, isRunning;
-
-	/* Threading::Threadable methods */
-	virtual fwvoid Tick();
-
-	fwvoid log(const Logging::LogLevel Level, const fwchar *Message);
 };
