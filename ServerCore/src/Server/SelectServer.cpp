@@ -2,11 +2,11 @@
 
 namespace Server
 {
-	SelectServer::SelectServer(ServerListener &Listener, fwint Port)
+	SelectServer::SelectServer(ServerListener &Listener, fwuint Port)
 		: Listener(&Listener), port(Port), isInitialized(false), shouldRun(true)
 	{ }
 
-	SelectServer::SelectServer(ServerListener &Listener, fwint Port, Logging::Logger &Logger)
+	SelectServer::SelectServer(ServerListener &Listener, fwuint Port, Logging::Logger &Logger)
 		: Listener(&Listener), port(Port), Logger(&Logger), isInitialized(false), shouldRun(true)
 	{ }
 

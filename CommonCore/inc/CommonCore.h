@@ -54,9 +54,9 @@ namespace FW
 	class CoreArbiter
 	{
 	public:
-		virtual fwvoid sendToClient(fwuint ID, fwstr Message) = 0;
-		virtual fwvoid closeClient(fwuint ID) = 0;
-		virtual fwvoid sendLog(Logging::LogLevel Level, const fwchar *Message) = 0;
+		virtual fwvoid SendToClient(fwuint ID, fwstr Message) = 0;
+		virtual fwvoid CloseClient(fwuint ID) = 0;
+		virtual fwvoid SendLog(Logging::LogLevel Level, const fwchar *Message) = 0;
 	};
 }
 
@@ -68,9 +68,9 @@ namespace Libraries
 	public:
 		virtual ~GameLibrary()
 		{
-			if (this->sender)
+			if (this->arbiter)
 			{
-				this->sender = NULL;
+				this->arbiter = NULL;
 			}
 
 			return;

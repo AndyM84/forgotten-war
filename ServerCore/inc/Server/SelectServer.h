@@ -17,8 +17,8 @@ namespace Server
 	class SelectServer : public Threading::Threadable
 	{
 	public:
-		SelectServer(ServerListener &Listener, fwint Port);
-		SelectServer(ServerListener &Listener, fwint Port, Logging::Logger &Logger);
+		SelectServer(ServerListener &Listener, fwuint Port);
+		SelectServer(ServerListener &Listener, fwuint Port, Logging::Logger &Logger);
 		~SelectServer();
 
 		fwvoid Initialize();
@@ -41,7 +41,7 @@ namespace Server
 		fd_set setExcept;
 		fd_set setWrite;
 		fd_set setRead;
-		fwint port;
+		fwuint port;
 
 		virtual fwvoid Tick();
 		fwvoid initSets();
