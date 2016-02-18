@@ -21,16 +21,27 @@ public:
 	~GameCore();
 
 	/* Libraries::Library methods */
+
+	/* Generic setup routine */
 	virtual fwbool Setup();
+	/* Generic routine to kill all the things */
 	virtual fwbool Destroy();
 
 	/* Libraries::GameLibrary methods */
+
+	/* Main game loop, aka Tick */
 	virtual FW::GAME_STATES GameLoop(fwfloat Delta);
+	/* Triggers a dump of the current game state into storage */
 	virtual fwvoid SaveState();
+	/* Receives a list of orphaned clients to try restoring from storage */
 	virtual fwvoid RestoreState(std::vector<fwclient> clients);
+	/* Provides a link to the CoreArbiter so we can actually interact with some services */
 	virtual fwvoid AddArbiter(FW::CoreArbiter &send);
+	/* Callback method for when a new client connects */
 	virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address);
+	/* Callback method for when a message is received from a client */
 	virtual fwclient ClientReceived(fwuint ID, ServerMessage Message);
+	/* Callback method fo rwhen a client disconnects */
 	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
 
 	/* GameCore methods */
