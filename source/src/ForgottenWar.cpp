@@ -4,18 +4,22 @@
 
 ForgottenWar::ForgottenWar(fwuint Port)
 {
-	this->logger = std::make_shared<Logging::Logger>(&Logging::Logger::GetLogger("FW"));
+	this->logger = nullptr;
 	this->server = new Server::SelectServer(*this, Port, *this->logger);
 	this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
+	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
+	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
 	return;
 }
 
 ForgottenWar::ForgottenWar(fwuint Port, Logging::Logger &Logger)
 {
-	this->logger = std::make_shared<Logging::Logger>(Logger);
+	this->logger = &Logger;
 	this->server = new Server::SelectServer(*this, Port, *this->logger);
 	this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
+	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
+	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
 	return;
 }
@@ -32,7 +36,7 @@ ForgottenWar::~ForgottenWar()
 		delete this->librarian;
 	}
 
-	this->logger.reset();
+	this->logger = nullptr;
 
 	return;
 }
@@ -76,6 +80,7 @@ fwvoid ForgottenWar::ClientReceived(fwuint ID, const Server::SocketMessage &Mess
 {
 	// TODO: Add a config directive that the server can use to know a 'core' hotboot password
 
+	std::stringstream ss;
 	auto clientIter = this->clients.find(ID);
 
 	auto msg = ServerMessage();
@@ -83,7 +88,31 @@ fwvoid ForgottenWar::ClientReceived(fwuint ID, const Server::SocketMessage &Mess
 
 	if (clientIter != this->clients.end() && msg.IsValid())
 	{
+		auto cmd = msg.GetCmd();
+		auto tok = msg.GetTokens();
 
+		if (cmd == "hotboot" && tok.size() == 2 && tok[1] == HOTBOOT_PASSWORD)
+		{
+			this->gameState = FW::GAME_STATES::FWGAME_HOTBOOTING;
+			SetEvent(this->gameEvent);
+		}
+		else
+		{
+			auto cl = this->game->ClientReceived(ID, msg);
+			(*clientIter).second.state = cl.state;
+		}
+	}
+	else if (clientIter == this->clients.end())
+	{
+		ss = std::stringstream("");
+		ss << "FW - Received input from invalid user #" << ID << ": " << msg.GetRaw();
+		this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
+	}
+	else if (!msg.IsValid())
+	{
+		ss = std::stringstream("");
+		ss << "FW - Received invalid input from user #" << ID << ": " << msg.GetRaw();
+		this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 	}
 
 	return;
@@ -91,6 +120,39 @@ fwvoid ForgottenWar::ClientReceived(fwuint ID, const Server::SocketMessage &Mess
 
 fwvoid ForgottenWar::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 {
+	std::stringstream ss;
+	auto clientIter = this->clients.find(ID);
+
+	if (clientIter != this->clients.end())
+	{
+		if (this->game)
+		{
+			auto cl = this->game->ClientDisconnected(ID, Address);
+
+			if (cl.state == CCLIENT_DISCONNECTED || cl.state == CCLIENT_INVALID)
+			{
+				this->clients.erase(clientIter);
+			}
+			else
+			{
+				ss << "FW - GameCore did not disconnect client #" << ID;
+				this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
+			}
+		}
+		else
+		{
+			ss << "FW - Client #" << ID << " has disconnected";
+			this->log(Logging::LogLevel::LOG_DEBUG, ss.str().c_str());
+
+			this->clients.erase(clientIter);
+		}
+	}
+	else
+	{
+		ss << "FW - Received disconnect for non-existent client #" << ID;
+		this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
+	}
+
 	return;
 }
 
@@ -98,26 +160,126 @@ fwvoid ForgottenWar::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 
 fwvoid ForgottenWar::SendToClient(fwuint ID, fwstr Message)
 {
+	auto client = this->clients.find(ID);
+
+	if (client != this->clients.end() && this->server)
+	{
+		this->server->Send(ID, Message);
+	}
+
 	return;
 }
 
 fwvoid ForgottenWar::CloseClient(fwuint ID)
 {
+	auto client = this->clients.find(ID);
+
+	if (client != this->clients.end() && this->server)
+	{
+		this->server->Close(ID);
+	}
+
 	return;
 }
 
 fwvoid ForgottenWar::SendLog(Logging::LogLevel Level, const fwchar *Message)
 {
+	this->log(Level, Message);
+
 	return;
 }
 
 fwvoid ForgottenWar::Initialize()
 {
+	// kind of need a librarian to do anything around here
+	if (!this->librarian)
+	{
+		this->log(Logging::LogLevel::LOG_ERROR, "FW - Couldn't start game, we need a librarian");
+
+		return;
+	}
+
+	// Assign the logger to the librarian if we've got it
+	if (this->logger)
+	{
+		this->librarian->SetLogger(*this->logger);
+	}
+
+	std::stringstream ss;
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading GameCore library to start game");
+	this->game = this->librarian->Load(GAME_CORE);
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Starting the SelectServer");
+	this->server->Initialize();
+
+	this->serverThread = std::make_shared<Threading::Thread>(Threading::Thread(*this->server));
+	this->serverThread->Start();
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Setting up the GameCore instance");
+
+	if (this->game)
+	{
+		this->game->AddArbiter(*this);
+		this->game->Setup();
+	}
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Game has been started, proceed to loop and collect $200");
+
 	return;
 }
 
 fwvoid ForgottenWar::GameLoop()
 {
+	while (true)
+	{
+		// Check if we need to exit
+		this->gameLock.Block();
+
+		if (this->gameState == FW::GAME_STATES::FWGAME_STOPPING)
+		{
+			this->gameLock.Release();
+
+			break;
+		}
+
+		this->gameLock.Release();
+
+		// do loop here
+		auto coreState = this->game->GameLoop(0.0);
+
+		// so if we're asked to hotBoot, just do it and restart the loop
+		if (coreState == FW::GAME_STATES::FWGAME_HOTBOOTING)
+		{
+			this->hotbootCore();
+
+			continue;
+		}
+		// but if we're being asked to stop, copy state and restart loop
+		else if (coreState == FW::GAME_STATES::FWGAME_STOPPING)
+		{
+			this->gameLock.Block();
+			this->gameState = coreState;
+			this->gameLock.Release();
+
+			continue;
+		}
+
+		// If we intercepted an UBER IMPORTANT SPECIAL hotboot cmd
+		if (WaitForSingleObject(this->gameEvent, 5) == WAIT_TIMEOUT)
+		{
+			continue;
+		}
+
+		// if we got here, we were TRIGGERED!
+		if (this->gameState == FW::GAME_STATES::FWGAME_HOTBOOTING)
+		{
+			this->hotbootCore();
+
+			continue;
+		}
+	}
+
 	return;
 }
 
@@ -125,15 +287,105 @@ fwvoid ForgottenWar::GameLoop()
 
 fwvoid ForgottenWar::log(Logging::LogLevel Level, const fwchar *Message)
 {
+	if (this->logger)
+	{
+		this->logger->Log(Message, Level);
+	}
+
 	return;
 }
 
 fwvoid ForgottenWar::broadcastMessage(fwstr Message)
 {
+	if (this->server)
+	{
+		for (auto client : this->clients)
+		{
+			this->server->Send(client.first, Message);
+		}
+	}
+
 	return;
 }
 
 fwvoid ForgottenWar::broadcastMessageToOthers(fwuint ID, fwstr Message)
 {
+	if (this->server)
+	{
+		for (auto client : this->clients)
+		{
+			if (client.first != ID)
+			{
+				this->server->Send(client.first, Message);
+			}
+		}
+	}
+
+	return;
+}
+
+fwvoid ForgottenWar::hotbootCore()
+{
+	// Ok we're here, let's just assume we were signaled
+	ResetEvent(this->gameEvent);
+
+	// if we don't have a librarian, we can't do anything
+	if (!this->librarian)
+	{
+		this->log(Logging::LogLevel::LOG_ERROR, "FW - Can't hotboot without a librarian, aborting");
+		this->gameState = FW::GAME_STATES::FWGAME_STOPPING;
+	}
+
+	// HI MOM!
+	this->broadcastMessage(HOTBOOT_STRT_MSG);
+
+	// first clear the library if it's there (it may not be if there was a problem)
+	if (this->game)
+	{
+		this->game->SaveState();
+		this->game = NULL;
+
+		this->librarian->Unload(GAME_CORE);
+
+		this->log(Logging::LogLevel::LOG_DEBUG, "FW - Unloaded existing GameCore instance");
+	}
+
+	// load GameCore
+	this->game = this->librarian->Load(GAME_CORE);
+
+	// if load failed, we must acqu...I mean abort
+	if (!this->game)
+	{
+		this->log(Logging::LogLevel::LOG_ERROR, "FW - Failed to load GameCore instance");
+
+		return;
+	}
+
+	// starting initialization
+	this->game->AddArbiter(*this);
+
+	// if we've got clients, let's send em over
+	if (!this->clients.empty())
+	{
+		this->log(Logging::LogLevel::LOG_DEBUG, "FW - Found orphaned clients during hotboot, restoring to GameCore");
+
+		std::vector<fwclient> ccopy;
+
+		for (auto client : this->clients)
+		{
+			ccopy.push_back(fwclient(client.second));
+		}
+
+		this->game->RestoreState(ccopy);
+	}
+
+	// finally, finish starting up and notify everyone
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Setting up the wee babby GameCore");
+
+	this->game->Setup();
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Hotboot completed successfully");
+	this->broadcastMessage(HOTBOOT_STOP_MSG);
+
 	return;
 }

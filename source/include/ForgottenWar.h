@@ -11,7 +11,11 @@
 #include <CommonCore.h>
 #include <ServerCore.h>
 
-#define GAME_CORE "GameCore.dll"
+#define GAME_CORE           "GameCore.dll"
+#define GAME_EVENT_NAME     TEXT("FWGameEvent")
+#define HOTBOOT_PASSWORD    "123456"
+#define HOTBOOT_STRT_MSG    "One moment while we change our clothes.\n\n"
+#define HOTBOOT_STOP_MSG    "Thank you for flying FW Air, we hope you enjoyed the turbulence.\n\n"
 
 class ForgottenWar : public Server::ServerListener, public FW::CoreArbiter
 {
@@ -49,10 +53,13 @@ public:
 protected:
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;
 	std::shared_ptr<Threading::Thread> serverThread;
-	std::shared_ptr<Logging::Logger> logger;
+	Threading::LockCriticalSection gameLock;
 	std::map<fwuint, fwclient> clients;
 	Libraries::GameLibrary *game;
 	Server::SelectServer *server;
+	FW::GAME_STATES gameState;
+	Logging::Logger *logger;
+	fwhandle gameEvent;
 
 	/* Protected methods */
 
@@ -62,4 +69,6 @@ protected:
 	fwvoid broadcastMessage(fwstr Message);
 	/* Sends a message to all connected clients except the sender */
 	fwvoid broadcastMessageToOthers(fwuint ID, fwstr Message);
+	/* Reloads the GameCore library in a nice orderly fashion */
+	fwvoid hotbootCore();
 };
