@@ -16,7 +16,7 @@ enum PLAYER_STATES
 class Player
 {
 public:
-	Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in Address, const ConnectedClientStates State);
+	Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in Address, const PLAYER_STATES State);
 
 	// Getters
 	const fwclient GetClient() const;

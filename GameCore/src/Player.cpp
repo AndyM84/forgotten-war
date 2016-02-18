@@ -1,24 +1,9 @@
 #include <Player.h>
 
-Player::Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in Address, const ConnectedClientStates State)
-	: client(fwclient { ClientID, PlayerID, Address, State }), id(PlayerID)
+Player::Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in Address, const PLAYER_STATES State)
+	: client(fwclient { ClientID, PlayerID, Address, CCLIENT_INVALID }), id(PlayerID)
 {
-	switch (State)
-	{
-	case CCLIENT_CONNECTED:
-		this->SetState(PLAYER_CONNECTED);
-		break;
-	case CCLIENT_CONNECTING:
-		this->SetState(PLAYER_CONNECTING);
-		break;
-	case CCLIENT_DISCONNECTED:
-		this->SetState(PLAYER_DISCONNECTED);
-		break;
-	case CCLIENT_INVALID:
-	default:
-		this->SetState(PLAYER_INVALID);
-		break;
-	}
+	this->SetState(State);
 
 	return;
 }

@@ -251,7 +251,7 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 
 		this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
 
-		return;
+		return FW::GAME_STATES::FWGAME_INVALID;
 	}
 
 	this->gameLock.Release();
@@ -266,7 +266,7 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	{
 		this->hotbootCore();
 
-		return;
+		return this->gameState;
 	}
 	// but if we're being asked to stop, copy state and restart loop
 	else if (coreState == FW::GAME_STATES::FWGAME_STOPPING)
@@ -275,13 +275,13 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 		this->gameState = coreState;
 		this->gameLock.Release();
 
-		return;
+		return this->gameState;
 	}
 
 	// If we intercepted an UBER IMPORTANT SPECIAL hotboot cmd
 	if (WaitForSingleObject(this->gameEvent, 5) == WAIT_TIMEOUT)
 	{
-		return;
+		return this->gameState;
 	}
 
 	// if we got here, we were TRIGGERED!
@@ -289,10 +289,10 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	{
 		this->hotbootCore();
 
-		return;
+		return this->gameState;
 	}
 
-	return;
+	return this->gameState;
 }
 
 /* Protected methods */
@@ -398,6 +398,8 @@ fwvoid ForgottenWar::hotbootCore()
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Hotboot completed successfully");
 	this->broadcastMessage(HOTBOOT_STOP_MSG);
+
+	this->gameState = FW::GAME_STATES::FWGAME_RUNNING;
 
 	return;
 }

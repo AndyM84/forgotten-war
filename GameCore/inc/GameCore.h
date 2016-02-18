@@ -50,9 +50,12 @@ public:
 	fwvoid CloseClient(const fwclient Client);
 	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message);
 	fwvoid BroadcastToAll(const fwstr Message);
-	std::vector<fwclient> GetClients();
+	std::vector<std::shared_ptr<Player>> GetPlayers();
+	std::shared_ptr<Player> GetPlayer(fwuint ID);
+	std::shared_ptr<Player> GetPlayerBySocket(fwuint SockFD);
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
 	Threading::LockCriticalSection playerLock;
+	FW::GAME_STATES gameState;
 };
