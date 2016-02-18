@@ -280,6 +280,18 @@ fwvoid ForgottenWar::GameLoop()
 		}
 	}
 
+	// if we're here, we are done-done
+	if (this->game)
+	{
+		this->game = NULL;
+		this->librarian->Unload(GAME_CORE);
+	}
+
+	this->server->Stop();
+	this->serverThread->Terminate();
+
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
+
 	return;
 }
 
