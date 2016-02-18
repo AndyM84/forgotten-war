@@ -70,7 +70,7 @@ namespace Libraries
 			{
 				this->log(Logging::LogLevel::LOG_ERROR, "Librarian - Cannot load library, librarian wasn't properly initialized");
 
-				return NULL;
+				return nullptr;
 			}
 
 			FW_LIBRARY_DESCRIPTOR *lib = new FW_LIBRARY_DESCRIPTOR();
@@ -82,7 +82,7 @@ namespace Libraries
 			{
 				this->log(Logging::LogLevel::LOG_ERROR, "Librarian - Invalid filename provided for load call");
 
-				return NULL;
+				return nullptr;
 			}
 
 			std::stringstream fileCopy;
@@ -99,7 +99,7 @@ namespace Libraries
 			{
 				this->log(Logging::LogLevel::LOG_ERROR, "Librarian - Failed to load library from filesystem");
 
-				return NULL;
+				return nullptr;
 			}
 
 			lib->entry = (FW_DLL_ENTRY)GetProcAddress(lib->instance, "InitLibrary");
@@ -110,7 +110,7 @@ namespace Libraries
 
 				FreeLibrary(lib->instance);
 
-				return NULL;
+				return nullptr;
 			}
 
 			lib->ptr = lib->entry();
@@ -147,7 +147,7 @@ namespace Libraries
 			{
 				(*lib).second->ptr->Destroy();
 				delete (*lib).second->ptr;
-				(*lib).second->ptr = NULL;
+				(*lib).second->ptr = nullptr;
 			}
 
 			FreeLibrary((*lib).second->instance);

@@ -4,6 +4,11 @@
 
 GameCore::~GameCore()
 {
+	for (auto player : this->players)
+	{
+		player.second.reset();
+	}
+
 	return;
 }
 

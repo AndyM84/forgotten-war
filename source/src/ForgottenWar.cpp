@@ -242,7 +242,7 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 		// if we're here, we are done-done
 		if (this->game)
 		{
-			this->game = NULL;
+			this->game = nullptr;
 			this->librarian->Unload(GAME_CORE);
 		}
 
@@ -355,7 +355,7 @@ fwvoid ForgottenWar::hotbootCore()
 	if (this->game)
 	{
 		this->game->SaveState();
-		this->game = NULL;
+		this->game = nullptr;
 
 		this->librarian->Unload(GAME_CORE);
 

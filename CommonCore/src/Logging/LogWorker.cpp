@@ -2,10 +2,10 @@
 
 namespace Logging
 {
-	LogWorker::AppenderList *LogWorker::m_Appenders = NULL;
-	LogWorker::MessageList *LogWorker::m_Messages = NULL;
+	LogWorker::AppenderList *LogWorker::m_Appenders = nullptr;
+	LogWorker::MessageList *LogWorker::m_Messages = nullptr;
 	Threading::LockMutex LogWorker::m_Lock = Threading::LockMutex();
-	LogWorker *LogWorker::m_WorkerInstance = NULL;
+	LogWorker *LogWorker::m_WorkerInstance = nullptr;
 
 	LogWorker &LogWorker::GetWorker()
 	{
@@ -51,7 +51,7 @@ namespace Logging
 		if (m_WorkerInstance)
 		{
 			delete m_WorkerInstance;
-			m_WorkerInstance = NULL;
+			m_WorkerInstance = nullptr;
 		}
 
 		m_Lock.Release();

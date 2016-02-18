@@ -71,7 +71,7 @@ namespace Libraries
 		{
 			if (this->arbiter)
 			{
-				this->arbiter = NULL;
+				this->arbiter = nullptr;
 			}
 
 			return;

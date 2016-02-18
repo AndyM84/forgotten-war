@@ -54,6 +54,5 @@ public:
 
 protected:
 	std::map<fwuint, std::shared_ptr<Player>> players;
-	Threading::LockMutex playerLock;
-	Threading::Thread *gameThread;
+	Threading::LockCriticalSection playerLock;
 };
