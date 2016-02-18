@@ -24,6 +24,7 @@ VOID SvcReportEvent(LPTSTR);
 
 // auto waitRes = WaitForSingleObject(myStopCall, 15);
 // if (waitRes == WAIT_OBJECT_0) { /* time to do something */ }
+// while (fw->GameLoop() == FW::GAME_STATES::FWGAME_RUNNING) { .. }
 
 
 //

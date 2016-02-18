@@ -225,72 +225,72 @@ fwvoid ForgottenWar::Initialize()
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Game has been started, proceed to loop and collect $200");
+	this->gameState = FW::GAME_STATES::FWGAME_RUNNING;
 
 	return;
 }
 
-fwvoid ForgottenWar::GameLoop()
+FW::GAME_STATES ForgottenWar::GameLoop()
 {
-	while (true)
+	// Check if we need to exit
+	this->gameLock.Block();
+
+	if (this->gameState == FW::GAME_STATES::FWGAME_STOPPING)
 	{
-		// Check if we need to exit
-		this->gameLock.Block();
-
-		if (this->gameState == FW::GAME_STATES::FWGAME_STOPPING)
-		{
-			this->gameLock.Release();
-
-			break;
-		}
-
 		this->gameLock.Release();
 
-		// do loop here
-		auto coreState = this->game->GameLoop(0.0);
-
-		// so if we're asked to hotBoot, just do it and restart the loop
-		if (coreState == FW::GAME_STATES::FWGAME_HOTBOOTING)
+		// if we're here, we are done-done
+		if (this->game)
 		{
-			this->hotbootCore();
-
-			continue;
-		}
-		// but if we're being asked to stop, copy state and restart loop
-		else if (coreState == FW::GAME_STATES::FWGAME_STOPPING)
-		{
-			this->gameLock.Block();
-			this->gameState = coreState;
-			this->gameLock.Release();
-
-			continue;
+			this->game = NULL;
+			this->librarian->Unload(GAME_CORE);
 		}
 
-		// If we intercepted an UBER IMPORTANT SPECIAL hotboot cmd
-		if (WaitForSingleObject(this->gameEvent, 5) == WAIT_TIMEOUT)
-		{
-			continue;
-		}
+		this->server->Stop();
+		this->serverThread->Terminate();
 
-		// if we got here, we were TRIGGERED!
-		if (this->gameState == FW::GAME_STATES::FWGAME_HOTBOOTING)
-		{
-			this->hotbootCore();
+		this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
 
-			continue;
-		}
+		return;
 	}
 
-	// if we're here, we are done-done
-	if (this->game)
+	this->gameLock.Release();
+
+	// TODO: Add a delta timing...thing
+
+	// do loop here
+	auto coreState = this->game->GameLoop(0.0);
+
+	// so if we're asked to hotBoot, just do it and restart the loop
+	if (coreState == FW::GAME_STATES::FWGAME_HOTBOOTING)
 	{
-		this->game = NULL;
-		this->librarian->Unload(GAME_CORE);
+		this->hotbootCore();
+
+		return;
+	}
+	// but if we're being asked to stop, copy state and restart loop
+	else if (coreState == FW::GAME_STATES::FWGAME_STOPPING)
+	{
+		this->gameLock.Block();
+		this->gameState = coreState;
+		this->gameLock.Release();
+
+		return;
 	}
 
-	this->server->Stop();
-	this->serverThread->Terminate();
+	// If we intercepted an UBER IMPORTANT SPECIAL hotboot cmd
+	if (WaitForSingleObject(this->gameEvent, 5) == WAIT_TIMEOUT)
+	{
+		return;
+	}
 
-	this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
+	// if we got here, we were TRIGGERED!
+	if (this->gameState == FW::GAME_STATES::FWGAME_HOTBOOTING)
+	{
+		this->hotbootCore();
+
+		return;
+	}
 
 	return;
 }

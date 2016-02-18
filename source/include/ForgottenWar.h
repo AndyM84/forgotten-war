@@ -48,7 +48,7 @@ public:
 	virtual fwvoid SendLog(Logging::LogLevel Level, const fwchar *Message);
 
 	fwvoid Initialize();
-	fwvoid GameLoop();
+	FW::GAME_STATES GameLoop();
 
 protected:
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;
