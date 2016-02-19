@@ -18,74 +18,33 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="inc\CommonCore.h" />
-    <ClInclude Include="inc\Common\Types.h" />
-    <ClInclude Include="inc\Libraries\Librarian.h" />
-    <ClInclude Include="inc\Libraries\Library.h" />
-    <ClInclude Include="inc\Logging\AppenderBase.h" />
-    <ClInclude Include="inc\Logging\ConsoleAppender.h" />
-    <ClInclude Include="inc\Logging\FileAppender.h" />
-    <ClInclude Include="inc\Logging\LogData.h" />
-    <ClInclude Include="inc\Logging\Logger.h" />
-    <ClInclude Include="inc\Logging\LogWorker.h" />
-    <ClInclude Include="inc\N2f\BaseClasses\DispatchBase.h" />
-    <ClInclude Include="inc\N2f\BaseClasses\NodeBase.h" />
-    <ClInclude Include="inc\N2f\Helpers\ChainHelper.h" />
-    <ClInclude Include="inc\N2f\N2f.h" />
-    <ClInclude Include="inc\ServerMessage.h" />
-    <ClInclude Include="inc\Threading\Lock.h" />
-    <ClInclude Include="inc\Threading\LockCriticalSection.h" />
-    <ClInclude Include="inc\Threading\LockMutex.h" />
-    <ClInclude Include="inc\Threading\Thread.h" />
-    <ClInclude Include="inc\Threading\Threadable.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Libraries\Library.cpp" />
-    <ClCompile Include="src\Logging\AppenderBase.cpp" />
-    <ClCompile Include="src\Logging\ConsoleAppender.cpp" />
-    <ClCompile Include="src\Logging\FileAppender.cpp" />
-    <ClCompile Include="src\Logging\LogData.cpp" />
-    <ClCompile Include="src\Logging\Logger.cpp" />
-    <ClCompile Include="src\Logging\LogWorker.cpp" />
-    <ClCompile Include="src\N2f\BaseClasses\DispatchBase.cpp" />
-    <ClCompile Include="src\N2f\BaseClasses\NodeBase.cpp" />
-    <ClCompile Include="src\N2f\Helpers\ChainHelper.cpp" />
-    <ClCompile Include="src\ServerMessage.cpp" />
-    <ClCompile Include="src\Threading\Lock.cpp" />
-    <ClCompile Include="src\Threading\LockCriticalSection.cpp" />
-    <ClCompile Include="src\Threading\LockMutex.cpp" />
-    <ClCompile Include="src\Threading\Thread.cpp" />
-    <ClCompile Include="src\Threading\Threadable.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AB18ECF8-3528-42E2-81F9-BEEF02E7D8AE}</ProjectGuid>
-    <RootNamespace>Core</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
-    <ProjectName>Common Core</ProjectName>
+    <ProjectGuid>{D0B1D62F-B059-4A87-935A-048B9A003005}</ProjectGuid>
+    <RootNamespace>ForgottenWar</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -109,18 +68,17 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
-    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)ServerCore\inc;$(SolutionDir)source\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -162,6 +120,23 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\include\CliDispatch.h" />
+    <ClInclude Include="..\source\include\ForgottenWar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\src\CliDispatch.cpp" />
+    <ClCompile Include="..\source\src\ForgottenWar.cpp" />
+    <ClCompile Include="..\source\src\Server.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonCore\CommonCore.vcxproj">
+      <Project>{ab18ecf8-3528-42e2-81f9-beef02e7d8ae}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerCore\ServerCore.vcxproj">
+      <Project>{87ceef0d-347a-4011-b6c8-ef7d25994833}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
