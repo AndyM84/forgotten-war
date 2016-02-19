@@ -18,13 +18,16 @@ public:
 
 	CliDispatch &Initialize(fwint argc, fwchar *argv[]);
 	const fwbool IsWindows();
+	const fwstr GetParameterString();
 	const std::vector<const fwstr> GetRawParameters();
-	const std::map<const fwstr, const fwstr> GetParameterMap();
+	const std::map<const fwstr, const fwstr> GetParameterMap(fwbool invariantKey);
 
 protected:
+	typedef std::pair<const fwstr, const fwstr> MAP_PAIR;
+
 	std::map<const fwstr, const fwstr> mappedParams, mappedInvariantParams;
 	std::vector<const fwstr> rawParams;
 	fwstr raw;
 
-	fwvoid Process();
+	fwvoid insertMappedPair(fwstr key, fwstr val);
 };

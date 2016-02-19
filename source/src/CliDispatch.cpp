@@ -47,14 +47,34 @@ CliDispatch &CliDispatch::Initialize(fwint argc, fwchar *argv[])
 		fwstr tmp = argv[i];
 		this->rawParams.push_back(tmp);
 
+		if (this->raw.length() > 0)
+		{
+			this->raw += " ";
+		}
+
+		this->raw += tmp;
+
 		if (tmp.substr(0, 1) == "-" && tmp.length() > 1)
 		{
 			auto param = tmp.substr((tmp.substr(1, 1) == "-") ? 2 : 1);
 			auto eq = param.find('=');
+			auto ds = param.find('-');
 
-			if (eq != std::string::npos)
+			if (eq != std::string::npos && eq != (param.length() - 1))
 			{
-
+				this->insertMappedPair(param.substr(0, eq), param.substr(eq + 1));
+			}
+			else if (ds != std::string::npos && ds != (param.length() - 1))
+			{
+				this->insertMappedPair(param.substr(0, ds), param.substr(ds + 1));
+			}
+			else if ((i + 1) < argc)
+			{
+				this->insertMappedPair(param, argv[++i]);
+			}
+			else
+			{
+				this->insertMappedPair(param, "true");
 			}
 		}
 		else
@@ -63,20 +83,11 @@ CliDispatch &CliDispatch::Initialize(fwint argc, fwchar *argv[])
 
 			if (eq != std::string::npos)
 			{
-				auto key = tmp.substr(0, eq);
-				auto val = tmp.substr(eq + 1);
-
-				this->mappedParams.insert(std::pair<const fwstr, const fwstr>(key, val));
-
-				std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-				this->mappedInvariantParams.insert(std::pair<const fwstr, const fwstr>(key, val));
+				this->insertMappedPair(tmp.substr(0, eq), tmp.substr(eq + 1));
 			}
 			else
 			{
-				this->mappedParams.insert(std::pair<const fwstr, const fwstr>(tmp, "true"));
-
-				std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-				this->mappedInvariantParams.insert(std::pair<const fwstr, const fwstr>(tmp, "true"));
+				this->insertMappedPair(tmp, "true");
 			}
 		}
 	}
@@ -93,17 +104,32 @@ const fwbool CliDispatch::IsWindows()
 #endif
 }
 
+const fwstr CliDispatch::GetParameterString()
+{
+	return this->raw;
+}
+
 const std::vector<const fwstr> CliDispatch::GetRawParameters()
 {
-
+	return this->rawParams;
 }
 
-const std::map<const fwstr, const fwstr> CliDispatch::GetParameterMap()
+const std::map<const fwstr, const fwstr> CliDispatch::GetParameterMap(fwbool invariantKey)
 {
+	if (invariantKey)
+	{
+		return this->mappedInvariantParams;
+	}
 
+	return this->mappedParams;
 }
 
-fwvoid CliDispatch::Process()
+fwvoid CliDispatch::insertMappedPair(fwstr key, fwstr val)
 {
+	this->mappedParams.insert(MAP_PAIR(key, val));
+
+	std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+	this->mappedInvariantParams.insert(MAP_PAIR(key, val));
+
 	return;
 }
