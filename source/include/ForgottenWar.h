@@ -10,6 +10,7 @@
 /* FW includes */
 #include <CommonCore.h>
 #include <ServerCore.h>
+#include <CliDispatch.h>
 
 #define GAME_CORE           "GameCore.dll"
 #define GAME_EVENT_NAME     TEXT("FWGameEvent")

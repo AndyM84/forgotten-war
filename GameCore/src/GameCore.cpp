@@ -42,7 +42,7 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 	{
 		auto player = p.second;
 
-		if (player || player->GetState() == PLAYER_DISCONNECTED || player->GetState() == PLAYER_INVALID)
+		if (!player || player->GetState() == PLAYER_DISCONNECTED || player->GetState() == PLAYER_INVALID)
 		{
 			continue;
 		}
@@ -66,6 +66,14 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 
 				player->SetName(tok[0]);
 				player->SetState(PLAYER_CONNECTED);
+
+				ss = std::stringstream("");
+				ss << player->GetName() << " has connected!";
+				this->BroadcastToAllButPlayer(player, ss.str());
+
+				ss = std::stringstream("");
+				ss << "\n\nThanks for playing, " << player->GetName();
+				this->SendToClient(player->GetClient(), ss.str());
 
 				continue;
 			}
@@ -135,7 +143,7 @@ fwvoid GameCore::RestoreState(std::vector<fwclient> clients)
 {
 	for (auto client : clients)
 	{
-		auto plyr = std::make_shared<Player>(client.plyrid, client.sockfd, client.addr, PLAYER_AWAITINGNAME);
+		auto plyr = std::make_shared<Player>(client.plyrid, client.sockfd, client.addr, PLAYER_CONNECTING);
 		this->players.insert(std::pair<fwuint, std::shared_ptr<Player>>(client.plyrid, plyr));
 	}
 
@@ -165,6 +173,8 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 	auto plyr = std::make_shared<Player>(nId, ID, Address, PLAYER_CONNECTING);
 	this->players.insert(std::pair<fwuint, std::shared_ptr<Player>>(nId, plyr));
 	this->playerLock.Release();
+
+	this->SendToClient(plyr->GetClient(), "Please enter your name: ");
 
 	return plyr->GetClient();
 }

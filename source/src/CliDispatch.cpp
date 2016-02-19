@@ -109,12 +109,12 @@ const fwstr CliDispatch::GetParameterString()
 	return this->raw;
 }
 
-const std::vector<const fwstr> CliDispatch::GetRawParameters()
+const std::vector<fwstr> CliDispatch::GetRawParameters()
 {
 	return this->rawParams;
 }
 
-const std::map<const fwstr, const fwstr> CliDispatch::GetParameterMap(fwbool invariantKey)
+const std::map<fwstr, fwstr> CliDispatch::GetParameterMap(fwbool invariantKey)
 {
 	if (invariantKey)
 	{

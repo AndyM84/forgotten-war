@@ -205,8 +205,6 @@ fwvoid ForgottenWar::Initialize()
 		this->librarian->SetLogger(*this->logger);
 	}
 
-	std::stringstream ss;
-
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading GameCore library to start game");
 	this->game = this->librarian->Load(GAME_CORE);
 

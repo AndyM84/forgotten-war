@@ -62,7 +62,7 @@ fwvoid ServerMessage::Initialize(const fwstr Message)
 	this->cmd = this->tokens[0];
 	std::transform(this->cmd.begin(), this->cmd.end(), this->cmd.begin(), ::tolower);
 
-	this->sansCmd = (this->tokens.size() > 1) ? this->raw.substr(this->tokens[0].length()) : "";
+	this->sansCmd = (this->tokens.size() > 1) ? this->raw.substr(this->tokens[0].length() + 1) : "";
 	this->MakeValid();
 
 	return;
