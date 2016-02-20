@@ -5,27 +5,58 @@
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
+#include <WtsApi32.h>
+#include <iostream>
+#include <fstream>
+#include <direct.h>
 
 #pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "Wtsapi32.lib")
 
 #define SVCNAME TEXT("ForgottenWar")
 
-int RunFW(int port);
-void WINAPI ServiceMain(DWORD argc, LPTSTR *argv);
+#define DO_DEBUG
+
+SERVICE_STATUS_HANDLE g_ServiceStatusHandle;
+HANDLE g_StopEvent, g_Shutdown;
+DWORD g_CurrentState = 0;
+bool g_SystemShutdown = false;
+Threading::Thread *lt;
+ForgottenWar *fw;
+
+bool StartFW(int port);
+FW::GAME_STATES RunFW();
+int StopFW();
+
+// SVC stuff
+SERVICE_STATUS gSvcStatus;
+SERVICE_STATUS_HANDLE gSvcStatusHandle;
+HANDLE gSvcStopEvent = NULL;
+
+void WINAPI SvcCtrlHandler(DWORD);
+void WINAPI SvcMain(DWORD, LPTSTR*);
+void ReportSvcStatus(DWORD, DWORD, DWORD);
+void SvcInit(DWORD, LPTSTR*);
+void SvcReportEvent(LPSTR);
+
+auto fwLog = Logging::Logger::GetLogger("FW");
+auto fwLw = Logging::LogWorker::GetWorker();
 
 int main(int argc, char *argv[])
 {
-	if (argc > 0)
-	{
-		auto disp = CliDispatch();
-		int result = 0;
+	auto disp = CliDispatch();
+	disp.Initialize(argc, argv);
 
-		disp.Initialize(argc, argv);
-		std::cout << "There were " << disp.NumResults() << " arguments." << std::endl;
+	auto mappedArgs = disp.GetParameterMap(true);
+	auto runIter = mappedArgs.find("run");
+
+	if (runIter != mappedArgs.end())
+	{
+		int result = 0;
 
 		if (disp.NumResults() == 1)
 		{
-			RunFW(9005);
+			StartFW(9005);
 		}
 		else
 		{
@@ -33,10 +64,20 @@ int main(int argc, char *argv[])
 			{
 				auto args = disp.GetRawParameters();
 
-				result = RunFW(atoi(args[1].c_str()));
+				StartFW(atoi(args[1].c_str()));
 			}
 
 			// TODO: Add some more stuff here, like perhaps look into log levels and what not
+		}
+
+		while (RunFW() == FW::GAME_STATES::FWGAME_RUNNING)
+		{
+			if (WaitForSingleObject(g_StopEvent, 1) == WAIT_OBJECT_0)
+			{
+				result = StopFW();
+
+				break;
+			}
 		}
 
 		return result;
@@ -44,9 +85,25 @@ int main(int argc, char *argv[])
 	else
 	{
 		SERVICE_TABLE_ENTRY sTable[] = {
-			{ _T(""), &ServiceMain },
+			{ SVCNAME, &SvcMain },
 			{ NULL, NULL }
 		};
+
+#if defined(DO_DEBUG)
+		std::string title = "FW Service in Startup - 60 Seconds to Take Action";
+		std::string message = "To debug, attach in Visual Studio, then click OK.";
+
+		DWORD consoleSession = ::WTSGetActiveConsoleSessionId();
+		DWORD response;
+		BOOL ret = ::WTSSendMessage(WTS_CURRENT_SERVER_HANDLE,
+			consoleSession,
+			const_cast<char*>(title.c_str()), title.length(),
+			const_cast<char*>(message.c_str()), message.length(),
+			MB_OK,
+			120,
+			&response,
+			TRUE);
+#endif
 
 		if (StartServiceCtrlDispatcher(sTable))
 		{
@@ -63,36 +120,168 @@ int main(int argc, char *argv[])
 	}
 }
 
-int RunFW(int port)
+bool StartFW(int port)
 {
+	// TODO: This should work with some error reporting, probably
+
 	// Setup logging the way we want (this could be configured)
-	auto lw = Logging::LogWorker::GetWorker();
-	lw.AddAppender(new Logging::ConsoleAppender("FW"));
+	fwLw.AddAppender(new Logging::ConsoleAppender("FW"));
 
-	auto lt = Threading::Thread(lw);
-	lt.Start();
-
-	auto log = Logging::Logger::GetLogger("FW");
+	lt = new Threading::Thread(fwLw);
+	lt->Start();
 
 	// Create our main class
-	auto fw = ForgottenWar(9005, log);
-	fw.Initialize();
+	fw = new ForgottenWar(9005, fwLog);
+	fw->Initialize();
 
-	FW::GAME_STATES result = FW::GAME_STATES::FWGAME_INVALID;
-
-	while ((result = fw.GameLoop()) == FW::GAME_STATES::FWGAME_RUNNING) { }
-
-	switch (result)
-	{
-	case FW::GAME_STATES::FWGAME_INVALID:
-		return -1;
-	case FW::GAME_STATES::FWGAME_STOPPING:
-	default:
-		return 0;
-	}
+	return true;
 }
 
-void WINAPI ServiceMain(DWORD argc, LPTSTR *argv)
+FW::GAME_STATES RunFW()
 {
+	return fw->GameLoop();
+}
+
+int StopFW()
+{
+	fw->Stop();
+	lt->Terminate();
+
+	delete fw;
+	delete lt;
+
+	return 0;
+}
+
+void WINAPI SvcCtrlHandler(DWORD dwCtrl)
+{
+	switch (dwCtrl)
+	{
+	case SERVICE_CONTROL_STOP:
+		ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+		SetEvent(gSvcStopEvent);
+		ReportSvcStatus(gSvcStatus.dwCurrentState, NO_ERROR, 0);
+
+		return;
+
+	case SERVICE_CONTROL_INTERROGATE:
+		break;
+
+	default:
+		break;
+	}
+
+	return;
+}
+
+void WINAPI SvcMain(DWORD dwArg, LPTSTR *lpszArgv)
+{
+	gSvcStatusHandle = RegisterServiceCtrlHandler(SVCNAME, SvcCtrlHandler);
+
+	if (!gSvcStatusHandle)
+	{
+		SvcReportEvent(TEXT("RegisterServiceCtrlHandler"));
+
+		return;
+	}
+
+	gSvcStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+	gSvcStatus.dwServiceSpecificExitCode = 0;
+
+	ReportSvcStatus(SERVICE_START_PENDING, NO_ERROR, 3000);
+
+	gSvcStopEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	if (gSvcStopEvent == NULL)
+	{
+		ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+
+		return;
+	}
+
+	// TODO: Configuration of this somehow
+	StartFW(9005);
+
+	ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
+
+	while (true)
+	{
+		RunFW();
+
+		if (WaitForSingleObject(gSvcStopEvent, 1) == WAIT_OBJECT_0)
+		{
+			ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
+
+			break;
+		}
+	}
+
+	StopFW();
+	CloseHandle(gSvcStopEvent);
+
+	ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+
+	return;
+}
+
+void ReportSvcStatus(DWORD dwCurrentState, DWORD dwWin32ExitCode, DWORD dwWaitHint)
+{
+	static DWORD dwCheckPoint = 1;
+
+	gSvcStatus.dwCurrentState = dwCurrentState;
+	gSvcStatus.dwWin32ExitCode = dwWin32ExitCode;
+	gSvcStatus.dwWaitHint = dwWaitHint;
+
+	if (dwCurrentState == SERVICE_START_PENDING)
+	{
+		gSvcStatus.dwControlsAccepted = 0;
+	}
+	else
+	{
+		gSvcStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN;
+	}
+
+	if (dwCurrentState == SERVICE_RUNNING || dwCurrentState == SERVICE_STOPPED)
+	{
+		gSvcStatus.dwCheckPoint = 0;
+	}
+	else
+	{
+		gSvcStatus.dwCheckPoint = dwCheckPoint++;
+	}
+
+	SetServiceStatus(gSvcStatusHandle, &gSvcStatus);
+
+	return;
+}
+
+void SvcReportEvent(LPSTR szFunction)
+{
+	HANDLE hEventSource;
+	LPCTSTR lpszStrings[2];
+	TCHAR Buffer[80];
+
+	hEventSource = RegisterEventSource(NULL, SVCNAME);
+
+	if (NULL != hEventSource)
+	{
+		StringCchPrintf(Buffer, 80, TEXT("%s failed with %d"), szFunction, GetLastError());
+
+		lpszStrings[0] = SVCNAME;
+		lpszStrings[1] = Buffer;
+
+		ReportEvent(hEventSource,        // event log handle
+		EVENTLOG_ERROR_TYPE, // event type
+		0,                   // event category
+		(DWORD)0xC0020001L,           // event identifier
+		NULL,                // no security identifier
+		2,                   // size of lpszStrings array
+		0,                   // no binary data
+		lpszStrings,         // array of strings
+		NULL);               // no binary data
+
+		DeregisterEventSource(hEventSource);
+	}
+
 	return;
 }

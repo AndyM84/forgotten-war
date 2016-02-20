@@ -50,6 +50,7 @@ public:
 
 	fwvoid Initialize();
 	FW::GAME_STATES GameLoop();
+	fwvoid Stop();
 
 protected:
 	Libraries::Librarian<Libraries::GameLibrary> *librarian;

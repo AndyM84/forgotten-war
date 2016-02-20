@@ -26,17 +26,7 @@ ForgottenWar::ForgottenWar(fwuint Port, Logging::Logger &Logger)
 
 ForgottenWar::~ForgottenWar()
 {
-	if (this->game)
-	{
-		delete this->game;
-	}
-
-	if (this->librarian)
-	{
-		delete this->librarian;
-	}
-
-	this->logger = nullptr;
+	this->Stop();
 
 	return;
 }
@@ -208,6 +198,13 @@ fwvoid ForgottenWar::Initialize()
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading GameCore library to start game");
 	this->game = this->librarian->Load(GAME_CORE);
 
+	if (!this->game)
+	{
+		this->log(Logging::LogLevel::LOG_CRITICAL, "FW - GameCore was unable to load, abort abort abort");
+
+		return;
+	}
+
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Starting the SelectServer");
 	this->server->Initialize();
 
@@ -291,6 +288,33 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	}
 
 	return this->gameState;
+}
+
+fwvoid ForgottenWar::Stop()
+{
+	if (this->game)
+	{
+		delete this->game;
+	}
+
+	if (this->librarian)
+	{
+		delete this->librarian;
+	}
+
+	if (this->server && this->serverThread)
+	{
+		// TODO: This should have a wait-able thing in it for the server to say it's shut down
+		this->broadcastMessage("Thanks for playing, the server is shutting down for maintenance\n");
+		this->serverThread->Terminate();
+
+		this->serverThread.reset();
+		delete this->server;
+	}
+
+	this->logger = nullptr;
+
+	return;
 }
 
 /* Protected methods */
