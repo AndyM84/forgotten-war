@@ -15,7 +15,11 @@
 
 #define SVCNAME TEXT("ForgottenWar")
 
-#define DO_DEBUG
+#if defined(FW_WINDOWS)
+	#define IS_DEBUG IsDebuggerPresent() ? true : false
+#else
+	#define IS_DEBUG false
+#endif
 
 SERVICE_STATUS_HANDLE g_ServiceStatusHandle;
 HANDLE g_StopEvent, g_Shutdown;
@@ -50,7 +54,7 @@ int main(int argc, char *argv[])
 	auto mappedArgs = disp.GetParameterMap(true);
 	auto runIter = mappedArgs.find("run");
 
-	if (runIter != mappedArgs.end())
+	if (runIter != mappedArgs.end() || IS_DEBUG)
 	{
 		int result = 0;
 
@@ -89,21 +93,22 @@ int main(int argc, char *argv[])
 			{ NULL, NULL }
 		};
 
-#if defined(DO_DEBUG)
-		std::string title = "FW Service in Startup - 60 Seconds to Take Action";
-		std::string message = "To debug, attach in Visual Studio, then click OK.";
+		if (IS_DEBUG)
+		{
+			std::string title = "FW Service in Startup - 60 Seconds to Take Action";
+			std::string message = "To debug, attach in Visual Studio, then click OK.";
 
-		DWORD consoleSession = ::WTSGetActiveConsoleSessionId();
-		DWORD response;
-		BOOL ret = ::WTSSendMessage(WTS_CURRENT_SERVER_HANDLE,
-			consoleSession,
-			const_cast<char*>(title.c_str()), title.length(),
-			const_cast<char*>(message.c_str()), message.length(),
-			MB_OK,
-			120,
-			&response,
-			TRUE);
-#endif
+			DWORD consoleSession = ::WTSGetActiveConsoleSessionId();
+			DWORD response;
+			BOOL ret = ::WTSSendMessage(WTS_CURRENT_SERVER_HANDLE,
+				consoleSession,
+				const_cast<char*>(title.c_str()), title.length(),
+				const_cast<char*>(message.c_str()), message.length(),
+				MB_OK,
+				120,
+				&response,
+				TRUE);
+		}
 
 		if (StartServiceCtrlDispatcher(sTable))
 		{

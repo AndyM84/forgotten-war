@@ -138,8 +138,10 @@ namespace Server
 								{
 									if ((*b).id == id)
 									{
+										this->lock.Block();
 										this->Listener->ClientDisconnected((*b).id, (*b).address);
 										this->clients.erase(b);
+										this->lock.Release();
 
 										break;
 									}
@@ -249,7 +251,6 @@ namespace Server
 			if ((*iter).id == ID)
 			{
 				closesocket((*iter).sock);
-				this->clients.erase(iter);
 
 				break;
 			}
