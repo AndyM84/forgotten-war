@@ -24,7 +24,11 @@ namespace Threading
 	FW_LIB Thread::StaticThreadEntry(void *param)
 	{
 		Thread *ptr = reinterpret_cast<Thread *>(param);
-		ptr->m_Target->Run();
+
+		if (ptr->m_Target && ptr->m_Target->IsValid())
+		{
+			ptr->m_Target->Run();
+		}
 
 		return 0;
 	}

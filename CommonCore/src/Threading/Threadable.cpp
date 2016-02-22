@@ -2,6 +2,11 @@
 
 namespace Threading
 {
+	fwbool Threadable::IsValid()
+	{
+		return !this->m_Name.empty();
+	}
+
 	fwvoid Threadable::Run()
 	{
 		// TODO: Add lock mechanism here to guard against race conditions

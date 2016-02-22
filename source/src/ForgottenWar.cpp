@@ -292,9 +292,10 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 
 fwvoid ForgottenWar::Stop()
 {
-	if (this->game)
+	if (this->game && this->librarian)
 	{
-		delete this->game;
+		this->game = NULL;
+		this->librarian->Unload(GAME_CORE);
 	}
 
 	if (this->librarian)
@@ -305,7 +306,6 @@ fwvoid ForgottenWar::Stop()
 	if (this->server && this->serverThread)
 	{
 		// TODO: This should have a wait-able thing in it for the server to say it's shut down
-		this->broadcastMessage("Thanks for playing, the server is shutting down for maintenance\n");
 		this->serverThread->Terminate();
 
 		this->serverThread.reset();

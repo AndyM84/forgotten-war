@@ -172,6 +172,7 @@ namespace Logging
 		this->m_Running = true;
 		this->m_ChunkSize = 10;
 		this->m_IntervalTime = 1000;
+		this->m_Name = "LogWorker";
 
 		return;
 	}

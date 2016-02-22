@@ -84,6 +84,8 @@ int main(int argc, char *argv[])
 			}
 		}
 
+		StopFW();
+
 		return result;
 	}
 	else

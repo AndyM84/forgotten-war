@@ -116,6 +116,13 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 				this->SendToClient(player->GetClient(), "Thanks for playing, come back soon!\n\n");
 				this->CloseClient(player->GetClient());
 			}
+			else if (cmd == "shutdown")
+			{
+				this->SendToClient(player->GetClient(), "Sounds good boss, shutting down.\n\n");
+				this->BroadcastToAllButPlayer(player, "The server is shutting down, who knows if we'll be back.\n\n");
+
+				return FW::GAME_STATES::FWGAME_STOPPING;
+			}
 			else
 			{
 				this->SendToClient(player->GetClient(), "That is not a known command.");

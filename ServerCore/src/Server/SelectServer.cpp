@@ -160,6 +160,8 @@ namespace Server
 	{
 		this->log(Logging::LogLevel::LOG_DEBUG, "SelectServer - Beginning startup procedure");
 
+		this->m_Name = "SelectServer";
+
 		if (!this->Listener)
 		{
 			this->log(Logging::LogLevel::LOG_CRITICAL, "SelectServer - No ServerListener provided, startup cannot complete");

@@ -7,10 +7,13 @@ namespace Threading
 	class Threadable
 	{
 	public:
+		fwbool IsValid();
 		virtual fwvoid Run();
 		fwvoid SignalTerminate();
 
 	protected:
+		fwstr m_Name;
+
 		Threadable() { };
 		~Threadable() { };
 
