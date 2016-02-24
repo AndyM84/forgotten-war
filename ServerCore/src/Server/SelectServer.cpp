@@ -273,7 +273,7 @@ namespace Server
 
 	fwvoid SelectServer::initSets()
 	{
-		if (!this->isInitialized)
+		if (!this->isInitialized || !this->shouldRun || !this->IsRunning())
 		{
 			return;
 		}
@@ -289,27 +289,27 @@ namespace Server
 		FD_SET(this->listenSocket, &this->setRead);
 		FD_SET(this->listenSocket, &this->setExcept);
 
+		this->lock.Block();
+
 		if (this->clients.size() > 0)
 		{
 			this->log(Logging::LogLevel::LOG_DEBUG, "SelectServer - Assigning known client sockets to file descriptor sets");
-
-			this->lock.Block();
 
 			for (auto client : this->clients)
 			{
 				FD_SET(client.sock, &this->setRead);
 				FD_SET(client.sock, &this->setExcept);
 			}
-
-			this->lock.Release();
 		}
+
+		this->lock.Release();
 
 		return;
 	}
 
 	fwvoid SelectServer::log(const Logging::LogLevel Level, const fwchar *Message)
 	{
-		if (this->Logger)
+		if (this->Logger && this->shouldRun && this->IsRunning())
 		{
 			this->Logger->Log(Message, Level);
 		}

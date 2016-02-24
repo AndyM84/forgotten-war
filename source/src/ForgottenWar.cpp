@@ -6,7 +6,6 @@ ForgottenWar::ForgottenWar(fwuint Port)
 {
 	this->logger = nullptr;
 	this->server = new Server::SelectServer(*this, Port, *this->logger);
-	this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
 	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
 	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
@@ -17,7 +16,6 @@ ForgottenWar::ForgottenWar(fwuint Port, Logging::Logger &Logger)
 {
 	this->logger = &Logger;
 	this->server = new Server::SelectServer(*this, Port, *this->logger);
-	this->librarian = new Libraries::Librarian<Libraries::GameLibrary>();
 	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
 	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
@@ -181,22 +179,14 @@ fwvoid ForgottenWar::SendLog(Logging::LogLevel Level, const fwchar *Message)
 
 fwvoid ForgottenWar::Initialize()
 {
-	// kind of need a librarian to do anything around here
-	if (!this->librarian)
-	{
-		this->log(Logging::LogLevel::LOG_ERROR, "FW - Couldn't start game, we need a librarian");
-
-		return;
-	}
-
 	// Assign the logger to the librarian if we've got it
 	if (this->logger)
 	{
-		this->librarian->SetLogger(*this->logger);
+		this->librarian.SetLogger(*this->logger);
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading GameCore library to start game");
-	this->game = this->librarian->Load(GAME_CORE);
+	this->game = this->librarian.Load(GAME_CORE);
 
 	if (!this->game)
 	{
@@ -238,11 +228,12 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 		if (this->game)
 		{
 			this->game = nullptr;
-			this->librarian->Unload(GAME_CORE);
+			this->librarian.Unload(GAME_CORE);
 		}
 
 		this->server->Stop();
 		this->serverThread->Terminate();
+		this->serverThread->CloseThread();
 
 		this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
 
@@ -292,15 +283,10 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 
 fwvoid ForgottenWar::Stop()
 {
-	if (this->game && this->librarian)
+	if (this->game)
 	{
 		this->game = NULL;
-		this->librarian->Unload(GAME_CORE);
-	}
-
-	if (this->librarian)
-	{
-		delete this->librarian;
+		this->librarian.Unload(GAME_CORE);
 	}
 
 	if (this->server && this->serverThread)
@@ -363,13 +349,6 @@ fwvoid ForgottenWar::hotbootCore()
 	// Ok we're here, let's just assume we were signaled
 	ResetEvent(this->gameEvent);
 
-	// if we don't have a librarian, we can't do anything
-	if (!this->librarian)
-	{
-		this->log(Logging::LogLevel::LOG_ERROR, "FW - Can't hotboot without a librarian, aborting");
-		this->gameState = FW::GAME_STATES::FWGAME_STOPPING;
-	}
-
 	// HI MOM!
 	this->broadcastMessage(HOTBOOT_STRT_MSG);
 
@@ -379,13 +358,13 @@ fwvoid ForgottenWar::hotbootCore()
 		this->game->SaveState();
 		this->game = nullptr;
 
-		this->librarian->Unload(GAME_CORE);
+		this->librarian.Unload(GAME_CORE);
 
 		this->log(Logging::LogLevel::LOG_DEBUG, "FW - Unloaded existing GameCore instance");
 	}
 
 	// load GameCore
-	this->game = this->librarian->Load(GAME_CORE);
+	this->game = this->librarian.Load(GAME_CORE);
 
 	// if load failed, we must acqu...I mean abort
 	if (!this->game)

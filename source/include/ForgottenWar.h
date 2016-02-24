@@ -53,12 +53,12 @@ public:
 	fwvoid Stop();
 
 protected:
-	Libraries::Librarian<Libraries::GameLibrary> *librarian;
+	Libraries::Librarian<Libraries::GameLibrary> librarian;
 	std::shared_ptr<Threading::Thread> serverThread;
 	Threading::LockCriticalSection gameLock;
 	std::map<fwuint, fwclient> clients;
-	Libraries::GameLibrary *game;
 	Server::SelectServer *server;
+	Libraries::GameLibrary *game;
 	FW::GAME_STATES gameState;
 	Logging::Logger *logger;
 	fwhandle gameEvent;
