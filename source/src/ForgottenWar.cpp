@@ -223,19 +223,7 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	if (this->gameState == FW::GAME_STATES::FWGAME_STOPPING)
 	{
 		this->gameLock.Release();
-
-		// if we're here, we are done-done
-		if (this->game)
-		{
-			this->game = nullptr;
-			this->librarian.Unload(GAME_CORE);
-		}
-
-		this->server->Stop();
-		this->serverThread->Terminate();
-		this->serverThread->CloseThread();
-
-		this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
+		this->Stop();
 
 		return FW::GAME_STATES::FWGAME_INVALID;
 	}
@@ -283,17 +271,23 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 
 fwvoid ForgottenWar::Stop()
 {
+	// if we're here, we are done-done
 	if (this->game)
 	{
-		this->game = NULL;
+		this->game = nullptr;
 		this->librarian.Unload(GAME_CORE);
 	}
 
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
+
 	if (this->server && this->serverThread)
 	{
-		// TODO: This should have a wait-able thing in it for the server to say it's shut down
+		this->server->Stop();
 		this->serverThread->Terminate();
 
+		Sleep(1500);
+
+		this->serverThread->CloseThread();
 		this->serverThread.reset();
 		delete this->server;
 	}

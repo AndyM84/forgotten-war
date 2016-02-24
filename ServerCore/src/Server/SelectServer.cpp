@@ -267,6 +267,7 @@ namespace Server
 	{
 		this->shouldRun = false;
 		this->log(Logging::LogLevel::LOG_DEBUG, "SelectServer - Shutting down select server");
+		this->Logger = nullptr;
 
 		return;
 	}
