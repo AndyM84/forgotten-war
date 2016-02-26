@@ -5,6 +5,9 @@
 #include <memory>
 #include <string.h>
 
+#define MAX_NODE_KEY_LENGTH 256
+#define MAX_NODE_VER_LENGTH 12
+
 namespace N2f
 {
 	/// <summary>
@@ -14,7 +17,7 @@ namespace N2f
 	class NodeBase
 	{
 	protected:
-		fwchar *_key, *_version;
+		fwchar _key[MAX_NODE_KEY_LENGTH], _version[MAX_NODE_VER_LENGTH];
 
 		/// <summary>
 		/// Sets the node's key value provided it hasn't already been set.

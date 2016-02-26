@@ -31,6 +31,30 @@
     <Filter Include="Source Files\Helpers">
       <UniqueIdentifier>{30be6c18-79d0-4e60-ad16-386c2e7caeb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Nodes\Comms">
+      <UniqueIdentifier>{9282f8b7-e4ca-4364-8c06-ecf1e021508e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Nodes\Comms">
+      <UniqueIdentifier>{e9ac3c0c-69d7-422b-830f-9d75f6706afc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Nodes\Info">
+      <UniqueIdentifier>{36b859a9-98d4-43e8-8bfe-66d41e6a345f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Nodes\Info">
+      <UniqueIdentifier>{0ac85d03-c54f-44d3-a057-8076152b8b83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Nodes\Actions">
+      <UniqueIdentifier>{59858d0c-b332-4a81-8e02-fbfa424c3693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Nodes\Actions">
+      <UniqueIdentifier>{0d964885-4b8d-487a-83b9-194b542a815c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Nodes\Admin">
+      <UniqueIdentifier>{699f6bc9-6af9-4338-a78a-c0779ecd05dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Nodes\Admin">
+      <UniqueIdentifier>{93fb4a7f-7652-4771-8a02-93b6437eb41e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameCore.h">
@@ -39,6 +63,30 @@
     <ClInclude Include="inc\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Nodes\CommandNode.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Comms\CommOoc.h">
+      <Filter>Header Files\Nodes\Comms</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Info\InfoWho.h">
+      <Filter>Header Files\Nodes\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Commands.h">
+      <Filter>Header Files\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Actions\ActionQuit.h">
+      <Filter>Header Files\Nodes\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Admin\AdminHotboot.h">
+      <Filter>Header Files\Nodes\Admin</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Admin\AdminShutdown.h">
+      <Filter>Header Files\Nodes\Admin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp">
@@ -46,6 +94,21 @@
     </ClCompile>
     <ClCompile Include="src\Player.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Comms\CommOoc.cpp">
+      <Filter>Source Files\Nodes\Comms</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Info\InfoWho.cpp">
+      <Filter>Source Files\Nodes\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Actions\ActionQuit.cpp">
+      <Filter>Source Files\Nodes\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Admin\AdminHotboot.cpp">
+      <Filter>Source Files\Nodes\Admin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Admin\AdminShutdown.cpp">
+      <Filter>Source Files\Nodes\Admin</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

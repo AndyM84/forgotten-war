@@ -1,7 +1,8 @@
 #pragma once
 
 #include <CommonCore.h>
-#include <Player.h>
+#include <Nodes/Commands.h>
+#include <World.h>
 
 #include <iostream>
 #include <map>
@@ -30,32 +31,37 @@ public:
 	/* Libraries::GameLibrary methods */
 
 	/* Main game loop, aka Tick */
-	virtual FW::GAME_STATES GameLoop(fwfloat Delta);
+	FW::GAME_STATES GameLoop(fwfloat Delta);
 	/* Triggers a dump of the current game state into storage */
-	virtual fwvoid SaveState();
+	fwvoid SaveState();
 	/* Receives a list of orphaned clients to try restoring from storage */
-	virtual fwvoid RestoreState(std::vector<fwclient> clients);
+	fwvoid RestoreState(std::vector<fwclient> clients);
 	/* Provides a link to the CoreArbiter so we can actually interact with some services */
-	virtual fwvoid AddArbiter(FW::CoreArbiter &send);
+	fwvoid AddArbiter(FW::CoreArbiter &send);
 	/* Callback method for when a new client connects */
-	virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address);
+	fwclient ClientConnected(fwuint ID, const sockaddr_in Address);
 	/* Callback method for when a message is received from a client */
-	virtual fwclient ClientReceived(fwuint ID, ServerMessage Message);
+	fwclient ClientReceived(fwuint ID, ServerMessage Message);
 	/* Callback method fo rwhen a client disconnects */
-	virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
+	fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address);
+	/* Allows a log message to be recorded */
+	fwvoid Log(const Logging::LogLevel Level, const fwstr Message);
+	/* Sends a message to a single client */
+	fwvoid SendToClient(const fwclient Client, const fwstr Message);
+	/* Closes a client connection */
+	fwvoid CloseClient(const fwclient Client);
+	/* Broadcasts a string to all players save the one provided */
+	fwvoid BroadcastToAllButPlayer(const fwclient Client, const fwstr Message);
+	/* Broadcasts a string to all players */
+	fwvoid BroadcastToAll(const fwstr Message);
 
 	/* GameCore methods */
-	fwvoid Log(const Logging::LogLevel Level, const fwchar *Message);
-	fwvoid SendToClient(const fwclient Client, const fwstr Message);
-	fwvoid CloseClient(const fwclient Client);
-	fwvoid BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message);
-	fwvoid BroadcastToAll(const fwstr Message);
-	std::vector<std::shared_ptr<Player>> GetPlayers();
-	std::shared_ptr<Player> GetPlayer(fwuint ID);
-	std::shared_ptr<Player> GetPlayerBySocket(fwuint SockFD);
+	std::shared_ptr<Player> GameCore::GetPlayerBySocket(fwuint SockFD);
 
 protected:
-	std::map<fwuint, std::shared_ptr<Player>> players;
+	typedef std::pair<fwstr, CommandNode*> commandPair;
+
+	std::map<fwstr, CommandNode*> commands;
 	Threading::LockCriticalSection playerLock;
-	FW::GAME_STATES gameState;
+	World world;
 };

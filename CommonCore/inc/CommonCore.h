@@ -84,6 +84,11 @@ namespace Libraries
 		virtual fwclient ClientConnected(fwuint ID, const sockaddr_in Address) = 0;
 		virtual fwclient ClientReceived(fwuint ID, ServerMessage Message) = 0;
 		virtual fwclient ClientDisconnected(fwuint ID, const sockaddr_in Address) = 0;
+		virtual fwvoid Log(const Logging::LogLevel Level, const fwstr Message) = 0;
+		virtual fwvoid SendToClient(const fwclient Client, const fwstr Message) = 0;
+		virtual fwvoid CloseClient(const fwclient Client) = 0;
+		virtual fwvoid BroadcastToAllButPlayer(const fwclient Client, const fwstr Message) = 0;
+		virtual fwvoid BroadcastToAll(const fwstr Message) = 0;
 
 	protected:
 		FW::CoreArbiter *arbiter;

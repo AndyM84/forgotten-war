@@ -4,12 +4,12 @@
 
 GameCore::~GameCore()
 {
-	for (auto player : this->players)
+	for (auto player : this->world.players)
 	{
 		player.second.reset();
 	}
 
-	this->players.clear();
+	this->world.players.clear();
 
 	return;
 }
@@ -18,13 +18,27 @@ GameCore::~GameCore()
 
 fwbool GameCore::Setup()
 {
-	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
+	this->world.gameState = FW::GAME_STATES::FWGAME_STARTING;
+
+	// Add our commands to our temporary 'parser'
+	this->commands.insert(commandPair("ooc", new Commands::CommOoc));
+	this->commands.insert(commandPair("who", new Commands::InfoWho));
+	this->commands.insert(commandPair("quit", new Commands::ActionQuit));
+	this->commands.insert(commandPair("hotboot", new Commands::AdminHotboot));
+	this->commands.insert(commandPair("shutdown", new Commands::AdminShutdown));
 
 	return true;
 }
 
 fwbool GameCore::Destroy()
 {
+	for (auto cmd : this->commands)
+	{
+		delete cmd.second;
+	}
+
+	this->commands.clear();
+
 	return true;
 }
 
@@ -32,13 +46,13 @@ fwbool GameCore::Destroy()
 
 FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 {
-	if (this->gameState == FW::GAME_STATES::FWGAME_STARTING)
+	if (this->world.gameState == FW::GAME_STATES::FWGAME_STARTING)
 	{
-		this->gameState = FW::GAME_STATES::FWGAME_RUNNING;
+		this->world.gameState = FW::GAME_STATES::FWGAME_RUNNING;
 	}
 
 	// go through all the players
-	for (auto p : this->players)
+	for (auto p : this->world.players)
 	{
 		auto player = p.second;
 
@@ -69,7 +83,7 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 
 				ss = std::stringstream("");
 				ss << player->GetName() << " has connected!";
-				this->BroadcastToAllButPlayer(player, ss.str());
+				this->BroadcastToAllButPlayer(player->GetClient(), ss.str());
 
 				ss = std::stringstream("");
 				ss << "\n\nThanks for playing, " << player->GetName();
@@ -78,50 +92,12 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 				continue;
 			}
 
-			// doWho
-			if (cmd == "who")
+			// our 'parser'
+			auto cmdIter = this->commands.find(cmd);
+
+			if (cmdIter != this->commands.end())
 			{
-				ss = std::stringstream("");
-				ss << "\nWho's Online\n------------\n";
-
-				for (auto pl : this->players)
-				{
-					ss << pl.second->GetName();
-
-					if (pl.first == p.first)
-					{
-						ss << " (You)";
-					}
-
-					ss << "\n";
-				}
-
-				ss << "\n\n";
-				this->SendToClient(player->GetClient(), ss.str());
-			}
-			// doOoc
-			else if (cmd == "ooc")
-			{
-				ss = std::stringstream("");
-				ss << "[OOC] " << player->GetName() << ": " << buf->GetSansCmd() << "\n\n";
-				this->BroadcastToAll(ss.str());
-			}
-			// doQuit
-			else if (cmd == "quit")
-			{
-				ss = std::stringstream("");
-				ss << player->GetName() << " has left the game!";
-				this->BroadcastToAllButPlayer(player, ss.str());
-
-				this->SendToClient(player->GetClient(), "Thanks for playing, come back soon!\n\n");
-				this->CloseClient(player->GetClient());
-			}
-			else if (cmd == "shutdown")
-			{
-				this->SendToClient(player->GetClient(), "Sounds good boss, shutting down.\n\n");
-				this->BroadcastToAllButPlayer(player, "The server is shutting down, who knows if we'll be back.\n\n");
-
-				return FW::GAME_STATES::FWGAME_STOPPING;
+				this->world.gameState = cmdIter->second->Process(*this, this->world, buf, player);
 			}
 			else
 			{
@@ -138,7 +114,7 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 		}
 	}
 
-	return this->gameState;
+	return this->world.gameState;
 }
 
 fwvoid GameCore::SaveState()
@@ -151,7 +127,7 @@ fwvoid GameCore::RestoreState(std::vector<fwclient> clients)
 	for (auto client : clients)
 	{
 		auto plyr = std::make_shared<Player>(client.plyrid, client.sockfd, client.addr, PLAYER_CONNECTING);
-		this->players.insert(std::pair<fwuint, std::shared_ptr<Player>>(client.plyrid, plyr));
+		this->world.players.insert(std::pair<fwuint, std::shared_ptr<Player>>(client.plyrid, plyr));
 	}
 
 	return;
@@ -169,7 +145,7 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 	fwuint nId = 0;
 	this->playerLock.Block();
 
-	for (auto player : this->players)
+	for (auto player : this->world.players)
 	{
 		if (player.first >= nId)
 		{
@@ -178,7 +154,7 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 	}
 
 	auto plyr = std::make_shared<Player>(nId, ID, Address, PLAYER_CONNECTING);
-	this->players.insert(std::pair<fwuint, std::shared_ptr<Player>>(nId, plyr));
+	this->world.players.insert(std::pair<fwuint, std::shared_ptr<Player>>(nId, plyr));
 	this->playerLock.Release();
 
 	this->SendToClient(plyr->GetClient(), "Please enter your name: ");
@@ -210,15 +186,15 @@ fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
 fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 {
 	auto player = this->GetPlayerBySocket(ID);
-	auto playerIter = this->players.find(player->GetID());
+	auto playerIter = this->world.players.find(player->GetID());
 
-	if (playerIter != this->players.end())
+	if (playerIter != this->world.players.end())
 	{
 		auto id = player->GetID();
 		player.reset();
 
 		this->playerLock.Block();
-		this->players.erase(playerIter);
+		this->world.players.erase(playerIter);
 		this->playerLock.Release();
 
 		return fwclient { ID, id, Address, CCLIENT_DISCONNECTED };
@@ -229,11 +205,11 @@ fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 
 /* GameCore methods */
 
-fwvoid GameCore::Log(const Logging::LogLevel Level, const fwchar *Message)
+fwvoid GameCore::Log(const Logging::LogLevel Level, const fwstr Message)
 {
 	if (this->arbiter)
 	{
-		this->arbiter->SendLog(Level, Message);
+		this->arbiter->SendLog(Level, Message.c_str());
 	}
 
 	return;
@@ -278,18 +254,18 @@ fwvoid GameCore::CloseClient(const fwclient Client)
 	return;
 }
 
-fwvoid GameCore::BroadcastToAllButPlayer(const std::shared_ptr<Player> Client, const fwstr Message)
+fwvoid GameCore::BroadcastToAllButPlayer(const fwclient Client, const fwstr Message)
 {
 	if (Message.empty())
 	{
 		return;
 	}
 
-	for (auto player : this->players)
+	for (auto player : this->world.players)
 	{
-		if (player.first != Client->GetID())
+		if (player.first != Client.plyrid)
 		{
-			this->SendToClient(Client->GetClient(), Message);
+			this->SendToClient(Client, Message);
 		}
 	}
 
@@ -303,7 +279,7 @@ fwvoid GameCore::BroadcastToAll(const fwstr Message)
 		return;
 	}
 
-	for (auto player : this->players)
+	for (auto player : this->world.players)
 	{
 		this->SendToClient(player.second->GetClient(), Message);
 	}
@@ -311,34 +287,9 @@ fwvoid GameCore::BroadcastToAll(const fwstr Message)
 	return;
 }
 
-std::vector<std::shared_ptr<Player>> GameCore::GetPlayers()
-{
-	std::vector<std::shared_ptr<Player>> copy;
-
-	for (auto player : this->players)
-	{
-		copy.push_back(player.second);
-	}
-
-	return copy;
-}
-
-std::shared_ptr<Player> GameCore::GetPlayer(fwuint ID)
-{
-	for (auto player : this->players)
-	{
-		if (player.first == ID)
-		{
-			return player.second;
-		}
-	}
-
-	return nullptr;
-}
-
 std::shared_ptr<Player> GameCore::GetPlayerBySocket(fwuint SockFD)
 {
-	for (auto player : this->players)
+	for (auto player : this->world.players)
 	{
 		if (player.second->GetClient().sockfd == SockFD)
 		{

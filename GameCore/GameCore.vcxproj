@@ -124,7 +124,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameCore.h" />
+    <ClInclude Include="inc\Nodes\Actions\ActionQuit.h" />
+    <ClInclude Include="inc\Nodes\Admin\AdminHotboot.h" />
+    <ClInclude Include="inc\Nodes\Admin\AdminShutdown.h" />
+    <ClInclude Include="inc\Nodes\CommandNode.h" />
+    <ClInclude Include="inc\Nodes\Commands.h" />
+    <ClInclude Include="inc\Nodes\Comms\CommOoc.h" />
+    <ClInclude Include="inc\Nodes\Info\InfoWho.h" />
     <ClInclude Include="inc\Player.h" />
+    <ClInclude Include="inc\World.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonCore\CommonCore.vcxproj">
@@ -133,6 +141,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp" />
+    <ClCompile Include="src\Nodes\Actions\ActionQuit.cpp" />
+    <ClCompile Include="src\Nodes\Admin\AdminHotboot.cpp" />
+    <ClCompile Include="src\Nodes\Admin\AdminShutdown.cpp" />
+    <ClCompile Include="src\Nodes\Comms\CommOoc.cpp" />
+    <ClCompile Include="src\Nodes\Info\InfoWho.cpp" />
     <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
