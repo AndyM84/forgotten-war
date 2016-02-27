@@ -62,6 +62,7 @@ yaml_strdup(const yaml_char_t *str)
 {
     if (!str)
         return NULL;
+
 #ifdef YAML_WIN
 		return (yaml_char_t *)_strdup((char *)str);
 #else

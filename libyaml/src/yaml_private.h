@@ -3,6 +3,11 @@
 #include <config.h>
 #endif
 
+/*
+ * Define these here for VS 2015 to disable
+ * warnings about sprintf() needing to be
+ * sprintf_s()
+ */
 #if defined(_MSC_VER) && _MSC_VER >= 1900
 	#define YAML_WIN
 	#define _CRT_SECURE_NO_WARNINGS
