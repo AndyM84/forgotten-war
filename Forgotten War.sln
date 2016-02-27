@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameCore", "GameCore\GameCo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ForgottenWar", "ForgottenWar\ForgottenWar.vcxproj", "{D0B1D62F-B059-4A87-935A-048B9A003005}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yamldll", "libyaml\win32\vs2008\yamldll.vcxproj", "{019A6F4C-E704-4879-8E53-622BD4BC9C89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -67,8 +69,19 @@ Global
 		{D0B1D62F-B059-4A87-935A-048B9A003005}.Release|Win32.Build.0 = Release|Win32
 		{D0B1D62F-B059-4A87-935A-048B9A003005}.Release|x64.ActiveCfg = Release|x64
 		{D0B1D62F-B059-4A87-935A-048B9A003005}.Release|x64.Build.0 = Release|x64
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Debug|ARM.ActiveCfg = Debug|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Debug|Win32.ActiveCfg = Debug|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Debug|Win32.Build.0 = Debug|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Debug|x64.ActiveCfg = Debug|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Release|ARM.ActiveCfg = Release|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Release|Win32.ActiveCfg = Release|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Release|Win32.Build.0 = Release|Win32
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{019A6F4C-E704-4879-8E53-622BD4BC9C89} = {B6BE972D-9F1F-4456-89EE-B0B604F20C76}
 	EndGlobalSection
 EndGlobal
