@@ -15,6 +15,24 @@
 #define SET_BIT(var, bit)        ((var) |= (bit))
 #define REMOVE_BIT(var, bit)     ((var) &= ~(bit))
 
+// Color codes
+#define GREY                     "`w"
+#define WHITE                    "`W"
+#define GREEN                    "`G"
+#define BLUE                     "`B"
+#define RED                      "`R"
+#define CYAN                     "`C"
+#define YELLOW                   "`Y"
+#define MAGENTA                  "`M"
+#define DARK_GREEN               "`g"
+#define DARK_BLUE                "`b"
+#define DARK_RED                 "`r"
+#define DARK_CYAN                "`c"
+#define DARK_YELLOW              "`y"
+#define DARK_MAGENTA             "`m"
+#define DARK_GREY                "`K"
+#define BLACK                    "`k"
+
 class GameCore : public Libraries::GameLibrary
 {
 public:
@@ -64,4 +82,6 @@ protected:
 	std::map<fwstr, CommandNode*> commands;
 	Threading::LockCriticalSection playerLock;
 	World world;
+
+	fwstr doColor(const fwstr original);
 };

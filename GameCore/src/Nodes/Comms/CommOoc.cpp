@@ -14,7 +14,7 @@ namespace Commands
 		}
 
 		std::stringstream ss;
-		ss << "[OOC] " << Player->GetName() << ": " << Message->GetSansCmd();
+		ss << "`K[`WOOC`K] `w" << Player->GetName() << "`K: `C" << Message->GetSansCmd();
 
 		Sender.BroadcastToAll(ss.str());
 		Message->Consume();

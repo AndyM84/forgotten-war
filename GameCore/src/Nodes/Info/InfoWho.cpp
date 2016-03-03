@@ -9,15 +9,15 @@ namespace Commands
 	FW::GAME_STATES InfoWho::Process(Libraries::GameLibrary &Sender, World World, std::shared_ptr<ServerMessage> Message, std::shared_ptr<Player> Player)
 	{
 		std::stringstream ss;
-		ss << "\nWho's Online\n------------\n";
+		ss << "\n`w[`RWho's Online`w]\n`w------------\n";
 
 		for (auto pl : World.players)
 		{
-			ss << pl.second->GetName();
+			ss << "`W" << pl.second->GetName();
 
 			if (pl.first == Player->GetID())
 			{
-				ss << " (You)";
+				ss << " `K(`cYou`K)";
 			}
 
 			ss << "\n";

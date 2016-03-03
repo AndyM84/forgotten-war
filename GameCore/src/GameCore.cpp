@@ -238,7 +238,7 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message)
 
 	if (this->arbiter)
 	{
-		this->arbiter->SendToClient(Client.sockfd, tmp);
+		this->arbiter->SendToClient(Client.sockfd, this->doColor(tmp));
 	}
 
 	return;
@@ -298,6 +298,97 @@ std::shared_ptr<Player> GameCore::GetPlayerBySocket(fwuint SockFD)
 	}
 
 	return nullptr;
+}
+
+fwstr GameCore::doColor(const fwstr original)
+{
+	if (original.length() < 1)
+	{
+		return original;
+	}
+
+	fwstr result;
+
+	for (int i = 0; i < original.length(); ++i)
+	{
+		if (original[i] != '`')
+		{
+			result += original[i];
+
+			continue;
+		}
+
+		if (original[i + 1] == '`')
+		{
+			result += '`';
+
+			continue;
+		}
+
+		result += "\u001b";
+
+		switch (original[++i])
+		{
+		case '0': // [0m
+			result += "[0m";
+			break;
+		case 'w': // [0;37m
+			result += "[0;37m";
+			break;
+		case 'W': // [1;37m
+			result += "[1;37m";
+			break;
+		case 'g': // [0;32m
+			result += "[0;32m";
+			break;
+		case 'G': // [1;32m
+			result += "[1;32m";
+			break;
+		case 'b': // [0;34m
+			result += "[0;34m";
+			break;
+		case 'B': // [1;34m
+			result += "[1;34m";
+			break;
+		case 'r': // [0;31m
+			result += "[0;31m";
+			break;
+		case 'R': // [1;31m
+			result += "[1;31m";
+			break;
+		case 'c': // [0;36m
+			result += "[0;36m";
+			break;
+		case 'C': // [1;36m
+			result += "[1;36m";
+			break;
+		case 'y': // [0;33m
+			result += "[0;33m";
+			break;
+		case 'Y': // [1;33m
+			result += "[1;33m";
+			break;
+		case 'm': // [0;35m
+			result += "[0;35m";
+			break;
+		case 'M': // [1;35m
+			result += "[1;35m";
+			break;
+		case 'k': // [0;30m
+			result += "[0;30m";
+			break;
+		case 'K': // [1;30m
+			result += "[1;30m";
+			break;
+		default:
+			++i;
+			break;
+		}
+	}
+
+	result += "\u001b[0m";
+
+	return result;
 }
 
 FW_INIT_LIBRARY(GameCore);
