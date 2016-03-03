@@ -84,4 +84,5 @@ protected:
 	World world;
 
 	fwstr doColor(const fwstr original);
+	fwstr doPrompt(std::shared_ptr<Player> Player, const fwstr original);
 };

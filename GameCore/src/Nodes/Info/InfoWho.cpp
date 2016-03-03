@@ -23,7 +23,7 @@ namespace Commands
 			ss << "\n";
 		}
 
-		ss << "\n\n";
+		ss << "\n";
 		Sender.SendToClient(Player->GetClient(), ss.str());
 
 		return World.gameState;

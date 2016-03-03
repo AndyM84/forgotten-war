@@ -11,6 +11,7 @@ namespace Commands
 		std::stringstream ss;
 		ss << Player->GetName() << " has left the game!";
 		Sender.BroadcastToAllButPlayer(Player->GetClient(), ss.str());
+		Player->SetState(PLAYER_STATES::PLAYER_DISCONNECTED);
 
 		Sender.SendToClient(Player->GetClient(), "Thanks for playing, come back soon!\n\n");
 		Sender.CloseClient(Player->GetClient());

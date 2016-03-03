@@ -26,6 +26,24 @@ fwbool GameCore::Setup()
 	this->commands.insert(commandPair("quit", new Commands::ActionQuit));
 	this->commands.insert(commandPair("hotboot", new Commands::AdminHotboot));
 	this->commands.insert(commandPair("shutdown", new Commands::AdminShutdown));
+	this->commands.insert(commandPair("save", new Commands::ActionSave));
+	this->commands.insert(commandPair("look", new Commands::ActionLook));
+	this->commands.insert(commandPair("say", new Commands::CommSay));
+
+	// Add our movements
+	this->commands.insert(commandPair("north", new Commands::ActionMove));
+	this->commands.insert(commandPair("south", new Commands::ActionMove));
+	this->commands.insert(commandPair("east", new Commands::ActionMove));
+	this->commands.insert(commandPair("west", new Commands::ActionMove));
+	this->commands.insert(commandPair("up", new Commands::ActionMove));
+	this->commands.insert(commandPair("down", new Commands::ActionMove));
+
+	// Add our emotes
+	this->commands.insert(commandPair("smile", new Commands::EmoteEmote));
+	this->commands.insert(commandPair("grin", new Commands::EmoteEmote));
+	this->commands.insert(commandPair("bow", new Commands::EmoteEmote));
+	this->commands.insert(commandPair("laugh", new Commands::EmoteEmote));
+	this->commands.insert(commandPair("chuckle", new Commands::EmoteEmote));
 
 	return true;
 }
@@ -86,7 +104,7 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 				this->BroadcastToAllButPlayer(player->GetClient(), ss.str());
 
 				ss = std::stringstream("");
-				ss << "\n\nThanks for playing, " << player->GetName();
+				ss << "\nEnjoy the game, " << player->GetName() << ".";
 				this->SendToClient(player->GetClient(), ss.str());
 
 				continue;
@@ -102,6 +120,17 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 			else
 			{
 				this->SendToClient(player->GetClient(), "That is not a known command.");
+			}
+
+			if (this->world.gameState == FW::GAME_STATES::FWGAME_HOTBOOTING)
+			{
+				this->SendToClient(player->GetClient(), "Sounds good boss, hotbooting.\n\n");
+				this->BroadcastToAllButPlayer(player->GetClient(), "Hold that thought, we'll be right back..\n\n");
+			}
+			else if (this->world.gameState == FW::GAME_STATES::FWGAME_STOPPING)
+			{
+				this->SendToClient(player->GetClient(), "Sounds good boss, shutting down.\n\n");
+				this->BroadcastToAllButPlayer(player->GetClient(), "The server is shutting down, who knows if we'll be back.\n\n");
 			}
 		}
 		else
@@ -224,11 +253,6 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message)
 
 	fwstr tmp;
 
-	if (Message[0] != '\n' && Message[0] != '\r')
-	{
-		tmp += "\n\n";
-	}
-
 	tmp += Message;
 
 	if (Message[Message.length() - 1] != ' ' && Message[Message.length() - 1] != '\n' && Message[Message.length() - 1] != '\r')
@@ -238,6 +262,13 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message)
 
 	if (this->arbiter)
 	{
+		auto plr = this->world.players.find(Client.plyrid);
+
+		if (plr != this->world.players.end() && plr->second->GetState() == PLAYER_STATES::PLAYER_CONNECTED && this->world.gameState == FW::GAME_STATES::FWGAME_RUNNING)
+		{
+			tmp = this->doPrompt(plr->second, tmp);
+		}
+
 		this->arbiter->SendToClient(Client.sockfd, this->doColor(tmp));
 	}
 
@@ -389,6 +420,26 @@ fwstr GameCore::doColor(const fwstr original)
 	result += "\u001b[0m";
 
 	return result;
+}
+
+fwstr GameCore::doPrompt(std::shared_ptr<Player> Player, const fwstr original)
+{
+	if (original.length() < 1)
+	{
+		return original;
+	}
+
+	auto loc = Player->GetLocation();
+	std::stringstream ss;
+
+	if (original[original.length() - 1] != '\n')
+	{
+		ss << "\n\n";
+	}
+
+	ss << "`wCurrent Position: {" << loc.X << "," << loc.Y << "," << loc.Z << "} > ";
+
+	return original + ss.str();
 }
 
 FW_INIT_LIBRARY(GameCore);

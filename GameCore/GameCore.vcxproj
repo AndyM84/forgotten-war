@@ -124,14 +124,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameCore.h" />
+    <ClInclude Include="inc\Nodes\Actions\ActionLook.h" />
+    <ClInclude Include="inc\Nodes\Actions\ActionMove.h" />
     <ClInclude Include="inc\Nodes\Actions\ActionQuit.h" />
+    <ClInclude Include="inc\Nodes\Actions\ActionSave.h" />
     <ClInclude Include="inc\Nodes\Admin\AdminHotboot.h" />
     <ClInclude Include="inc\Nodes\Admin\AdminShutdown.h" />
     <ClInclude Include="inc\Nodes\CommandNode.h" />
     <ClInclude Include="inc\Nodes\Commands.h" />
     <ClInclude Include="inc\Nodes\Comms\CommOoc.h" />
+    <ClInclude Include="inc\Nodes\Comms\CommSay.h" />
+    <ClInclude Include="inc\Nodes\Emotes\EmoteEmote.h" />
     <ClInclude Include="inc\Nodes\Info\InfoWho.h" />
     <ClInclude Include="inc\Player.h" />
+    <ClInclude Include="inc\Room.h" />
     <ClInclude Include="inc\World.h" />
   </ItemGroup>
   <ItemGroup>
@@ -141,12 +147,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp" />
+    <ClCompile Include="src\Nodes\Actions\ActionLook.cpp" />
+    <ClCompile Include="src\Nodes\Actions\ActionMove.cpp" />
     <ClCompile Include="src\Nodes\Actions\ActionQuit.cpp" />
+    <ClCompile Include="src\Nodes\Actions\ActionSave.cpp" />
     <ClCompile Include="src\Nodes\Admin\AdminHotboot.cpp" />
     <ClCompile Include="src\Nodes\Admin\AdminShutdown.cpp" />
     <ClCompile Include="src\Nodes\Comms\CommOoc.cpp" />
+    <ClCompile Include="src\Nodes\Comms\CommSay.cpp" />
+    <ClCompile Include="src\Nodes\Comms\EmoteEmote.cpp" />
     <ClCompile Include="src\Nodes\Info\InfoWho.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Room.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,7 @@ Player::Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in A
 	: client(fwclient { ClientID, PlayerID, Address, CCLIENT_INVALID }), id(PlayerID)
 {
 	this->SetState(State);
+	this->SetLocation(Vector { 0, 0, 0 });
 
 	return;
 }
@@ -42,6 +43,28 @@ const PLAYER_STATES Player::GetState() const
 	return this->state;
 }
 
+const Vector Player::GetLocation() const
+{
+	return this->location;
+}
+
+fwbool Player::IsInLocation(Vector Location) const
+{
+	if (Location.X == this->location.X && Location.Y == this->location.Y && Location.Z == this->location.Z)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+fwbool Player::IsNearLocation(Vector Location) const
+{
+	Vector dist = { abs(Location.X - this->location.X), abs(Location.Y - this->location.Y), abs(Location.Z - this->location.Z) };
+
+	return dist.X < NEAR_DISTANCE && dist.Y < NEAR_DISTANCE && dist.Z < NEAR_DISTANCE;
+}
+
 // Actions
 Player &Player::AddBufferMessage(const std::shared_ptr<ServerMessage> Message)
 {
@@ -78,6 +101,13 @@ Player &Player::SetState(PLAYER_STATES State)
 		this->client.state = CCLIENT_INVALID;
 		break;
 	}
+
+	return *this;
+}
+
+Player &Player::SetLocation(Vector Location)
+{
+	this->location = Location;
 
 	return *this;
 }

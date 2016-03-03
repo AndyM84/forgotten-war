@@ -133,7 +133,7 @@
     <ProjectReference Include="..\CommonCore\CommonCore.vcxproj">
       <Project>{ab18ecf8-3528-42e2-81f9-beef02e7d8ae}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\ibyaml\win32\vs2008\yamldll.vcxproj">
+    <ProjectReference Include="..\libyaml\win32\vs2008\yamldll.vcxproj">
       <Project>{019a6f4c-e704-4879-8e53-622bd4bc9c89}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ServerCore\ServerCore.vcxproj">

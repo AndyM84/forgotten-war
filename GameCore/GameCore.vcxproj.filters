@@ -55,6 +55,12 @@
     <Filter Include="Header Files\Nodes\Admin">
       <UniqueIdentifier>{93fb4a7f-7652-4771-8a02-93b6437eb41e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Nodes\Emotes">
+      <UniqueIdentifier>{f9b5101e-49a0-4661-8708-aeffac764cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Nodes\Emotes">
+      <UniqueIdentifier>{2d7c4abc-9a78-4e39-acaa-3aa69b7e1eff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameCore.h">
@@ -87,6 +93,24 @@
     <ClInclude Include="inc\Nodes\Admin\AdminShutdown.h">
       <Filter>Header Files\Nodes\Admin</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Room.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Actions\ActionSave.h">
+      <Filter>Header Files\Nodes\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Actions\ActionLook.h">
+      <Filter>Header Files\Nodes\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Emotes\EmoteEmote.h">
+      <Filter>Header Files\Nodes\Emotes</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Actions\ActionMove.h">
+      <Filter>Header Files\Nodes\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Nodes\Comms\CommSay.h">
+      <Filter>Header Files\Nodes\Comms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp">
@@ -109,6 +133,24 @@
     </ClCompile>
     <ClCompile Include="src\Nodes\Admin\AdminShutdown.cpp">
       <Filter>Source Files\Nodes\Admin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Room.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Actions\ActionLook.cpp">
+      <Filter>Source Files\Nodes\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Actions\ActionMove.cpp">
+      <Filter>Source Files\Nodes\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Actions\ActionSave.cpp">
+      <Filter>Source Files\Nodes\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Comms\CommSay.cpp">
+      <Filter>Source Files\Nodes\Comms</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Comms\EmoteEmote.cpp">
+      <Filter>Source Files\Nodes\Emotes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
