@@ -265,7 +265,7 @@ fwvoid GameCore::BroadcastToAllButPlayer(const fwclient Client, const fwstr Mess
 	{
 		if (player.first != Client.plyrid)
 		{
-			this->SendToClient(Client, Message);
+			this->SendToClient(player.second->GetClient(), Message);
 		}
 	}
 
@@ -309,7 +309,7 @@ fwstr GameCore::doColor(const fwstr original)
 
 	fwstr result;
 
-	for (int i = 0; i < original.length(); ++i)
+	for (fwuint i = 0; i < original.length(); ++i)
 	{
 		if (original[i] != '`')
 		{
