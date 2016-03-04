@@ -29,10 +29,6 @@
     <ClInclude Include="inc\Logging\LogData.h" />
     <ClInclude Include="inc\Logging\Logger.h" />
     <ClInclude Include="inc\Logging\LogWorker.h" />
-    <ClInclude Include="inc\N2f\BaseClasses\DispatchBase.h" />
-    <ClInclude Include="inc\N2f\BaseClasses\NodeBase.h" />
-    <ClInclude Include="inc\N2f\Helpers\ChainHelper.h" />
-    <ClInclude Include="inc\N2f\N2f.h" />
     <ClInclude Include="inc\ServerMessage.h" />
     <ClInclude Include="inc\Threading\Lock.h" />
     <ClInclude Include="inc\Threading\LockCriticalSection.h" />
@@ -63,6 +59,9 @@
   <ItemGroup>
     <ProjectReference Include="..\libyaml\win32\vs2008\yamldll.vcxproj">
       <Project>{019a6f4c-e704-4879-8e53-622bd4bc9c89}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\n2framework\C++\N2F 2.0.vcxproj">
+      <Project>{5e0607e6-5397-45a7-82b2-5bb4364e8437}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">

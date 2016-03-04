@@ -53,25 +53,6 @@ int main(int argc, char *argv[])
 
 	auto mappedArgs = disp.GetParameterMap(true);
 	auto runIter = mappedArgs.find("run");
-	auto debugIter = mappedArgs.find("debug");
-	fwbool isCliDebug = !IS_DEBUG && debugIter != mappedArgs.end();
-
-	if (isCliDebug)
-	{
-		std::string title = "FW Service in Startup - 60 Seconds to Take Action";
-		std::string message = "To debug, attach in Visual Studio, then click OK.";
-
-		DWORD consoleSession = ::WTSGetActiveConsoleSessionId();
-		DWORD response;
-		BOOL ret = ::WTSSendMessage(WTS_CURRENT_SERVER_HANDLE,
-			consoleSession,
-			const_cast<char*>(title.c_str()), title.length(),
-			const_cast<char*>(message.c_str()), message.length(),
-			MB_OK,
-			60,
-			&response,
-			TRUE);
-	}
 
 	if (runIter != mappedArgs.end() || IS_DEBUG)
 	{
