@@ -44,6 +44,7 @@ fwbool GameCore::Setup()
 	this->commands.insert(commandPair("bow", new Commands::EmoteEmote));
 	this->commands.insert(commandPair("laugh", new Commands::EmoteEmote));
 	this->commands.insert(commandPair("chuckle", new Commands::EmoteEmote));
+	this->commands.insert(commandPair("emote", new Commands::EmoteEmote));
 
 	return true;
 }
