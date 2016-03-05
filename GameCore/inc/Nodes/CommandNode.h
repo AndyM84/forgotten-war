@@ -3,7 +3,7 @@
 #include <CommonCore.h>
 #include <World.h>
 
-class CommandNode : public N2f::NodeBase
+class CommandNode : public N2f::NodeBase<ServerMessage>
 {
 public:
 	CommandNode(fwstr Key, fwstr Version) { this->SetKey(Key.c_str()); this->SetVersion(Version.c_str()); }

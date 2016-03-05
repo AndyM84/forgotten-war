@@ -18,7 +18,7 @@
 #include <Libraries/Librarian.h>
 
 /* N2f */
-#include <N2f/N2f.h>
+#include <N2f.hpp>
 
 // Server message
 #include <ServerMessage.h>

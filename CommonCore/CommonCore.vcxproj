@@ -45,9 +45,6 @@
     <ClCompile Include="src\Logging\LogData.cpp" />
     <ClCompile Include="src\Logging\Logger.cpp" />
     <ClCompile Include="src\Logging\LogWorker.cpp" />
-    <ClCompile Include="src\N2f\BaseClasses\DispatchBase.cpp" />
-    <ClCompile Include="src\N2f\BaseClasses\NodeBase.cpp" />
-    <ClCompile Include="src\N2f\Helpers\ChainHelper.cpp" />
     <ClCompile Include="src\ServerMessage.cpp" />
     <ClCompile Include="src\Threading\Lock.cpp" />
     <ClCompile Include="src\Threading\LockCriticalSection.cpp" />
@@ -60,7 +57,7 @@
     <ProjectReference Include="..\libyaml\win32\vs2008\yamldll.vcxproj">
       <Project>{019a6f4c-e704-4879-8e53-622bd4bc9c89}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\n2framework\C++\N2F 2.0.vcxproj">
+    <ProjectReference Include="..\n2framework\N2F 2.0.vcxproj">
       <Project>{5e0607e6-5397-45a7-82b2-5bb4364e8437}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -116,31 +113,39 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)n2framework\include;$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)n2framework\include;$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)n2framework\include;$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)n2framework\include;$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)n2framework\C++\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Lib />
+    <Lib />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)n2framework\C++\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Lib />
+    <Lib />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -149,11 +154,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)n2framework\C++\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib />
+    <Lib />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -162,11 +171,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)n2framework\C++\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib />
+    <Lib />
+    <ProjectReference />
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

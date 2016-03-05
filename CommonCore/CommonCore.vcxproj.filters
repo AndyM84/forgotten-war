@@ -131,15 +131,6 @@
     <ClCompile Include="src\Threading\Threadable.cpp">
       <Filter>Source Files\Threading</Filter>
     </ClCompile>
-    <ClCompile Include="src\N2f\BaseClasses\DispatchBase.cpp">
-      <Filter>Source Files\N2f\BaseClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="src\N2f\BaseClasses\NodeBase.cpp">
-      <Filter>Source Files\N2f\BaseClasses</Filter>
-    </ClCompile>
-    <ClCompile Include="src\N2f\Helpers\ChainHelper.cpp">
-      <Filter>Source Files\N2f\Helpers</Filter>
-    </ClCompile>
     <ClCompile Include="src\ServerMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -19,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ForgottenWar", "ForgottenWa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yamldll", "libyaml\win32\vs2008\yamldll.vcxproj", "{019A6F4C-E704-4879-8E53-622BD4BC9C89}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "N2F 2.0", "n2framework\C++\N2F 2.0.vcxproj", "{5E0607E6-5397-45A7-82B2-5BB4364E8437}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "N2F 2.0", "n2framework\N2F 2.0.vcxproj", "{5E0607E6-5397-45A7-82B2-5BB4364E8437}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
