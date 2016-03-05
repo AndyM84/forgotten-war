@@ -111,6 +111,9 @@
     <ClInclude Include="inc\Nodes\Comms\CommSay.h">
       <Filter>Header Files\Nodes\Comms</Filter>
     </ClInclude>
+    <ClInclude Include="inc\Nodes\Comms\CommYell.h">
+      <Filter>Header Files\Nodes\Comms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameCore.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="src\Nodes\Comms\EmoteEmote.cpp">
       <Filter>Source Files\Nodes\Emotes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Nodes\Comms\CommYell.cpp">
+      <Filter>Source Files\Nodes\Comms</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -21,14 +21,17 @@ fwbool GameCore::Setup()
 	this->world.gameState = FW::GAME_STATES::FWGAME_STARTING;
 
 	// Add our commands to our temporary 'parser'
-	this->commands.insert(commandPair("ooc", new Commands::CommOoc));
 	this->commands.insert(commandPair("who", new Commands::InfoWho));
 	this->commands.insert(commandPair("quit", new Commands::ActionQuit));
 	this->commands.insert(commandPair("hotboot", new Commands::AdminHotboot));
 	this->commands.insert(commandPair("shutdown", new Commands::AdminShutdown));
 	this->commands.insert(commandPair("save", new Commands::ActionSave));
 	this->commands.insert(commandPair("look", new Commands::ActionLook));
+
+	// Add our communication channels
+	this->commands.insert(commandPair("ooc", new Commands::CommOoc));
 	this->commands.insert(commandPair("say", new Commands::CommSay));
+	this->commands.insert(commandPair("yell", new Commands::CommYell));
 
 	// Add our movements
 	this->commands.insert(commandPair("north", new Commands::ActionMove));

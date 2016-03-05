@@ -134,6 +134,7 @@
     <ClInclude Include="inc\Nodes\Commands.h" />
     <ClInclude Include="inc\Nodes\Comms\CommOoc.h" />
     <ClInclude Include="inc\Nodes\Comms\CommSay.h" />
+    <ClInclude Include="inc\Nodes\Comms\CommYell.h" />
     <ClInclude Include="inc\Nodes\Emotes\EmoteEmote.h" />
     <ClInclude Include="inc\Nodes\Info\InfoWho.h" />
     <ClInclude Include="inc\Player.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="src\Nodes\Admin\AdminShutdown.cpp" />
     <ClCompile Include="src\Nodes\Comms\CommOoc.cpp" />
     <ClCompile Include="src\Nodes\Comms\CommSay.cpp" />
+    <ClCompile Include="src\Nodes\Comms\CommYell.cpp" />
     <ClCompile Include="src\Nodes\Comms\EmoteEmote.cpp" />
     <ClCompile Include="src\Nodes\Info\InfoWho.cpp" />
     <ClCompile Include="src\Player.cpp" />

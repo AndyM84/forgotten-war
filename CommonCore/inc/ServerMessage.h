@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Common/Types.h>
-#include <N2f.hpp>
+#include "../../n2framework/include/N2f.hpp"
 
 #include <algorithm>
 

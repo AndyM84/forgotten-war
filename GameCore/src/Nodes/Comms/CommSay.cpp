@@ -17,7 +17,7 @@ namespace Commands
 
 		for (auto plr : World.players)
 		{
-			if (plr.first == Player->GetID())
+			if (plr.first == Player->GetID() || !plr.second->IsInLocation(Player->GetLocation()))
 			{
 				continue;
 			}

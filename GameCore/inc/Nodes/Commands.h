@@ -6,6 +6,7 @@
 // Communication nodes
 #include <Nodes/Comms/CommOoc.h>
 #include <Nodes/Comms/CommSay.h>
+#include <Nodes/Comms/CommYell.h>
 
 // Info nodes
 #include <Nodes/Info/InfoWho.h>
