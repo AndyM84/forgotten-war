@@ -5,7 +5,7 @@
 ForgottenWar::ForgottenWar(fwuint Port)
 {
 	this->logger = nullptr;
-	this->server = new Server::SelectServer(*this, Port, *this->logger);
+	this->server = new Server::SelectServer(*this, Port);
 	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
 	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
@@ -198,7 +198,7 @@ fwvoid ForgottenWar::Initialize()
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Starting the SelectServer");
 	this->server->Initialize();
 
-	this->serverThread = std::make_shared<Threading::Thread>(Threading::Thread(*this->server));
+	this->serverThread = new Threading::Thread(*this->server);
 	this->serverThread->Start();
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Setting up the GameCore instance");
@@ -288,7 +288,7 @@ fwvoid ForgottenWar::Stop()
 		Sleep(1500);
 
 		this->serverThread->CloseThread();
-		this->serverThread.reset();
+		delete this->serverThread;
 		delete this->server;
 	}
 

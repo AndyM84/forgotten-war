@@ -54,9 +54,6 @@
     <ClCompile Include="src\YamlFile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libyaml\win32\vs2008\yamldll.vcxproj">
-      <Project>{019a6f4c-e704-4879-8e53-622bd4bc9c89}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\n2framework\N2F 2.0.vcxproj">
       <Project>{5e0607e6-5397-45a7-82b2-5bb4364e8437}</Project>
     </ProjectReference>

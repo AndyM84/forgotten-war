@@ -22,7 +22,7 @@
 #endif
 
 SERVICE_STATUS_HANDLE g_ServiceStatusHandle;
-HANDLE g_StopEvent, g_Shutdown;
+HANDLE g_StopEvent;
 DWORD g_CurrentState = 0;
 bool g_SystemShutdown = false;
 Threading::Thread *lt;
@@ -74,9 +74,11 @@ int main(int argc, char *argv[])
 			// TODO: Add some more stuff here, like perhaps look into log levels and what not
 		}
 
+		g_StopEvent = CreateEvent(NULL, true, false, NULL);
+
 		while (RunFW() == FW::GAME_STATES::FWGAME_RUNNING)
 		{
-			if (WaitForSingleObject(g_StopEvent, 1) == WAIT_OBJECT_0)
+			if (g_StopEvent != NULL && WaitForSingleObject(g_StopEvent, 1) == WAIT_OBJECT_0)
 			{
 				result = StopFW();
 
@@ -136,6 +138,7 @@ int StopFW()
 {
 	fw->Stop();
 	lt->Terminate();
+	lt->CloseThread();
 
 	delete fw;
 	delete lt;

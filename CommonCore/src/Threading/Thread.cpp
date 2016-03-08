@@ -4,7 +4,7 @@ namespace Threading
 {
 	Thread::~Thread()
 	{
-		this->m_Target->SignalTerminate();
+		this->CloseThread();
 
 		return;
 	}
@@ -65,6 +65,8 @@ namespace Threading
 		TerminateThread((HANDLE)this->m_Handle, 0);
 #else
 #endif
+
+		this->m_Handle = NULL;
 
 		return;
 	}
