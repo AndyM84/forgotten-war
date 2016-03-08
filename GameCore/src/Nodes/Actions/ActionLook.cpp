@@ -23,7 +23,9 @@ namespace Commands
 					hasUsers = true;
 				}
 
-				ss << "\n" << plr.second->GetName() << " is here.";
+				ss << "\n";
+				ss << ((plr.first == Player->GetID()) ? "You" : plr.second->GetName());
+				ss << ((plr.first == Player->GetID()) ? " are here." : " is here.");
 			}
 		}
 

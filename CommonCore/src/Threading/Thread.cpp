@@ -49,7 +49,11 @@ namespace Threading
 	fwvoid Thread::Terminate()
 	{
 		this->m_ThreadStatus = THREAD_TERMINATED;
-		this->m_Target->SignalTerminate();
+
+		if (this->m_Target && this->m_Handle != NULL)
+		{
+			this->m_Target->SignalTerminate();
+		}
 
 		return;
 	}

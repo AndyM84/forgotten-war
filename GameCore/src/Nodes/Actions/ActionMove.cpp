@@ -75,7 +75,28 @@ namespace Commands
 			}
 
 			Player->SetLocation(nLoc);
-			Sender.SendToClient(Player->GetClient(), "A Room\n-----------------\nYou are in a room, just like every other.");
+
+			fwbool hasUsers = false;
+			std::stringstream ss;
+			ss << "A Room\n-----------------\nYou are in a room, just like every other.";
+
+			for (auto plr : World.players)
+			{
+				if (plr.second->IsInLocation(Player->GetLocation()))
+				{
+					if (!hasUsers)
+					{
+						ss << "\n";
+						hasUsers = true;
+					}
+
+					ss << "\n";
+					ss << ((plr.first == Player->GetID()) ? "You" : plr.second->GetName());
+					ss << ((plr.first == Player->GetID()) ? " are here." : " is here.");
+				}
+			}
+
+			Sender.SendToClient(Player->GetClient(), ss.str());
 		}
 		else
 		{
