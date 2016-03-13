@@ -110,20 +110,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)libyaml\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -137,7 +137,7 @@
     <Lib />
     <ProjectReference />
     <Lib>
-      <AdditionalDependencies>n2f-2.0.lib</AdditionalDependencies>
+      <AdditionalDependencies>n2f-2.0.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)n2framework\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -154,7 +154,7 @@
     <Lib />
     <ProjectReference />
     <Lib>
-      <AdditionalDependencies>n2f-2.0.lib</AdditionalDependencies>
+      <AdditionalDependencies>n2f-2.0.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)n2framework\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -177,7 +177,7 @@
     <Lib />
     <ProjectReference />
     <Lib>
-      <AdditionalDependencies>n2f-2.0.lib</AdditionalDependencies>
+      <AdditionalDependencies>n2f-2.0.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)n2framework\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -200,7 +200,7 @@
     <Lib />
     <ProjectReference />
     <Lib>
-      <AdditionalDependencies>n2f-2.0.lib</AdditionalDependencies>
+      <AdditionalDependencies>n2f-2.0.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)n2framework\$(Configuration)\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

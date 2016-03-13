@@ -24,9 +24,9 @@ public:
 	/* Ctor's and dtor */
 
 	/* Basic ctor */
-	ForgottenWar(fwuint Port);
+	ForgottenWar(fwstr ExePath, fwuint Port);
 	/* Ctor that allows for shared logging */
-	ForgottenWar(fwuint Port, Logging::Logger &Logger);
+	ForgottenWar(fwstr ExePath, fwuint Port, Logging::Logger &Logger);
 	/* Dtor */
 	~ForgottenWar();
 
@@ -62,6 +62,8 @@ protected:
 	FW::GAME_STATES gameState;
 	Logging::Logger *logger;
 	fwhandle gameEvent;
+
+	const fwstr exePath;
 
 	/* Protected methods */
 

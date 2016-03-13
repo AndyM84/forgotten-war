@@ -2,7 +2,8 @@
 
 /* Ctor's and dtor */
 
-ForgottenWar::ForgottenWar(fwuint Port)
+ForgottenWar::ForgottenWar(fwstr ExePath, fwuint Port)
+	: exePath(ExePath)
 {
 	this->logger = nullptr;
 	this->server = new Server::SelectServer(*this, Port);
@@ -12,7 +13,8 @@ ForgottenWar::ForgottenWar(fwuint Port)
 	return;
 }
 
-ForgottenWar::ForgottenWar(fwuint Port, Logging::Logger &Logger)
+ForgottenWar::ForgottenWar(fwstr ExePath, fwuint Port, Logging::Logger &Logger)
+	: exePath(ExePath)
 {
 	this->logger = &Logger;
 	this->server = new Server::SelectServer(*this, Port, *this->logger);
@@ -186,7 +188,7 @@ fwvoid ForgottenWar::Initialize()
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading GameCore library to start game");
-	this->game = this->librarian.Load(GAME_CORE);
+	this->game = this->librarian.Load(this->exePath + GAME_CORE);
 
 	if (!this->game)
 	{
@@ -275,7 +277,7 @@ fwvoid ForgottenWar::Stop()
 	if (this->game)
 	{
 		this->game = nullptr;
-		this->librarian.Unload(GAME_CORE);
+		this->librarian.Unload(this->exePath + GAME_CORE);
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
@@ -352,13 +354,13 @@ fwvoid ForgottenWar::hotbootCore()
 		this->game->SaveState();
 		this->game = nullptr;
 
-		this->librarian.Unload(GAME_CORE);
+		this->librarian.Unload(this->exePath + GAME_CORE);
 
 		this->log(Logging::LogLevel::LOG_DEBUG, "FW - Unloaded existing GameCore instance");
 	}
 
 	// load GameCore
-	this->game = this->librarian.Load(GAME_CORE);
+	this->game = this->librarian.Load(this->exePath + GAME_CORE);
 
 	// if load failed, we must acqu...I mean abort
 	if (!this->game)

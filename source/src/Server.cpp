@@ -122,8 +122,19 @@ bool StartFW(int port)
 	lt = new Threading::Thread(fwLw);
 	lt->Start();
 
+	TCHAR szExePath[4096];
+	GetModuleFileName(NULL, szExePath, 4096);
+	fwstr exePath(szExePath);
+
+	auto lpos = exePath.find_last_of('\\');
+
+	if (lpos == fwstr::npos)
+	{
+		lpos = 0;
+	}
+
 	// Create our main class
-	fw = new ForgottenWar(9005, fwLog);
+	fw = new ForgottenWar(exePath.substr(0, lpos) + "\\", 9005, fwLog);
 	fw->Initialize();
 
 	return true;
