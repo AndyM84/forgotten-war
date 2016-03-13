@@ -7,6 +7,9 @@
 #include <iostream>
 #include <map>
 
+#define _SQLNCLI_OLEDB_
+#include "sqlncli.h";
+
 // Utility macros
 #define UMIN(a, b)               ((a) < (b) ? (a) : (b))
 #define UMAX(a, b)               ((a) > (b) ? (a) : (b))

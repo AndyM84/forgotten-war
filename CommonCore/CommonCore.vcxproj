@@ -35,7 +35,6 @@
     <ClInclude Include="inc\Threading\LockMutex.h" />
     <ClInclude Include="inc\Threading\Thread.h" />
     <ClInclude Include="inc\Threading\Threadable.h" />
-    <ClInclude Include="inc\YamlFile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Libraries\Library.cpp" />

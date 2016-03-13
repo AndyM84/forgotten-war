@@ -93,9 +93,6 @@
     <ClInclude Include="inc\ServerMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\YamlFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logging\AppenderBase.cpp">

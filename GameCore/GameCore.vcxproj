@@ -69,17 +69,17 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)GameCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)CommonCore\inc;$(SolutionDir)GameCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
