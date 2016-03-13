@@ -219,6 +219,11 @@ fwvoid ForgottenWar::Initialize()
 
 FW::GAME_STATES ForgottenWar::GameLoop()
 {
+	if (this->game == nullptr)
+	{
+		return FW::GAME_STATES::FWGAME_INVALID;
+	}
+
 	// Check if we need to exit
 	this->gameLock.Block();
 

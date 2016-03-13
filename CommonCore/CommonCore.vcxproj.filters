@@ -134,8 +134,5 @@
     <ClCompile Include="src\Libraries\Library.cpp">
       <Filter>Source Files\Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="src\YamlFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

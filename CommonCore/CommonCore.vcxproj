@@ -50,7 +50,6 @@
     <ClCompile Include="src\Threading\LockMutex.cpp" />
     <ClCompile Include="src\Threading\Thread.cpp" />
     <ClCompile Include="src\Threading\Threadable.cpp" />
-    <ClCompile Include="src\YamlFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\n2framework\N2F 2.0.vcxproj">

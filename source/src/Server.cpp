@@ -134,7 +134,7 @@ bool StartFW(int port)
 	}
 
 	// Create our main class
-	fw = new ForgottenWar(exePath.substr(0, lpos) + "\\", 9005, fwLog);
+	fw = new ForgottenWar(exePath.substr(0, lpos)/* + "\\"*/, 9005, fwLog);
 	fw->Initialize();
 
 	return true;
