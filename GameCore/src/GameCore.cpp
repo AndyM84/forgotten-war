@@ -305,7 +305,7 @@ fwvoid GameCore::BroadcastToAllButPlayer(const fwclient Client, const fwstr Mess
 
 	for (auto player : this->world.players)
 	{
-		if (player.first != Client.plyrid)
+		if (player.first != Client.plyrid && player.second->GetState() == PLAYER_STATES::PLAYER_CONNECTED)
 		{
 			this->SendToClient(player.second->GetClient(), Message);
 		}
@@ -323,7 +323,10 @@ fwvoid GameCore::BroadcastToAll(const fwstr Message)
 
 	for (auto player : this->world.players)
 	{
-		this->SendToClient(player.second->GetClient(), Message);
+		if (player.second->GetState() == PLAYER_STATES::PLAYER_CONNECTED)
+		{
+			this->SendToClient(player.second->GetClient(), Message);
+		}
 	}
 
 	return;
