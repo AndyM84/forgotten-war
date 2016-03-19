@@ -116,9 +116,6 @@ bool StartFW(int port)
 {
 	// TODO: This should work with some error reporting, probably
 
-	// Setup logging the way we want (this could be configured)
-	fwLw.AddAppender(new Logging::ConsoleAppender("FW"));
-
 	lt = new Threading::Thread(fwLw);
 	lt->Start();
 
@@ -133,8 +130,14 @@ bool StartFW(int port)
 		lpos = 0;
 	}
 
+	fwstr ep = exePath.substr(0, lpos) + "\\";
+
+	// Setup logging the way we want (this could be configured)
+	fwLw.AddAppender(new Logging::ConsoleAppender("FW"));
+	fwLw.AddAppender(new Logging::FileAppender("FW", ep + "fw.log"));
+
 	// Create our main class
-	fw = new ForgottenWar(exePath.substr(0, lpos)/* + "\\"*/, 9005, fwLog);
+	fw = new ForgottenWar(ep, 9005, fwLog);
 	fw->Initialize();
 
 	return true;
@@ -208,17 +211,15 @@ void WINAPI SvcMain(DWORD dwArg, LPTSTR *lpszArgv)
 
 	ReportSvcStatus(SERVICE_RUNNING, NO_ERROR, 0);
 
-	while (true)
+	while (RunFW() == FW::GAME_STATES::FWGAME_RUNNING)
 	{
-		RunFW();
-
 		if (WaitForSingleObject(gSvcStopEvent, 1) == WAIT_OBJECT_0)
 		{
-			ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
-
 			break;
 		}
 	}
+
+	ReportSvcStatus(SERVICE_STOP_PENDING, NO_ERROR, 0);
 
 	StopFW();
 	CloseHandle(gSvcStopEvent);
