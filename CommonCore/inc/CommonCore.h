@@ -17,8 +17,9 @@
 #include <Libraries/Library.h>
 #include <Libraries/Librarian.h>
 
-/* N2f */
+/* 3rd Party Libraries */
 #include "../../n2framework/include/N2f.hpp"
+#include <jsmn.h>
 
 // Server message
 #include <ServerMessage.h>
