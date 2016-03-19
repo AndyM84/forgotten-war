@@ -19,32 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DAD581BE-722D-483E-A517-4EEDFC167E5B}</ProjectGuid>
-    <RootNamespace>GameCore</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{1F8FB9E2-4F05-44B8-83A2-DF8D9D9F8D79}</ProjectGuid>
+    <RootNamespace>CommonCoreTests</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -69,37 +69,35 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x86;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)lib\windows;$(ProjectDir)inc;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\tests\</OutDir>
+    <IntDir>build\$(Platform)\$(Configuration)\tests\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x86;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)lib\windows;$(ProjectDir)inc;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\tests\</OutDir>
+    <IntDir>build\$(Platform)\$(Configuration)\tests\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x64;$(LibraryPath)</LibraryPath>
-    <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)lib\windows;$(ProjectDir)inc;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\tests\</OutDir>
+    <IntDir>build\$(Platform)\$(Configuration)\tests\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
-    <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x64;$(LibraryPath)</LibraryPath>
-    <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)lib\windows;$(ProjectDir)inc;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\tests\</OutDir>
+    <IntDir>build\$(Platform)\$(Configuration)\tests\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\windows\UnitTest++\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -107,9 +105,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\windows\UnitTest++\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,11 +119,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\windows\UnitTest++\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,52 +135,25 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\windows\UnitTest++\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>UnitTest++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="inc\GameCore.h" />
-    <ClInclude Include="inc\Nodes\Actions\ActionLook.h" />
-    <ClInclude Include="inc\Nodes\Actions\ActionMove.h" />
-    <ClInclude Include="inc\Nodes\Actions\ActionQuit.h" />
-    <ClInclude Include="inc\Nodes\Actions\ActionSave.h" />
-    <ClInclude Include="inc\Nodes\Admin\AdminHotboot.h" />
-    <ClInclude Include="inc\Nodes\Admin\AdminShutdown.h" />
-    <ClInclude Include="inc\Nodes\CommandNode.h" />
-    <ClInclude Include="inc\Nodes\Commands.h" />
-    <ClInclude Include="inc\Nodes\Comms\CommOoc.h" />
-    <ClInclude Include="inc\Nodes\Comms\CommSay.h" />
-    <ClInclude Include="inc\Nodes\Comms\CommYell.h" />
-    <ClInclude Include="inc\Nodes\Emotes\EmoteEmote.h" />
-    <ClInclude Include="inc\Nodes\Info\InfoWho.h" />
-    <ClInclude Include="inc\Player.h" />
-    <ClInclude Include="inc\Room.h" />
-    <ClInclude Include="inc\World.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommonCore\CommonCore.vcxproj">
+    <ProjectReference Include="..\..\CommonCore\CommonCore.vcxproj">
       <Project>{ab18ecf8-3528-42e2-81f9-beef02e7d8ae}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GameCore.cpp" />
-    <ClCompile Include="src\Nodes\Actions\ActionLook.cpp" />
-    <ClCompile Include="src\Nodes\Actions\ActionMove.cpp" />
-    <ClCompile Include="src\Nodes\Actions\ActionQuit.cpp" />
-    <ClCompile Include="src\Nodes\Actions\ActionSave.cpp" />
-    <ClCompile Include="src\Nodes\Admin\AdminHotboot.cpp" />
-    <ClCompile Include="src\Nodes\Admin\AdminShutdown.cpp" />
-    <ClCompile Include="src\Nodes\Comms\CommOoc.cpp" />
-    <ClCompile Include="src\Nodes\Comms\CommSay.cpp" />
-    <ClCompile Include="src\Nodes\Comms\CommYell.cpp" />
-    <ClCompile Include="src\Nodes\Comms\EmoteEmote.cpp" />
-    <ClCompile Include="src\Nodes\Info\InfoWho.cpp" />
-    <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="src\Room.cpp" />
+    <ClCompile Include="src\CommonCoreTests.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\CommonCoreTests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
