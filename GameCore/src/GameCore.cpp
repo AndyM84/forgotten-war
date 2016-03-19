@@ -52,6 +52,13 @@ fwbool GameCore::Setup()
 	return true;
 }
 
+fwbool GameCore::Setup(const GameConfig &config)
+{
+	// TODO: Do something with the config here...probably
+
+	return this->Setup();
+}
+
 fwbool GameCore::Destroy()
 {
 	for (auto cmd : this->commands)

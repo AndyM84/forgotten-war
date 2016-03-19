@@ -1,0 +1,10 @@
+{
+	"db": {
+		"connectionString": "string-goes-here",
+		"tablePrefix": "fw_"
+	},
+	"admin": {
+		"hotfixPassword": "123456",
+		"shutdownPassword": "123456"
+	}
+}

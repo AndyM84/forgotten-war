@@ -21,7 +21,8 @@
 #include "../../n2framework/include/N2f.hpp"
 #include <jsmn.h>
 
-// Server message
+// Other files
+#include <GameConfig.h>
 #include <ServerMessage.h>
 
 /* Mapping between game player and socket descriptor */
@@ -78,6 +79,8 @@ namespace Libraries
 			return;
 		}
 
+		virtual fwbool Setup() = 0;
+		virtual fwbool Setup(const GameConfig &config) = 0;
 		virtual FW::GAME_STATES GameLoop(fwfloat Delta) = 0;
 		virtual fwvoid SaveState() = 0;
 		virtual fwvoid RestoreState(std::vector<fwclient> clients) = 0;

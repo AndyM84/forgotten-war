@@ -46,6 +46,8 @@ public:
 
 	/* Generic setup routine */
 	virtual fwbool Setup();
+	/* Setup that receives a game config */
+	virtual fwbool Setup(const GameConfig &config);
 	/* Generic routine to kill all the things */
 	virtual fwbool Destroy();
 

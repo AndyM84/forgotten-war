@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="inc\CommonCore.h" />
     <ClInclude Include="inc\Common\Types.h" />
+    <ClInclude Include="inc\GameConfig.h" />
     <ClInclude Include="inc\jsmn.h" />
     <ClInclude Include="inc\Libraries\Librarian.h" />
     <ClInclude Include="inc\Libraries\Library.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="inc\Threading\Threadable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameConfig.cpp" />
     <ClCompile Include="src\jsmn.c" />
     <ClCompile Include="src\Libraries\Library.cpp" />
     <ClCompile Include="src\Logging\AppenderBase.cpp" />

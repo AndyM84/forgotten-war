@@ -96,6 +96,9 @@
     <ClInclude Include="inc\jsmn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GameConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logging\AppenderBase.cpp">
@@ -138,6 +141,9 @@
       <Filter>Source Files\Libraries</Filter>
     </ClCompile>
     <ClCompile Include="src\jsmn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

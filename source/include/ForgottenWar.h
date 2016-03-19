@@ -12,6 +12,7 @@
 #include <ServerCore.h>
 #include <CliDispatch.h>
 
+#define GAME_CONFIG         "config.json"
 #define GAME_CORE           "GameCore.dll"
 #define GAME_EVENT_NAME     TEXT("FWGameEvent")
 #define HOTBOOT_PASSWORD    "123456"
