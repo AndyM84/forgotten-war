@@ -63,6 +63,7 @@ protected:
 	FW::GAME_STATES gameState;
 	Logging::Logger *logger;
 	fwhandle gameEvent;
+	GameConfig *config;
 
 	const fwstr exePath;
 
@@ -76,4 +77,9 @@ protected:
 	fwvoid broadcastMessageToOthers(fwuint ID, fwstr Message);
 	/* Reloads the GameCore library in a nice orderly fashion */
 	fwvoid hotbootCore();
+	/* Loads the config either as default or from a file if present */
+	fwvoid loadConfig();
+
+private:
+	fwbool jsonEq(const char *source, jsmntok_t *tok, const char *comp);
 };

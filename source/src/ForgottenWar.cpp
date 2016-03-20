@@ -203,6 +203,9 @@ fwvoid ForgottenWar::Initialize()
 	this->serverThread = new Threading::Thread(*this->server);
 	this->serverThread->Start();
 
+	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading game config");
+	this->loadConfig();
+
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Setting up the GameCore instance");
 
 	if (this->game)
@@ -284,6 +287,8 @@ fwvoid ForgottenWar::Stop()
 		this->game = nullptr;
 		this->librarian.Unload(this->exePath + GAME_CORE);
 	}
+
+	this->config = nullptr;
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
 
@@ -404,4 +409,90 @@ fwvoid ForgottenWar::hotbootCore()
 	this->gameState = FW::GAME_STATES::FWGAME_RUNNING;
 
 	return;
+}
+
+fwvoid ForgottenWar::loadConfig()
+{
+	std::ifstream cfg((this->exePath + GAME_CONFIG).c_str());
+	this->config = new GameConfig(this->exePath, GameDbSettings { "", "" }, GameAdminSettings { "123456", "123456" });
+
+	if (cfg.good())
+	{
+		// Get file length
+		cfg.seekg(0, cfg.end);
+		fwint length = cfg.tellg();
+		cfg.seekg(0, cfg.beg);
+
+		char *buffer = new char[length];
+		cfg.read(buffer, length);
+
+		if (cfg)
+		{
+			GameAdminSettings adminSettings;
+			GameDbSettings dbSettings;
+			jsmn_parser parser;
+			jsmntok_t t[25];
+			fwint i, r;
+
+			jsmn_init(&parser);
+			r = jsmn_parse(&parser, buffer, strlen(buffer), t, 25);
+
+			if (r > 0 && t[0].type != JSMN_OBJECT)
+			{
+				for (i = 1; i < r; ++i)
+				{
+					if (this->jsonEq(buffer, &t[i], "db"))
+					{
+						if (t[i + 1].type != JSMN_OBJECT)
+						{
+							continue;
+						}
+
+						for (int j = 0; j < t[i + 1].size; ++j)
+						{
+							if (this->jsonEq(buffer, &t[i + j], "connectionString"))
+							{
+								
+							}
+							else if (this->jsonEq(buffer, &t[i + j], "tablePrefix"))
+							{
+
+							}
+						}
+
+						i += t[i + 1].size + 1;
+					}
+					else if (this->jsonEq(buffer, &t[i], "admin"))
+					{
+						if (t[i + 1].type != JSMN_OBJECT)
+						{
+							continue;
+						}
+
+						for (int j = 0; j < t[i].size; ++j)
+						{
+
+						}
+
+						i += t[i + 1].size + 1;
+					}
+				}
+			}
+		}
+	}
+
+	cfg.close();
+
+	return;
+}
+
+fwbool ForgottenWar::jsonEq(const char *source, jsmntok_t *tok, const char *comp)
+{
+	if (tok->type == JSMN_STRING && strlen(comp) == (tok->end - tok->start)
+		&& strncmp(source + tok->start, comp, tok->end - tok->start))
+	{
+		return true;
+	}
+
+	return false;
 }
