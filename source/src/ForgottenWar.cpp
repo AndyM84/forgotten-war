@@ -420,7 +420,7 @@ fwvoid ForgottenWar::loadConfig()
 	{
 		// Get file length
 		cfg.seekg(0, cfg.end);
-		fwint length = cfg.tellg();
+		fwint length = (fwint)cfg.tellg();
 		cfg.seekg(0, cfg.beg);
 
 		char *buffer = new char[length];
@@ -437,44 +437,93 @@ fwvoid ForgottenWar::loadConfig()
 			jsmn_init(&parser);
 			r = jsmn_parse(&parser, buffer, strlen(buffer), t, 25);
 
-			if (r > 0 && t[0].type != JSMN_OBJECT)
+			if (r > 0)
 			{
 				for (i = 1; i < r; ++i)
 				{
 					if (this->jsonEq(buffer, &t[i], "db"))
 					{
-						if (t[i + 1].type != JSMN_OBJECT)
+						std::cout << "Found db..." << std::endl;
+
+						++i;
+
+						if (t[i].type != JSMN_OBJECT)
 						{
 							continue;
 						}
 
-						for (int j = 0; j < t[i + 1].size; ++j)
-						{
-							if (this->jsonEq(buffer, &t[i + j], "connectionString"))
-							{
-								
-							}
-							else if (this->jsonEq(buffer, &t[i + j], "tablePrefix"))
-							{
+						++i;
 
+						if (this->jsonEq(buffer, &t[i], "connectionString"))
+						{
+							std::cout << "Found connectionString: ";
+							++i;
+
+							for (int j = t[i].start; j < t[i].end; ++j)
+							{
+								std::cout << buffer[j];
 							}
+
+							std::cout << std::endl;
+
+							++i;
 						}
 
-						i += t[i + 1].size + 1;
+						if (this->jsonEq(buffer, &t[i], "tablePrefix"))
+						{
+							std::cout << "Found tablePrefix: ";
+
+							for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
+							{
+								std::cout << buffer[j];
+							}
+
+							std::cout << std::endl;
+
+							++i;
+						}
 					}
 					else if (this->jsonEq(buffer, &t[i], "admin"))
 					{
-						if (t[i + 1].type != JSMN_OBJECT)
+						std::cout << "Found admin..." << std::endl;
+
+						++i;
+
+						if (t[i].type != JSMN_OBJECT)
 						{
 							continue;
 						}
 
-						for (int j = 0; j < t[i].size; ++j)
-						{
+						++i;
 
+						if (this->jsonEq(buffer, &t[i], "hotfixPassword"))
+						{
+							std::cout << "Found hotfixPassword: ";
+							++i;
+
+							for (int j = t[i].start; j < t[i].end; ++j)
+							{
+								std::cout << buffer[j];
+							}
+
+							std::cout << std::endl;
+
+							++i;
 						}
 
-						i += t[i + 1].size + 1;
+						if (this->jsonEq(buffer, &t[i], "shutdownPassword"))
+						{
+							std::cout << "Found shutdownPassword: ";
+
+							for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
+							{
+								std::cout << buffer[j];
+							}
+
+							std::cout << std::endl;
+
+							++i;
+						}
 					}
 				}
 			}
@@ -488,10 +537,19 @@ fwvoid ForgottenWar::loadConfig()
 
 fwbool ForgottenWar::jsonEq(const char *source, jsmntok_t *tok, const char *comp)
 {
-	if (tok->type == JSMN_STRING && strlen(comp) == (tok->end - tok->start)
-		&& strncmp(source + tok->start, comp, tok->end - tok->start))
+	if (tok->type == JSMN_STRING && strlen(comp) == (tok->end - tok->start))
 	{
-		return true;
+		fwstr tmp;
+
+		for (fwint i = tok->start; i < tok->end; ++i)
+		{
+			tmp += source[i];
+		}
+
+		if (tmp == comp)
+		{
+			return true;
+		}
 	}
 
 	return false;
