@@ -425,7 +425,7 @@ fwvoid ForgottenWar::loadConfig()
 	{
 		// Get file length
 		cfg.seekg(0, cfg.end);
-		int length = cfg.tellg();
+		int length = (int)cfg.tellg();
 		cfg.seekg(0, cfg.beg);
 
 		fwchar *buffer = new char[length];
