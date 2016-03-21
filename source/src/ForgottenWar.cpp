@@ -213,7 +213,7 @@ fwvoid ForgottenWar::Initialize()
 	if (this->game)
 	{
 		this->game->AddArbiter(*this);
-		this->game->Setup();
+		this->game->Setup(*(this->config));
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Game has been started, proceed to loop and collect $200");
@@ -370,6 +370,9 @@ fwvoid ForgottenWar::hotbootCore()
 
 		this->log(Logging::LogLevel::LOG_DEBUG, "FW - Unloaded existing GameCore instance");
 	}
+
+	// reload config
+	this->loadConfig();
 
 	// load GameCore
 	this->game = this->librarian.Load(this->exePath + GAME_CORE);
