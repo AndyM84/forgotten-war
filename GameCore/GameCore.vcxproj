@@ -69,25 +69,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x64;$(LibraryPath)</LibraryPath>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x64;$(LibraryPath)</LibraryPath>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
