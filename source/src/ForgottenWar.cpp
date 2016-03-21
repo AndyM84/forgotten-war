@@ -206,6 +206,8 @@ fwvoid ForgottenWar::Initialize()
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading game config");
 	this->loadConfig();
 
+	this->log(Logging::LogLevel::LOG_INFO, ("FW - Loaded config with values: \n" + this->config->ToJson(true)).c_str());
+
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Setting up the GameCore instance");
 
 	if (this->game)
@@ -413,120 +415,123 @@ fwvoid ForgottenWar::hotbootCore()
 
 fwvoid ForgottenWar::loadConfig()
 {
-	std::ifstream cfg((this->exePath + GAME_CONFIG).c_str());
+	std::ifstream cfg((this->exePath + GAME_CONFIG).c_str(), std::ifstream::binary);
 	this->config = new GameConfig(this->exePath, GameDbSettings { "", "" }, GameAdminSettings { "123456", "123456" });
 
 	if (cfg.good())
 	{
 		// Get file length
 		cfg.seekg(0, cfg.end);
-		fwint length = (fwint)cfg.tellg();
+		int length = cfg.tellg();
 		cfg.seekg(0, cfg.beg);
 
-		char *buffer = new char[length];
+		fwchar *buffer = new char[length];
 		cfg.read(buffer, length);
 
-		if (cfg)
+		char *cleaned = new char[length];
+		auto gcount = cfg.gcount();
+		int j = 0;
+
+		for (int i = 0; i < length; ++i)
 		{
-			GameAdminSettings adminSettings;
-			GameDbSettings dbSettings;
-			jsmn_parser parser;
-			jsmntok_t t[25];
-			fwint i, r;
-
-			jsmn_init(&parser);
-			r = jsmn_parse(&parser, buffer, strlen(buffer), t, 25);
-
-			if (r > 0)
+			if (buffer[i] == 0x0D || buffer[i] == 0x0A || buffer[i] == 0x09)
 			{
-				for (i = 1; i < r; ++i)
+				continue;
+			}
+
+			cleaned[j++] = buffer[i];
+		}
+
+		cleaned[j] = '\0';
+		buffer = cleaned;
+
+		this->log(Logging::LogLevel::LOG_DEBUG, buffer);
+
+		GameAdminSettings adminSettings;
+		GameDbSettings dbSettings;
+		jsmn_parser parser;
+		jsmntok_t t[25];
+		fwint i, r;
+
+		jsmn_init(&parser);
+		r = jsmn_parse(&parser, buffer, strlen(buffer), t, 25);
+
+		if (r > 0)
+		{
+			for (i = 1; i < r; ++i)
+			{
+				if (this->jsonEq(buffer, &t[i], "db"))
 				{
-					if (this->jsonEq(buffer, &t[i], "db"))
+					this->log(Logging::LogLevel::LOG_DEBUG, "FW - Found db in config");
+					++i;
+
+					if (t[i].type != JSMN_OBJECT)
 					{
-						std::cout << "Found db..." << std::endl;
-
-						++i;
-
-						if (t[i].type != JSMN_OBJECT)
-						{
-							continue;
-						}
-
-						++i;
-
-						if (this->jsonEq(buffer, &t[i], "connectionString"))
-						{
-							std::cout << "Found connectionString: ";
-							++i;
-
-							for (int j = t[i].start; j < t[i].end; ++j)
-							{
-								std::cout << buffer[j];
-							}
-
-							std::cout << std::endl;
-
-							++i;
-						}
-
-						if (this->jsonEq(buffer, &t[i], "tablePrefix"))
-						{
-							std::cout << "Found tablePrefix: ";
-
-							for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
-							{
-								std::cout << buffer[j];
-							}
-
-							std::cout << std::endl;
-
-							++i;
-						}
+						continue;
 					}
-					else if (this->jsonEq(buffer, &t[i], "admin"))
+
+					++i;
+
+					if (this->jsonEq(buffer, &t[i], "connectionString"))
 					{
-						std::cout << "Found admin..." << std::endl;
-
 						++i;
 
-						if (t[i].type != JSMN_OBJECT)
+						for (int j = t[i].start; j < t[i].end; ++j)
 						{
-							continue;
+							dbSettings.connectionString += buffer[j];
+						}
+
+						this->log(Logging::LogLevel::LOG_DEBUG, ("FW - ConnStr: " + dbSettings.connectionString).c_str());
+
+						++i;
+					}
+
+					if (this->jsonEq(buffer, &t[i], "tablePrefix"))
+					{
+						for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
+						{
+							dbSettings.tablePrefix += buffer[j];
 						}
 
 						++i;
+					}
+				}
+				else if (this->jsonEq(buffer, &t[i], "admin"))
+				{
+					++i;
 
-						if (this->jsonEq(buffer, &t[i], "hotfixPassword"))
+					if (t[i].type != JSMN_OBJECT)
+					{
+						continue;
+					}
+
+					++i;
+
+					if (this->jsonEq(buffer, &t[i], "hotfixPassword"))
+					{
+						++i;
+
+						for (int j = t[i].start; j < t[i].end; ++j)
 						{
-							std::cout << "Found hotfixPassword: ";
-							++i;
-
-							for (int j = t[i].start; j < t[i].end; ++j)
-							{
-								std::cout << buffer[j];
-							}
-
-							std::cout << std::endl;
-
-							++i;
+							adminSettings.hotfixPassword += buffer[j];
 						}
 
-						if (this->jsonEq(buffer, &t[i], "shutdownPassword"))
+						++i;
+					}
+
+					if (this->jsonEq(buffer, &t[i], "shutdownPassword"))
+					{
+						for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
 						{
-							std::cout << "Found shutdownPassword: ";
-
-							for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
-							{
-								std::cout << buffer[j];
-							}
-
-							std::cout << std::endl;
-
-							++i;
+							adminSettings.shutdownPassword += buffer[j];
 						}
+
+						++i;
 					}
 				}
 			}
+
+			this->config = new GameConfig(this->exePath, dbSettings, adminSettings);
 		}
 	}
 
