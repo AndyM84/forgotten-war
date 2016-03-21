@@ -69,25 +69,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(WindowsSdkDir)include\10.0.10240.0\ucrt;$(WindowsSdkDir)include\10.0.10240.0\um;$(WindowsSdkDir)include\10.0.10240.0\shared;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(WindowsSdkDir)include\10.0.10240.0\ucrt;$(WindowsSdkDir)include\10.0.10240.0\um;$(WindowsSdkDir)include\10.0.10240.0\shared;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(WindowsSdkDir)include\10.0.10240.0\ucrt;$(WindowsSdkDir)include\10.0.10240.0\um;$(WindowsSdkDir)include\10.0.10240.0\shared;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x64;$(LibraryPath)</LibraryPath>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameCore\inc;$(SolutionDir)CommonCore\inc;C:\Program Files\Microsoft SQL Server\110\SDK\include;$(WindowsSdkDir)include\10.0.10240.0\ucrt;$(WindowsSdkDir)include\10.0.10240.0\um;$(WindowsSdkDir)include\10.0.10240.0\shared;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <LibraryPath>C:\Program Files\Microsoft SQL Server\110\SDK\Lib\x64;$(LibraryPath)</LibraryPath>
     <IntDir>build\$(Platform)\$(Configuration)\</IntDir>
@@ -100,6 +100,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -110,6 +111,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,6 +126,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,6 +141,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
