@@ -99,7 +99,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sqlncli11.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sqlncli11.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -125,7 +125,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sqlncli11.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -140,7 +140,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>sqlncli11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sqlncli11.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
