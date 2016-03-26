@@ -13,6 +13,11 @@ namespace Commands
 
 		for (auto pl : World.players)
 		{
+			if (pl.second->GetState() != PLAYER_STATES::PLAYER_CONNECTED)
+			{
+				continue;
+			}
+
 			ss << "`W" << pl.second->GetName();
 
 			if (pl.first == Player->GetID())
