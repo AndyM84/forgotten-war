@@ -219,6 +219,9 @@ fwvoid ForgottenWar::Initialize()
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Game has been started, proceed to loop and collect $200");
 	this->gameState = FW::GAME_STATES::FWGAME_RUNNING;
 
+	this->start = this->frequency = 0;
+	this->currentTime = 0.0f;
+
 	return;
 }
 
@@ -242,10 +245,17 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 
 	this->gameLock.Release();
 
-	// TODO: Add a delta timing...thing
+	const fwfloat newTime = this->getTime();
+	fwfloat deltaTime = newTime - this->currentTime;
+	this->currentTime = newTime;
+
+	if (deltaTime > 0.25f)
+	{
+		deltaTime = 0.25f;
+	}
 
 	// do loop here
-	auto coreState = this->game->GameLoop(0.0);
+	auto coreState = this->game->GameLoop(deltaTime);
 
 	// so if we're asked to hotBoot, just do it and restart the loop
 	if (coreState == FW::GAME_STATES::FWGAME_HOTBOOTING)
@@ -561,4 +571,20 @@ fwbool ForgottenWar::jsonEq(const char *source, jsmntok_t *tok, const char *comp
 	}
 
 	return false;
+}
+
+fwfloat ForgottenWar::getTime()
+{
+	if (this->start == 0)
+	{
+		QueryPerformanceCounter((LARGE_INTEGER*)&this->start);
+		QueryPerformanceFrequency((LARGE_INTEGER*)&this->frequency);
+
+		return 0.0f;
+	}
+
+	__int64 counter = 0;
+	QueryPerformanceCounter((LARGE_INTEGER*)&counter);
+
+	return (fwfloat)((counter - this->start) / double(this->frequency));
 }

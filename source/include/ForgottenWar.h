@@ -61,7 +61,9 @@ protected:
 	Server::SelectServer *server;
 	Libraries::GameLibrary *game;
 	FW::GAME_STATES gameState;
+	__int64 start, frequency;
 	Logging::Logger *logger;
+	fwfloat currentTime;
 	fwhandle gameEvent;
 	GameConfig *config;
 
@@ -82,4 +84,5 @@ protected:
 
 private:
 	fwbool jsonEq(const char *source, jsmntok_t *tok, const char *comp);
+	fwfloat getTime();
 };
