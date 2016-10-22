@@ -48,6 +48,11 @@ const Vector Player::GetLocation() const
 	return this->location;
 }
 
+const fwfloat Player::GetIdleTime() const
+{
+	return this->idleTime;
+}
+
 fwbool Player::IsInLocation(Vector Location) const
 {
 	if (Location.X == this->location.X && Location.Y == this->location.Y && Location.Z == this->location.Z)
@@ -69,6 +74,7 @@ fwbool Player::IsNearLocation(Vector Location) const
 Player &Player::AddBufferMessage(const std::shared_ptr<ServerMessage> Message)
 {
 	this->buffer.push(Message);
+	this->idleTime = 0.0f;
 
 	return *this;
 }
@@ -108,6 +114,13 @@ Player &Player::SetState(PLAYER_STATES State)
 Player &Player::SetLocation(Vector Location)
 {
 	this->location = Location;
+
+	return *this;
+}
+
+Player &Player::AddIdleTime(fwfloat Time)
+{
+	this->idleTime += Time;
 
 	return *this;
 }

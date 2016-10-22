@@ -90,6 +90,14 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 			continue;
 		}
 
+		if (player->GetState() == PLAYER_IDLE && player->GetIdleTime() > PLAYER_IDLE_LIMIT)
+		{
+			this->SendToClient(player->GetClient(), "You have timed out, please reconnect when you've got time to pay attention to us.");
+			this->CloseClient(player->GetClient());
+
+			continue;
+		}
+
 		this->playerLock.Block();
 		auto buf = player->GetNextMessage();
 		this->playerLock.Release();
