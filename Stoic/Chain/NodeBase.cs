@@ -27,6 +27,6 @@ namespace Stoic.Chain
 			return !string.IsNullOrWhiteSpace(this._Key) && !string.IsNullOrWhiteSpace(this._Version);
 		}
 
-		public abstract void Process(object Sender, DispatchType Dispatch);
+		public abstract void Process(ref object Sender, ref DispatchType Dispatch);
 	}
 }

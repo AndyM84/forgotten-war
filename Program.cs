@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Stoic.Log;
 
 namespace FW
 {
@@ -22,7 +22,14 @@ namespace FW
 			///   - Character: basic creature in world
 			///   - Player: a PC, child of Character controlled by a socket Client
 
-			Console.WriteLine("Hello World!");
+			var logger = new Logger(LogLevels.INFO);
+			logger.Log(LogLevels.INFO, "Testing");
+			logger.Log(LogLevels.CRITICAL, "Testing again");
+
+			logger.AddAppender(new ConsoleAppender());
+			logger.Output();
+
+			return;
 		}
 	}
 }
