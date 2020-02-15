@@ -1,4 +1,6 @@
-﻿using Stoic.Log;
+﻿using System;
+using Stoic.Log;
+using Stoic.Utilities;
 
 namespace FW
 {
@@ -22,12 +24,27 @@ namespace FW
 			///   - Character: basic creature in world
 			///   - Player: a PC, child of Character controlled by a socket Client
 
-			var logger = new Logger(LogLevels.INFO);
-			logger.Log(LogLevels.INFO, "Testing");
-			logger.Log(LogLevels.CRITICAL, "Testing again");
-
+			var ch = new ConsoleHelper(args);
+			var logger = new Logger(LogLevels.DEBUG);
 			logger.AddAppender(new ConsoleAppender());
+
+			logger.Log(LogLevels.DEBUG, "Running through CLI args...");
+
+			foreach (var a in ch.Arguments) {
+				logger.Log(LogLevels.DEBUG, "'" + a.Key + "' => '" + a.Value.Value + "'");
+			}
+
 			logger.Output();
+			FinalPause();
+
+			return;
+		}
+
+		public static void FinalPause()
+		{
+			Console.WriteLine();
+			Console.Write("Press any key to continue...");
+			Console.ReadLine();
 
 			return;
 		}
