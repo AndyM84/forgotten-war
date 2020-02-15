@@ -1,10 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
+using Stoic.Log;
+
 namespace FW.Core
 {
+	public enum CommandTypes
+	{
+		CONNECTED,
+		DISCONNECTED,
+		RECEIVED
+	}
+
+	public struct IdentifiableSocket
+	{
+		public int ID { get; set; }
+		public Socket Socket { get; set; }
+	}
+
+	public struct Command
+	{
+		public string Contents { get; set; }
+		public int ID { get; set; }
+		public CommandTypes Type { get; set; }
+	}
+
 	public class SocketServer
 	{
 		/// Set this up to contain sockets internally and return only references to socket ID's with 'commands'
@@ -15,5 +38,98 @@ namespace FW.Core
 		///   - Ctor: initializes with max connection count and host settings
 		///   - Poll: does one pass on 'select' and returns listen sets as commands, returns tuple of 'status' and List<command>
 		///   - Send: receives a command to send to a socket by its ID ('close' is a command)
+
+
+		protected int _CurrentID = 0;
+		protected Socket _Listener;
+		protected int _ListenPort;
+		protected Logger _Logger;
+		protected int _MaxConnections;
+		protected Dictionary<int, IdentifiableSocket> _Sockets;
+
+
+		public SocketServer(int MaxConnections, int ListenPort, ref Logger Logger)
+		{
+			if (MaxConnections < 5) {
+				throw new ArgumentException("Minimum connection limit  must be 5");
+			}
+
+			if (ListenPort < 500 || ListenPort > 64000) {
+				throw new ArgumentException("Listen port must be between 500 and 64000");
+			}
+
+			this._MaxConnections = MaxConnections;
+			this._ListenPort = ListenPort;
+			this._Logger = Logger;
+
+			this._Sockets = new Dictionary<int, IdentifiableSocket>(MaxConnections);
+			this._Listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+			IPEndPoint iep = new IPEndPoint(IPAddress.Any, this._ListenPort);
+			this._Listener.Bind(iep);
+			this._Listener.Listen(MaxConnections / 2);
+
+			return;
+		}
+
+
+		public void Log(LogLevels Level, string Message)
+		{
+			this._Logger.Log(Level, Message);
+
+			return;
+		}
+
+		public List<Command> Poll()
+		{
+			var ret = new List<Command>();
+			List<Socket>
+				readSocks = new List<Socket>(),
+				errorSocks = new List<Socket>();
+
+			readSocks.Add(this._Listener);
+			errorSocks.Add(this._Listener);
+
+			foreach (var c in this._Sockets) {
+				readSocks.Add(c.Value.Socket);
+				errorSocks.Add(c.Value.Socket);
+			}
+
+			Socket.Select(readSocks, null, errorSocks, 1000);
+
+			if (readSocks.Contains(this._Listener)) {
+				this._Sockets.Add(++this._CurrentID, new IdentifiableSocket {
+					ID = this._CurrentID,
+					Socket = this._Listener.Accept()
+				});
+
+				this.Log(LogLevels.DEBUG, "New client connected, #" + this._CurrentID + " from " + this._Sockets[this._CurrentID].Socket.RemoteEndPoint);
+				ret.Add(new Command {
+					Contents = this._CurrentID.ToString(),
+					ID = this._CurrentID,
+					Type = CommandTypes.CONNECTED
+				});
+			}
+
+			foreach (var client in this._Sockets) {
+				if (readSocks.Contains(client.Value.Socket)) {
+					var data = new byte[4096];
+					var recv = client.Value.Socket.Receive(data);
+
+					if (recv > 0) {
+						var stringData = Encoding.ASCII.GetString(data, 0, recv);
+
+						this.Log(LogLevels.DEBUG, "Received from client #" + client.Key + ": " + stringData);
+						ret.Add(new Command {
+							Contents = stringData,
+							ID = client.Key,
+							Type = CommandTypes.RECEIVED
+						});
+					}
+				}
+			}
+
+			return ret;
+		}
 	}
 }

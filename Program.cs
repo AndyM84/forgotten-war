@@ -1,4 +1,6 @@
 ﻿using System;
+
+using FW.Core;
 using Stoic.Log;
 using Stoic.Utilities;
 
@@ -28,13 +30,14 @@ namespace FW
 			var logger = new Logger(LogLevels.DEBUG);
 			logger.AddAppender(new ConsoleAppender());
 
-			logger.Log(LogLevels.DEBUG, "Running through CLI args...");
-
-			foreach (var a in ch.Arguments) {
-				logger.Log(LogLevels.DEBUG, "'" + a.Key + "' => '" + a.Value.Value + "'");
+			var loopCount = 2500000;
+			var serv = new SocketServer(10, 5000, ref logger);
+			
+			while (--loopCount > 0) {
+				serv.Poll();
+				logger.Output();
 			}
 
-			logger.Output();
 			FinalPause();
 
 			return;
