@@ -29,6 +29,7 @@ namespace Stoic.Utilities
 			return;
 		}
 
+
 		public ReturnHelper(ReturnHelperStatuses Status)
 		{
 			this._Messages = new List<string>();

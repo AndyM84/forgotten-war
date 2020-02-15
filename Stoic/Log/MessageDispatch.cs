@@ -17,6 +17,7 @@ namespace Stoic.Log
 			return;
 		}
 
+
 		public override void Initialize()
 		{
 			throw new NotImplementedException();

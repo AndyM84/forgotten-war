@@ -35,6 +35,7 @@ namespace Stoic.Log
 			return;
 		}
 
+
 		public Dictionary<string, string> ToDictionary()
 		{
 			return new Dictionary<string, string> {

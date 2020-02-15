@@ -18,6 +18,7 @@ namespace Stoic.Log
 			return;
 		}
 
+
 		public void AddAppender(AppenderBase Appender)
 		{
 			this._Appenders.LinkNode(Appender);

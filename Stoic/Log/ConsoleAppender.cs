@@ -15,6 +15,7 @@ namespace Stoic.Log
 			return;
 		}
 
+
 		public override void Process(ref object Sender, ref MessageDispatch Dispatch)
 		{
 			if (Dispatch.Messages.Count > 0) {

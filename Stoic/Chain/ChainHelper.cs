@@ -27,6 +27,7 @@ namespace Stoic.Chain
 			return;
 		}
 
+
 		public ChainHelper<DispatchType, ResultType, CollectionType> LinkNode(NodeBase<DispatchType, ResultType, CollectionType> Node)
 		{
 			if (!Node.IsValid()) {
