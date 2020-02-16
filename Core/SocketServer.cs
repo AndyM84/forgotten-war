@@ -95,7 +95,13 @@ namespace FW.Core
 				errorSocks.Add(c.Value.Socket);
 			}
 
-			Socket.Select(readSocks, null, errorSocks, 1000);
+			try {
+				Socket.Select(readSocks, null, errorSocks, 1000);
+			} catch (SocketException se) {
+				this.Log(LogLevels.ERROR, "Encountered error while polling socket sets: " + se.ErrorCode);
+
+				return ret;
+			}
 
 			if (readSocks.Contains(this._Listener)) {
 				this._Sockets.Add(++this._CurrentID, new IdentifiableSocket {
@@ -103,7 +109,7 @@ namespace FW.Core
 					Socket = this._Listener.Accept()
 				});
 
-				this.Log(LogLevels.DEBUG, "New client connected, #" + this._CurrentID + " from " + this._Sockets[this._CurrentID].Socket.RemoteEndPoint);
+				this.Log(LogLevels.INFO, "New client connected, #" + this._CurrentID + " from " + this._Sockets[this._CurrentID].Socket.RemoteEndPoint);
 				ret.Add(new Command {
 					Contents = this._CurrentID.ToString(),
 					ID = this._CurrentID,
@@ -111,13 +117,15 @@ namespace FW.Core
 				});
 			}
 
+			var clientsToRemove = new List<int>();
+
 			foreach (var client in this._Sockets) {
 				if (readSocks.Contains(client.Value.Socket)) {
 					var data = new byte[4096];
 					var recv = client.Value.Socket.Receive(data);
 
 					if (recv > 0) {
-						var stringData = Encoding.ASCII.GetString(data, 0, recv);
+						var stringData = Encoding.ASCII.GetString(data, 0, recv).TrimEnd(new char[2] { '\n', '\r' });
 
 						this.Log(LogLevels.DEBUG, "Received from client #" + client.Key + ": " + stringData);
 						ret.Add(new Command {
@@ -125,11 +133,52 @@ namespace FW.Core
 							ID = client.Key,
 							Type = CommandTypes.RECEIVED
 						});
+					} else {
+						clientsToRemove.Add(client.Key);
+
+						this.Log(LogLevels.INFO, "Queueing client #" + client.Key + " for disconnection");
+						ret.Add(new Command {
+							Contents = "DISCONNECT",
+							ID = client.Key,
+							Type = CommandTypes.DISCONNECTED
+						});
 					}
+				}
+
+				if (errorSocks.Contains(client.Value.Socket)) {
+					this.Log(LogLevels.ERROR, "Error on socket for client #" + client.Key + ": " + "");
+				}
+			}
+
+			if (clientsToRemove.Count > 0) {
+				foreach (var id in clientsToRemove) {
+					this._Sockets[id].Socket.Close();
+					this._Sockets.Remove(id);
 				}
 			}
 
 			return ret;
+		}
+
+		public void Send(int ID, string Buffer)
+		{
+			if (this._Sockets.ContainsKey(ID)) {
+				this._Sockets[ID].Socket.Send(Encoding.ASCII.GetBytes(Buffer));
+			}
+
+			return;
+		}
+
+		public void Shutdown()
+		{
+			foreach (var c in this._Sockets) {
+				c.Value.Socket.Close();
+				this._Sockets.Remove(c.Key);
+			}
+
+			this._Listener.Close();
+
+			return;
 		}
 	}
 }
