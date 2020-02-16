@@ -28,7 +28,7 @@ namespace Stoic.Log
 
 		public void Log(LogLevels Level, string Message)
 		{
-			this._Messages.Add(new Message(Level, Message));
+			this._Messages.Add(new Message(Level, Message.TrimEnd(new char[2] { '\n', '\r' })));
 
 			return;
 		}
