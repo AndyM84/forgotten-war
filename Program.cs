@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using FW.Core;
+using FW.Game;
+using Stoic.Chain;
 using Stoic.Log;
 using Stoic.Utilities;
 
@@ -8,6 +11,9 @@ namespace FW
 {
 	class Program
 	{
+		public static bool ShouldRun = true;
+
+
 		static void Main(string[] args)
 		{
 			/// Events:
@@ -26,17 +32,38 @@ namespace FW
 			///   - Character: basic creature in world
 			///   - Player: a PC, child of Character controlled by a socket Client
 
+			Console.CancelKeyPress += new ConsoleCancelEventHandler(SigIntHandler);
+
 			var ch = new ConsoleHelper(args);
 			var logger = new Logger(LogLevels.DEBUG);
+			var serv = new SocketServer(10, 5000, ref logger);
+
 			logger.AddAppender(new ConsoleAppender());
 
-			var loopCount = 2500000;
-			var serv = new SocketServer(10, 5000, ref logger);
+			logger.Log(LogLevels.DEBUG, "Initialized game console subsystem");
+			logger.Log(LogLevels.DEBUG, "Initialized game logging subsystem");
+			logger.Log(LogLevels.DEBUG, "Initialized game socket subsystem");
+			logger.Log(LogLevels.INFO, "Finished initializing game subsystems");
+			logger.Output();
+
+			var game = new ChainHelper<TickDispatch, Command, List<Command>>();
+			game.LinkNode(new Game.Comms.CommsNode(ref logger));
+			game.LinkNode(new Game.Players.PlayersNode(ref logger));
+			game.LinkNode(new Game.Objects.ObjectsNode(ref logger));
+			game.LinkNode(new Game.World.WorldNode(ref logger));
+			logger.Output();
 			
-			while (--loopCount > 0) {
-				serv.Poll();
+			while (ShouldRun) {
+				var disp = new TickDispatch();
+				disp.Initialize(serv.Poll());
+
 				logger.Output();
 			}
+
+			logger.Log(LogLevels.INFO, "Shutting down game subsystems");
+
+			serv.Shutdown();
+			logger.Output();
 
 			FinalPause();
 
@@ -48,6 +75,18 @@ namespace FW
 			Console.WriteLine();
 			Console.Write("Press any key to continue...");
 			Console.ReadLine();
+
+			return;
+		}
+
+		public static void SigIntHandler(object sender, ConsoleCancelEventArgs args)
+		{
+			args.Cancel = true;
+
+			Console.WriteLine();
+			Console.WriteLine("Captured SIGINT, shutting down...");
+
+			ShouldRun = false;
 
 			return;
 		}

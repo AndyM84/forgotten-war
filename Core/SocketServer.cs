@@ -12,7 +12,8 @@ namespace FW.Core
 	{
 		CONNECTED,
 		DISCONNECTED,
-		RECEIVED
+		RECEIVED,
+		SEND
 	}
 
 	public struct IdentifiableSocket
