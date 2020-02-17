@@ -37,12 +37,14 @@ namespace FW
 			var ch = new ConsoleHelper(args);
 			var logger = new Logger(LogLevels.DEBUG);
 			var serv = new SocketServer(10, 5000, ref logger);
+			var state = new State();
 
 			logger.AddAppender(new ConsoleAppender());
 
 			logger.Log(LogLevels.DEBUG, "Initialized game console subsystem");
 			logger.Log(LogLevels.DEBUG, "Initialized game logging subsystem");
 			logger.Log(LogLevels.DEBUG, "Initialized game socket subsystem");
+			logger.Log(LogLevels.DEBUG, "Initialized game state subsystem");
 			logger.Log(LogLevels.INFO, "Finished initializing game subsystems");
 			logger.Output();
 
@@ -55,7 +57,15 @@ namespace FW
 			
 			while (ShouldRun) {
 				var disp = new TickDispatch();
-				disp.Initialize(serv.Poll());
+				disp.Initialize(ref state, serv.Poll());
+
+				game.Traverse(ref disp);
+
+				if (disp.Results.Count > 0) {
+					foreach (var c in disp.Results) {
+						serv.Send(c.ID, c.Contents);
+					}
+				}
 
 				logger.Output();
 			}

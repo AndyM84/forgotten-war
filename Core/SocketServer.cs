@@ -24,23 +24,15 @@ namespace FW.Core
 
 	public struct Command
 	{
+		public string Body { get; set; }
 		public string Contents { get; set; }
 		public int ID { get; set; }
+		public string Prefix { get; set; }
 		public CommandTypes Type { get; set; }
 	}
 
 	public class SocketServer
 	{
-		/// Set this up to contain sockets internally and return only references to socket ID's with 'commands'
-		///   (eg. 'connected', 'disconnect', 'recvd', etc)
-		/// Make methods that can send/receive 'commands' that are then processed by the 'poll' method
-		/// 
-		/// Methods:
-		///   - Ctor: initializes with max connection count and host settings
-		///   - Poll: does one pass on 'select' and returns listen sets as commands, returns tuple of 'status' and List<command>
-		///   - Send: receives a command to send to a socket by its ID ('close' is a command)
-
-
 		protected int _CurrentID = 0;
 		protected Socket _Listener;
 		protected int _ListenPort;
@@ -126,12 +118,15 @@ namespace FW.Core
 					var recv = client.Value.Socket.Receive(data);
 
 					if (recv > 0) {
-						var stringData = Encoding.ASCII.GetString(data, 0, recv).TrimEnd(new char[2] { '\n', '\r' });
+						var stringData = Encoding.ASCII.GetString(data, 0, recv).TrimEnd(new char[2] { '\n', '\r' }).Trim();
+						var prefix = stringData.Split(' ')[0];
 
 						this.Log(LogLevels.DEBUG, "Received from client #" + client.Key + ": " + stringData);
 						ret.Add(new Command {
+							Body = (prefix.Length == stringData.Length) ? stringData : stringData.Substring(prefix.Length).Trim(),
 							Contents = stringData,
 							ID = client.Key,
+							Prefix = prefix,
 							Type = CommandTypes.RECEIVED
 						});
 					} else {

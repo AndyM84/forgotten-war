@@ -21,6 +21,14 @@ namespace Stoic.Chain
 		public CollectionType Results { get { return this._Results; } }
 
 
+		public DispatchBase()
+		{
+			this._Results = new CollectionType();
+
+			return;
+		}
+
+
 		public bool Consume()
 		{
 			if (this._IsConsumable && !this._IsConsumed) {

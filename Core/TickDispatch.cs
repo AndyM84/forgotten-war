@@ -7,8 +7,10 @@ namespace FW.Core
 	public class TickDispatch : DispatchBase<Command, List<Command>>
 	{
 		protected List<Command> _Commands;
+		protected Game.State _State;
 
 		public List<Command> Commands { get { return new List<Command>(this._Commands); } }
+		public ref Game.State State { get { return ref this._State; } }
 
 
 		public override void Initialize()
@@ -16,12 +18,14 @@ namespace FW.Core
 			throw new System.NotImplementedException();
 		}
 
-		public void Initialize(List<Command> Commands)
+		public void Initialize(ref Game.State State, List<Command> Commands)
 		{
 			this._Commands = new List<Command>(Commands);
+			this._State = State;
+
 			this.MakeStateful();
 
-			if (this._Commands.Count > 0) {
+			if (Commands.Count > 0) {
 				this.MakeValid();
 			}
 
@@ -30,7 +34,7 @@ namespace FW.Core
 
 		public void SendToUser(int ID, string Message)
 		{
-			this._Commands.Add(new Command {
+			this.SetResult(new Command {
 				Contents = Message,
 				ID = ID,
 				Type = CommandTypes.SEND

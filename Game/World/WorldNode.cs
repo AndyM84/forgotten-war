@@ -16,7 +16,7 @@ namespace FW.Game.World
 
 		public override void Process(ref object Sender, ref TickDispatch Dispatch)
 		{
-			throw new System.NotImplementedException();
+			//throw new System.NotImplementedException();
 		}
 	}
 }
