@@ -39,6 +39,9 @@ namespace FW
 			var serv = new SocketServer(10, 5000, ref logger);
 			var state = new State();
 
+			state.CurrentUserID = 0;
+			state.Players = new Dictionary<int, Game.Players.Player>();
+			state.PlayerSocketLookup = new Dictionary<int, int>();
 			logger.AddAppender(new ConsoleAppender());
 
 			logger.Log(LogLevels.DEBUG, "Initialized game console subsystem");
@@ -50,20 +53,24 @@ namespace FW
 
 			var game = new ChainHelper<TickDispatch, Command, List<Command>>();
 			game.LinkNode(new Game.Comms.CommsNode(ref logger));
-			game.LinkNode(new Game.Players.PlayersNode(ref logger));
 			game.LinkNode(new Game.Objects.ObjectsNode(ref logger));
 			game.LinkNode(new Game.World.WorldNode(ref logger));
+			game.LinkNode(new Game.Players.PlayersNode(ref logger));
 			logger.Output();
 			
 			while (ShouldRun) {
 				var disp = new TickDispatch();
-				disp.Initialize(ref state, serv.Poll());
+				disp.Initialize(state, serv.Poll());
 
 				game.Traverse(ref disp);
 
 				if (disp.Results.Count > 0) {
 					foreach (var c in disp.Results) {
-						serv.Send(c.ID, c.Contents);
+						if (c.Type == CommandTypes.SEND) {
+							serv.Send(c.ID, c.Contents);
+						} else if (c.Type == CommandTypes.DISCONNECTED) {
+							serv.Close(c.ID);
+						}
 					}
 				}
 

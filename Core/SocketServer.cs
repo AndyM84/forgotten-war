@@ -165,6 +165,16 @@ namespace FW.Core
 			return;
 		}
 
+		public void Close(int ID)
+		{
+			if (this._Sockets.ContainsKey(ID)) {
+				this._Sockets[ID].Socket.Close();
+				this._Sockets.Remove(ID);
+			}
+
+			return;
+		}
+
 		public void Shutdown()
 		{
 			foreach (var c in this._Sockets) {
