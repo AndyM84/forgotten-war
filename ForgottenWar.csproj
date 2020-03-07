@@ -8,7 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DifficultChild\**" />
+    <Compile Remove="Stoic\**" />
+    <EmbeddedResource Remove="DifficultChild\**" />
+    <EmbeddedResource Remove="Stoic\**" />
+    <None Remove="DifficultChild\**" />
+    <None Remove="Stoic\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="sqlite" Version="3.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Stoic\Stoic.csproj" />
   </ItemGroup>
 
 </Project>

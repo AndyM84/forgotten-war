@@ -40,6 +40,8 @@ namespace FW.Core
 		protected int _MaxConnections;
 		protected Dictionary<int, IdentifiableSocket> _Sockets;
 
+		public Dictionary<int, IdentifiableSocket> Sockets { get { return new Dictionary<int, IdentifiableSocket>(this._Sockets); } }
+
 
 		public SocketServer(int MaxConnections, int ListenPort, ref Logger Logger)
 		{
@@ -77,11 +79,8 @@ namespace FW.Core
 		{
 			var ret = new List<Command>();
 			List<Socket>
-				readSocks = new List<Socket>(),
-				errorSocks = new List<Socket>();
-
-			readSocks.Add(this._Listener);
-			errorSocks.Add(this._Listener);
+				readSocks = new List<Socket>{ this._Listener },
+				errorSocks = new List<Socket>{ this._Listener };
 
 			foreach (var c in this._Sockets) {
 				readSocks.Add(c.Value.Socket);
@@ -119,6 +118,11 @@ namespace FW.Core
 
 					if (recv > 0) {
 						var stringData = Encoding.ASCII.GetString(data, 0, recv).TrimEnd(new char[2] { '\n', '\r' }).Trim();
+
+						if (string.IsNullOrWhiteSpace(stringData)) {
+							continue;
+						}
+
 						var prefix = stringData.Split(' ')[0];
 
 						this.Log(LogLevels.DEBUG, "Received from client #" + client.Key + ": " + stringData);
@@ -143,6 +147,11 @@ namespace FW.Core
 
 				if (errorSocks.Contains(client.Value.Socket)) {
 					this.Log(LogLevels.ERROR, "Error on socket for client #" + client.Key + ": " + "");
+					ret.Add(new Command {
+						Contents = "DISCONNECT",
+						ID = client.Key,
+						Type = CommandTypes.DISCONNECTED
+					});
 				}
 			}
 
@@ -168,6 +177,7 @@ namespace FW.Core
 		public void Close(int ID)
 		{
 			if (this._Sockets.ContainsKey(ID)) {
+				this._Sockets[ID].Socket.Shutdown(SocketShutdown.Both);
 				this._Sockets[ID].Socket.Close();
 				this._Sockets.Remove(ID);
 			}

@@ -36,13 +36,14 @@ namespace FW
 
 			var ch = new ConsoleHelper(args);
 			var logger = new Logger(LogLevels.DEBUG);
-			var serv = new SocketServer(10, 5000, ref logger);
+			var serv = new SocketServer(10, Convert.ToInt32(ch.GetParameter("p", "port", "6055")), ref logger);
 			var state = new State();
 
 			state.CurrentUserID = 0;
 			state.Players = new Dictionary<int, Game.Players.Player>();
 			state.PlayerSocketLookup = new Dictionary<int, int>();
 			logger.AddAppender(new ConsoleAppender());
+			logger.AddAppender(new FileAppender(ch.GetParameter("lf", "log-file", "fw-" + DateTime.Now.ToString("yyyy-MM-dd") + ".log"), FileAppenderOutputTypes.PLAIN));
 
 			logger.Log(LogLevels.DEBUG, "Initialized game console subsystem");
 			logger.Log(LogLevels.DEBUG, "Initialized game logging subsystem");
@@ -57,10 +58,42 @@ namespace FW
 			game.LinkNode(new Game.World.WorldNode(ref logger));
 			game.LinkNode(new Game.Players.PlayersNode(ref logger));
 			logger.Output();
+
+			int errCount = 0;
 			
 			while (ShouldRun) {
 				var disp = new TickDispatch();
-				disp.Initialize(state, serv.Poll());
+				bool gotSockErr = false;
+
+				try {
+					disp.Initialize(state, serv.Poll());
+				} catch (Exception ex) {
+					logger.Log(LogLevels.ERROR, ex.Message);
+					logger.Log(LogLevels.DEBUG, ex.StackTrace);
+
+					var cmds = new List<Command>();
+
+					foreach (var s in serv.Sockets) {
+						if (!s.Value.Socket.Connected) {
+							cmds.Add(new Command {
+								Contents = "DISCONNECT",
+								ID = s.Key,
+								Type = CommandTypes.DISCONNECTED
+							});
+						}
+					}
+
+					gotSockErr = true;
+					disp.Initialize(state, cmds);
+				}
+
+				if (gotSockErr) {
+					if (++errCount > 25) {
+						ShouldRun = false;
+					}
+				} else {
+					errCount = 0;
+				}
 
 				game.Traverse(ref disp);
 

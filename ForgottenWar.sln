@@ -4,6 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ForgottenWar", "ForgottenWar.csproj", "{73666E95-AED2-4288-B4C6-48922E62594F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2} = {7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DifficultChild", "DifficultChild\DifficultChild.csproj", "{2F8713F5-E714-4D4A-B4FC-82C784192F94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stoic", "Stoic\Stoic.csproj", "{7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,14 @@ Global
 		{73666E95-AED2-4288-B4C6-48922E62594F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73666E95-AED2-4288-B4C6-48922E62594F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73666E95-AED2-4288-B4C6-48922E62594F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F8713F5-E714-4D4A-B4FC-82C784192F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F8713F5-E714-4D4A-B4FC-82C784192F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F8713F5-E714-4D4A-B4FC-82C784192F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F8713F5-E714-4D4A-B4FC-82C784192F94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7020C4CA-B5FE-4A76-8AC7-B0AA10D9E6D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
