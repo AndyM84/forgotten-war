@@ -34,7 +34,11 @@ namespace FW.Game.Comms
 				}
 
 				var cmd = c.Prefix.ToLower();
-				var player = (PlayerPC)Dispatch.State.Players[Dispatch.State.GetPlayerIDBySocketID(c.ID)];
+				var player = (PlayerPC)Dispatch.State.GetPlayerBySocketID(c.ID);
+
+				if (player == null) {
+					continue;
+				}
 
 				if (this._Commands.ContainsKey(cmd)) {
 					this._Commands[cmd](c, player, Dispatch);
@@ -46,6 +50,10 @@ namespace FW.Game.Comms
 
 		protected void Cmd_DoOoc(Command Command, PlayerPC Player, TickDispatch Dispatch)
 		{
+			if (Command.Body.ToLower() == "ooc") {
+				return;
+			}
+
 			string msg = $"`b[`yOOC`b] `y{Player.Name}: `w{Command.Body}`n`n";
 
 			foreach (var p in Dispatch.State.Players) {
@@ -59,6 +67,10 @@ namespace FW.Game.Comms
 
 		protected void Cmd_DoEmote(Command Command, PlayerPC Player, TickDispatch Dispatch)
 		{
+			if (Command.Body.ToLower() == "emote") {
+				return;
+			}
+
 			string msg = $"`g{Player.Name}";
 
 			if (!Command.Body.StartsWith("'")) {
@@ -78,6 +90,10 @@ namespace FW.Game.Comms
 
 		protected void Cmd_DoSay(Command Command, PlayerPC Player, TickDispatch Dispatch)
 		{
+			if (Command.Body.ToLower() == "say") {
+				return;
+			}
+
 			string msg = $"`g{Player.Name} says, \"";
 
 			msg += $"{Command.Body}\"`0`n`n";

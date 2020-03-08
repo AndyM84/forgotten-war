@@ -112,7 +112,7 @@ namespace FW.Core
 			var clientsToRemove = new List<int>();
 
 			foreach (var client in this._Sockets) {
-				if (readSocks.Contains(client.Value.Socket)) {
+				if (readSocks.Contains(client.Value.Socket) && client.Value.Socket.Connected) {
 					var data = new byte[4096];
 					var recv = client.Value.Socket.Receive(data);
 
@@ -168,7 +168,12 @@ namespace FW.Core
 		public void Send(int ID, string Buffer)
 		{
 			if (this._Sockets.ContainsKey(ID)) {
-				this._Sockets[ID].Socket.Send(Encoding.ASCII.GetBytes(Buffer));
+				try {
+					this._Sockets[ID].Socket.Send(Encoding.ASCII.GetBytes(Buffer));
+				} catch (SocketException sex) {
+					this.Log(LogLevels.ERROR, sex.Message);
+					this.Log(LogLevels.INFO, sex.StackTrace);
+				}
 			}
 
 			return;

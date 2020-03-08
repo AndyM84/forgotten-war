@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Tantrums\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Stoic\Stoic.csproj" />
   </ItemGroup>
 

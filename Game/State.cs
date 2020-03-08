@@ -34,6 +34,15 @@ namespace FW.Game
 			return 0;
 		}
 
+		public Players.Player GetPlayerBySocketID(int ID)
+		{
+			if (this.PlayerSocketLookup.ContainsKey(ID)) {
+				return this.Players[this.PlayerSocketLookup[ID]];
+			}
+
+			return null;
+		}
+
 		public void RemovePlayer(int ID)
 		{
 			if (!this.Players.ContainsKey(ID)) {

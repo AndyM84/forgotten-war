@@ -43,7 +43,7 @@ namespace FW.Game.Players
 					Dispatch.SendToUser(c.ID, "Welcome to Forgotten War!\n\n", true);
 					Dispatch.SendToUser(c.ID, "What is your name? ", true);
 				} else if (c.Type == CommandTypes.RECEIVED) {
-					var player = (PlayerPC)Dispatch.State.Players[Dispatch.State.GetPlayerIDBySocketID(c.ID)];
+					var player = (PlayerPC)Dispatch.State.GetPlayerBySocketID(c.ID);
 
 					if (player.ConnectionState == ConnectionStates.NamePrompt) {
 						player.Name = c.Body;
@@ -70,10 +70,14 @@ namespace FW.Game.Players
 						}
 					}
 				} else if (c.Type == CommandTypes.DISCONNECTED) {
-					var player = (PlayerPC)Dispatch.State.Players[Dispatch.State.GetPlayerIDBySocketID(c.ID)];
+					var player = (PlayerPC)Dispatch.State.GetPlayerBySocketID(c.ID);
+
+					if (player == null) {
+						continue;
+					}
 
 					foreach (var p in Dispatch.State.Players) {
-						if (p.Value is PlayerPC && Dispatch.State.GetPlayerIDBySocketID(c.ID) != p.Value.ID) {
+						if (p.Value is PlayerPC && Dispatch.State.GetPlayerIDBySocketID(c.ID) != p.Value.ID && player.ConnectionState == ConnectionStates.Connected) {
 							Dispatch.SendToUser(p.Value.ID, $"`b[`yINFO`b]`0 `c{player.Name}`0 has disconnected!\n\n");
 						}
 					}
@@ -90,7 +94,7 @@ namespace FW.Game.Players
 			StringBuilder sb = new StringBuilder("`n=== Online Players ===`n");
 
 			foreach (var p in Dispatch.State.Players) {
-				if (p.Value is PlayerPC) {
+				if (p.Value is PlayerPC && ((PlayerPC)p.Value).ConnectionState == ConnectionStates.Connected) {
 					sb.Append("`b---`0 ");
 					sb.Append(p.Value.Name);
 
