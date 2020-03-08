@@ -73,13 +73,13 @@ namespace FW.Core
 		{
 			var sId = ID;
 
-			if (!AsSocket && (!this.State.Players.ContainsKey(ID) || !(this.State.Players[ID] is Game.Players.PlayerPC))) {
+			if (!AsSocket && (!this.State.Players.ContainsKey(ID) || !(this.State.Players[ID] is Models.PlayerPC))) {
 				return;
 			}
 
 			if (!AsSocket) {
-				sId = ((Game.Players.PlayerPC)this.State.Players[ID]).SocketID;
-				Message = this.AttemptColor(Message, ((Game.Players.PlayerPC)this.State.Players[ID]).ShowColor);
+				sId = ((Models.PlayerPC)this.State.Players[ID]).SocketID;
+				Message = this.AttemptColor(Message, ((Models.PlayerPC)this.State.Players[ID]).ShowColor);
 			}
 
 			this.SetResult(new Command {
@@ -95,12 +95,12 @@ namespace FW.Core
 		{
 			var sId = ID;
 
-			if (!AsSocket && (!this.State.Players.ContainsKey(ID) || !(this.State.Players[ID] is Game.Players.PlayerPC))) {
+			if (!AsSocket && (!this.State.Players.ContainsKey(ID) || !(this.State.Players[ID] is Models.PlayerPC))) {
 				return;
 			}
 
 			if (!AsSocket) {
-				sId = ((Game.Players.PlayerPC)this.State.Players[ID]).SocketID;
+				sId = ((Models.PlayerPC)this.State.Players[ID]).SocketID;
 			}
 
 			this.SetResult(new Command {

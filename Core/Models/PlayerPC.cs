@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FW.Game.Players
+﻿namespace FW.Core.Models
 {
 	public enum ConnectionStates
 	{

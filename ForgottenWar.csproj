@@ -24,4 +24,9 @@
     <ProjectReference Include="Stoic\Stoic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Game\Objects\" />
+    <Folder Include="Game\World\" />
+  </ItemGroup>
+
 </Project>

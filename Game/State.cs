@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+
+using FW.Core.Models;
 
 namespace FW.Game
 {
 	public class State
 	{
 		public int CurrentUserID;
-		public Dictionary<int, Players.Player> Players { get; set; }
+		public Dictionary<int, Player> Players { get; set; }
 		public Dictionary<int, int> PlayerSocketLookup { get; set; }
 
 
-		public int AddPlayer(Players.Player Player)
+		public int AddPlayer(Player Player)
 		{
 			this.CurrentUserID += 1;
 
 			Player.ID = this.CurrentUserID;
 			this.Players.Add(this.CurrentUserID, Player);
 
-			if (Player is Players.PlayerPC) {
-				this.PlayerSocketLookup.Add(((Players.PlayerPC)Player).SocketID, Player.ID);
+			if (Player is PlayerPC) {
+				this.PlayerSocketLookup.Add(((PlayerPC)Player).SocketID, Player.ID);
 			}
 
 			return this.CurrentUserID;
@@ -34,7 +34,7 @@ namespace FW.Game
 			return 0;
 		}
 
-		public Players.Player GetPlayerBySocketID(int ID)
+		public Player GetPlayerBySocketID(int ID)
 		{
 			if (this.PlayerSocketLookup.ContainsKey(ID)) {
 				return this.Players[this.PlayerSocketLookup[ID]];
@@ -49,8 +49,8 @@ namespace FW.Game
 				return;
 			}
 
-			if (this.Players[ID] is Players.PlayerPC) {
-				this.PlayerSocketLookup.Remove(((Players.PlayerPC)this.Players[ID]).SocketID);
+			if (this.Players[ID] is PlayerPC) {
+				this.PlayerSocketLookup.Remove(((PlayerPC)this.Players[ID]).SocketID);
 			}
 
 			this.Players.Remove(ID);

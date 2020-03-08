@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using FW.Core;
+﻿using FW.Core;
+using FW.Core.Models;
 using Stoic.Log;
 
 namespace FW.Game.Players
 {
 	public class PlayersNode : GameNode
 	{
-		protected Dictionary<string, Action<Command, PlayerPC, TickDispatch>> _Commands;
-
-
 		public PlayersNode(ref Logger Logger)
 			: base("PlayersNode", "1.0", ref Logger)
 		{
 			this.Log(LogLevels.DEBUG, "Initialized game PLAYERS node");
-			this._Commands = new Dictionary<string, Action<Command, PlayerPC, TickDispatch>> {
-				{ "who", this.Cmd_DoWho },
-				{ "quit", this.Cmd_DoQuit }
-			};
 
 			return;
 		}
@@ -45,6 +35,10 @@ namespace FW.Game.Players
 				} else if (c.Type == CommandTypes.RECEIVED) {
 					var player = (PlayerPC)Dispatch.State.GetPlayerBySocketID(c.ID);
 
+					if (player == null) {
+						continue;
+					}
+
 					if (player.ConnectionState == ConnectionStates.NamePrompt) {
 						player.Name = c.Body;
 						player.ConnectionState = ConnectionStates.ColorPrompt;
@@ -61,12 +55,6 @@ namespace FW.Game.Players
 							if (p.Value is PlayerPC) {
 								Dispatch.SendToUser(p.Value.ID, $"`b[`yINFO`b]`0 `c{player.Name}`0 just joined!\n\n");
 							}
-						}
-					} else {
-						var cmd = c.Prefix.ToLower();
-
-						if (this._Commands.ContainsKey(cmd)) {
-							this._Commands[cmd](c, player, Dispatch);
 						}
 					}
 				} else if (c.Type == CommandTypes.DISCONNECTED) {
@@ -85,45 +73,6 @@ namespace FW.Game.Players
 					Dispatch.State.RemovePlayer(player.ID);
 				}
 			}
-
-			return;
-		}
-
-		protected void Cmd_DoWho(Command Command, PlayerPC Player, TickDispatch Dispatch)
-		{
-			StringBuilder sb = new StringBuilder("`n=== Online Players ===`n");
-
-			foreach (var p in Dispatch.State.Players) {
-				if (p.Value is PlayerPC && ((PlayerPC)p.Value).ConnectionState == ConnectionStates.Connected) {
-					sb.Append("`b---`0 ");
-					sb.Append(p.Value.Name);
-
-					if (p.Value.ID == Player.ID) {
-						sb.Append(" `w(YOU)`0");
-					}
-
-					sb.Append("`n");
-				}
-			}
-
-			sb.Append("======================`n`n");
-			Dispatch.SendToUser(Player.ID, sb.ToString());
-
-			return;
-		}
-
-		protected void Cmd_DoQuit(Command Command, PlayerPC Player, TickDispatch Dispatch)
-		{
-			foreach (var p in Dispatch.State.Players) {
-				if (p.Value is PlayerPC && Dispatch.State.GetPlayerIDBySocketID(Command.ID) != p.Value.ID) {
-					Dispatch.SendToUser(p.Value.ID, $"`b[`yINFO`b]`0 `c{Player.Name}`0 has disconnected!\n\n");
-				}
-			}
-
-			Dispatch.SendToUser(Player.ID, $"`n`nThanks for playing, {Player.Name}!`n`n");
-			Dispatch.DisconnectUser(Player.ID);
-
-			Dispatch.State.RemovePlayer(Player.ID);
 
 			return;
 		}

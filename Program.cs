@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using FW.Core;
+using FW.Core.Models;
 using FW.Game;
 using Stoic.Chain;
 using Stoic.Log;
@@ -40,7 +41,7 @@ namespace FW
 			var state = new State();
 
 			state.CurrentUserID = 0;
-			state.Players = new Dictionary<int, Game.Players.Player>();
+			state.Players = new Dictionary<int, Player>();
 			state.PlayerSocketLookup = new Dictionary<int, int>();
 			logger.AddAppender(new ConsoleAppender());
 			logger.AddAppender(new FileAppender(ch.GetParameter("lf", "log-file", "fw-" + DateTime.Now.ToString("yyyy-MM-dd") + ".log"), FileAppenderOutputTypes.PLAIN));
@@ -53,7 +54,7 @@ namespace FW
 			logger.Output();
 
 			var game = new ChainHelper<TickDispatch, Command, List<Command>>();
-			game.LinkNode(new Game.Comms.CommsNode(ref logger));
+			game.LinkNode(new Game.ActionNode(ref logger));
 			game.LinkNode(new Game.Objects.ObjectsNode(ref logger));
 			game.LinkNode(new Game.World.WorldNode(ref logger));
 			game.LinkNode(new Game.Players.PlayersNode(ref logger));
