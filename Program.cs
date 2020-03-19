@@ -12,6 +12,7 @@ namespace FW
 {
 	class Program
 	{
+		public static bool ClosedBySignal = false;
 		public static bool ShouldRun = true;
 
 
@@ -116,7 +117,9 @@ namespace FW
 			serv.Shutdown();
 			logger.Output();
 
-			FinalPause();
+			if (!ClosedBySignal) {
+				FinalPause();
+			}
 
 			return;
 		}
@@ -138,6 +141,7 @@ namespace FW
 			Console.WriteLine("Captured SIGINT, shutting down...");
 
 			ShouldRun = false;
+			ClosedBySignal = true;
 
 			return;
 		}
