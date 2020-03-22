@@ -24,8 +24,10 @@ $os = Get-Ciminstance Win32_OperatingSystem
 $os | Select-Object @{Name = "MEM FreeGB";Expression = {[math]::Round($_.FreePhysicalMemory/1mb,2)}},
 	@{Name = "MEM TotalGB";Expression = {[int]($_.TotalVisibleMemorySize/1mb)}}
 
-Invoke-Expression "php -v"
-Invoke-Expression "composer --version"
+Write-Host ".NET Core v" -NoNewline
+Invoke-Expression "dotnet --version"
+
 Write-Host "PS Version: $($PSVersionTable.PSVersion)"
+
 Write-Host ""
 Write-Host "-> Done gathering system information"
