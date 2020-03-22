@@ -51,13 +51,13 @@ Exit 0
 
 properties([
 	parameters([
-			[$class: 'PersistentStringParameterDefinition', defaultValue: params.versionPrefix ?: "0.0", description: 'Prefix version number', name: 'versionPrefix', successfulOnly: false]
+			[$class: 'PersistentStringParameterDefinition', defaultValue: params.versionPrefix ?: "0.0.0", description: 'Prefix version number', name: 'versionPrefix', successfulOnly: false]
 	])
 ])
 
 node {
 	def currentCommit
-	def currentVersion = "${params.versionPrefix}${env.BUILD_NUMBER}"
+	def currentVersion = "${params.versionPrefix}.${env.BUILD_NUMBER}"
 
 	try {
 		stage('Checkout') {
@@ -84,7 +84,9 @@ node {
 		}
 
 		stage('System Information') {
-			powershell "./build/Get-SystemInfo.ps1"
+			dir('repo') {
+				powershell ".\\build\\Get-SystemInfo.ps1"
+			}
 		}
 
 		stage('Finalize Build') {
