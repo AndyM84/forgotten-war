@@ -103,7 +103,7 @@ node {
 				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\version.txt \"${currentVersion}\""
 				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\commit.txt \"${currentCommit}\""
 
-				archiveArtifacts(artifacts: ".\\dist\\**\\*")
+				archiveArtifacts(artifacts: "dist\\**\\*")
 			}
 		}
 
