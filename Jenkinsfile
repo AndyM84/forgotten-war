@@ -25,10 +25,10 @@ def notifyDiscord(versionNumber, buildResult) {
 		description: desc,
 		footer: '',
 		image: '',
-		link: 'https://ci.zibings.com/',
+		link: env.BUILD_URL,
 		result: buildResult,
 		thumbnail: thumbnail,
-		title: 'Jenkins Build Complete',
+		title: "FW Build v${versionNumber} Complete",
 		webhookURL: 'https://discordapp.com/api/webhooks/690982339051913346/gS6UAfbrCl-2QkqfGJzjI7OMoGyV4hI1abQibUPIrYGBX7EbaFg97vX9R7Hak60QPfbt'
 	)
 }
