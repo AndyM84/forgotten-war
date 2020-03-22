@@ -51,7 +51,7 @@ Exit 0
 
 properties([
 	parameters([
-			[$class: 'PersistentStringParameterDefinition', defaultValue: params.versionPrefix ?: "0.0.0", description: 'Prefix version number', name: 'versionPrefix', successfulOnly: false]
+			[$class: 'PersistentStringParameterDefinition', defaultValue: params.versionPrefix ?: "0.1.0", description: 'Prefix version number', name: 'versionPrefix', successfulOnly: false]
 	])
 ])
 
