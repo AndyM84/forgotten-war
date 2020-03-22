@@ -89,6 +89,26 @@ node {
 			}
 		}
 
+		stage('Build & Archive Distributables') {
+			dir('repo') {
+				powershell "dotnet publish -c Release -r win-x64 -o .\\dist\\windows-v${currentVersion}\\ --self-contained true"
+				powershell "Set-Content .\\dist\\windows-v${currentVersion}\\version.txt \"${currentVersion}\""
+				powershell "Set-Content .\\dist\\windows-v${currentVersion}\\commit.txt \"${currentCommit}\""
+
+				powershell "dotnet publish -c Release -r linux-x64 -o .\\dist\\linux-v${currentVersion}\\ --self-contained true"
+				powershell "Set-Content .\\dist\\linux-v${currentVersion}\\version.txt \"${currentVersion}\""
+				powershell "Set-Content .\\dist\\linux-v${currentVersion}\\commit.txt \"${currentCommit}\""
+
+				powershell "dotnet publish -c Release -r osx-x64 -o .\\dist\\macos-v${currentVersion}\\ --self-contained true"
+				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\version.txt \"${currentVersion}\""
+				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\commit.txt \"${currentCommit}\""
+
+				dir('dist') {
+					stash(name: 'dist')
+				}
+			}
+		}
+
 		stage('Finalize Build') {
 			cleanWs(cleanWhenAborted: false, cleanWhenNotBuilt: false, cleanWhenUnstable: false, notFailBuild: true)
 			
