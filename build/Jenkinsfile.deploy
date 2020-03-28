@@ -1,10 +1,10 @@
 def notifyDiscord(versionNumber, buildResult) {
-	def desc = "A new FW build has finished, v${versionNumber}: ${buildResult}"
-	def title = 'FAILED BUILD'
+	def desc = "A FW deployment has finished: ${buildResult}"
+	def title = 'FAILED'
 	def thumbnail = 'https://andymale.com/pictures/cancel.png'
 
 	if (buildResult.equalsIgnoreCase('SUCCESS')) {
-		title = 'SUCCESSFUL BUILD'
+		title = 'SUCCESSFUL'
 		thumbnail = 'https://andymale.com/pictures/checkmark.png'
 	}
 
@@ -15,7 +15,7 @@ def notifyDiscord(versionNumber, buildResult) {
 		link: env.BUILD_URL,
 		result: buildResult,
 		thumbnail: thumbnail,
-		title: "FW Build v${versionNumber} Complete",
+		title: "FW Deployment Complete",
 		webhookURL: 'https://discordapp.com/api/webhooks/690982339051913346/gS6UAfbrCl-2QkqfGJzjI7OMoGyV4hI1abQibUPIrYGBX7EbaFg97vX9R7Hak60QPfbt'
 	)
 }
@@ -38,7 +38,27 @@ Exit 0
 
 properties([
 	parameters([
-			[$class: 'PersistentStringParameterDefinition', defaultValue: params.serviceName ?: "ForgottenWar", description: 'Name of Windows service to stop/start during deployment', name: 'serviceName', successfulOnly: false]
+		[
+			$class: 'PersistentStringParameterDefinition',
+			defaultValue: params.serviceName ?: "ForgottenWar",
+			description: 'Name of Windows service to stop/start during deployment',
+			name: 'serviceName',
+			successfulOnly: false
+		],
+		[
+			$class: 'PersistentStringParameterDefinition',
+			defaultValue: params.servicePath ?: "D:\\webRoot\\internal\\forgotten-war.com\\service\\",
+			description: 'Path of Windows service to stop/start during deployment',
+			name: 'servicePath',
+			successfulOnly: false
+		],
+		[
+			$class: 'PersistentStringParameterDefinition',
+			defaultValue: params.sourceProject ?: "forgotten-war/master",
+			description: 'Source project to use for deployment artifacts',
+			name: 'sourceProject',
+			successfulOnly: false
+		]
 	])
 ])
 
@@ -47,7 +67,38 @@ node {
 		stage('Stop Service') {
 			executeBat("net stop ${params.serviceName}")
 		}
+
+		stage('Push Latest Distribution') {
+			copyArtifacts(
+				filter: 'dist/windows-*/**/*',
+				fingerprintArtifacts: true,
+				projectName: params.sourceProject,
+				selector: lastSuccessful(),
+				target: './'
+			)
+
+			def winDir = powershell(
+				returnStdout: true,
+				script: 'Get-ChildItem -Path dist -Directory | ForEach-Object { if ($_.BaseName.StartsWith("windows-v")) { Write-Output $_.BaseName } }'
+			)
+
+			powershell "xcopy .\\dist\\${winDir.trim()}\\*.* ${params.servicePath}*.* /S /Y "
+		}
+
+		stage('Start Service') {
+			executeBat("net start ${params.serviceName}")
+		}
+
+		stage('Clean Deploy') {
+			cleanWs(cleanWhenAborted: false, cleanWhenNotBuilt: false, cleanWhenUnstable: false, notFailBuild: true)
+		}
+
+		stage('Notify Deploy') {
+			notifyDiscord(env.BUILD_NUMBER, "SUCCESS")
+		}
 	} catch (e) {
+		notifyDiscord(env.BUILD_NUMBER, "FAILED")
+
 		throw(e)
 	}
 }
