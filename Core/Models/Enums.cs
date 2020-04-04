@@ -6,14 +6,22 @@
 		Dead
 	}
 
+	public enum Citizenships
+	{
+		None
+	}
+
 	public enum Classes
 	{
 		Warrior
 	}
 
-	public enum Citizenships
+	public enum ConnectionStates
 	{
-		None
+		NamePrompt,
+		PasswordPrompt,
+		ColorPrompt,
+		Connected
 	}
 
 	public enum Mortalities

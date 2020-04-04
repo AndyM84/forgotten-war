@@ -1,13 +1,5 @@
 ﻿namespace FW.Core.Models
 {
-	public enum ConnectionStates
-	{
-		NamePrompt,
-		PasswordPrompt,
-		ColorPrompt,
-		Connected
-	}
-
 	public class PlayerPC : Player
 	{
 		public ConnectionStates ConnectionState { get; set; }
