@@ -39,5 +39,13 @@ namespace FW.Core.Models
 		public int                     Vnum { get; set; }
 
 		#endregion
+
+
+		public Character()
+		{
+			this.Attributes = new Dictionary<string, int>();
+
+			return;
+		}
 	}
 }
