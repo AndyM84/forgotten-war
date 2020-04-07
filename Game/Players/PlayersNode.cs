@@ -39,6 +39,22 @@ namespace FW.Game.Players
 					}
 
 					if (player.ConnectionState == ConnectionStates.NamePrompt) {
+						bool goodName = true;
+
+						foreach (var p in Dispatch.State.Players) {
+							if (c.Body.ToLower() == p.Value.Name.ToLower()) {
+								Dispatch.SendToUser(player.Vnum, "Sorry, somebody is already using that name, please try again: ");
+
+								goodName = false;
+
+								break;
+							}
+						}
+
+						if (!goodName) {
+							continue;
+						}
+
 						player.Name = c.Body;
 						player.ConnectionState = ConnectionStates.ColorPrompt;
 
