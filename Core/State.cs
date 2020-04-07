@@ -2,27 +2,43 @@
 
 using FW.Core.Models;
 
-namespace FW.Game
+namespace FW.Core
 {
 	public class State
 	{
 		public int CurrentUserID;
-		public Dictionary<int, Player> Players { get; set; }
+		public Dictionary<int, Character> Players { get; set; }
 		public Dictionary<int, int> PlayerSocketLookup { get; set; }
+		public Dictionary<int, Room> Rooms { get; set; }
 
 
-		public int AddPlayer(Player Player)
+		public State()
+		{
+			this.CurrentUserID = 0;
+			this.Players = new Dictionary<int, Character>();
+			this.PlayerSocketLookup = new Dictionary<int, int>();
+			this.Rooms = new Dictionary<int, Room>();
+
+			return;
+		}
+
+
+		public int AddPlayer(Character Player)
 		{
 			this.CurrentUserID += 1;
 
-			Player.ID = this.CurrentUserID;
+			Player.Vnum = this.CurrentUserID;
 			this.Players.Add(this.CurrentUserID, Player);
-
-			if (Player is PlayerPC) {
-				this.PlayerSocketLookup.Add(((PlayerPC)Player).SocketID, Player.ID);
-			}
+			this.PlayerSocketLookup.Add(Player.SocketID, Player.Vnum);
 
 			return this.CurrentUserID;
+		}
+
+		public void AddRoom(Room room)
+		{
+			this.Rooms.Add(room.Vnum, room);
+
+			return;
 		}
 
 		public int GetPlayerIDBySocketID(int ID)
@@ -34,7 +50,7 @@ namespace FW.Game
 			return 0;
 		}
 
-		public Player GetPlayerBySocketID(int ID)
+		public Character GetPlayerBySocketID(int ID)
 		{
 			if (this.PlayerSocketLookup.ContainsKey(ID)) {
 				return this.Players[this.PlayerSocketLookup[ID]];
@@ -49,10 +65,7 @@ namespace FW.Game
 				return;
 			}
 
-			if (this.Players[ID] is PlayerPC) {
-				this.PlayerSocketLookup.Remove(((PlayerPC)this.Players[ID]).SocketID);
-			}
-
+			this.PlayerSocketLookup.Remove(this.Players[ID].SocketID);
 			this.Players.Remove(ID);
 
 			return;

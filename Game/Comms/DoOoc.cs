@@ -12,7 +12,7 @@ namespace FW.Game.Comms
 		}
 
 
-		public override void Act(Command Cmd, PlayerPC Player, TickDispatch Dispatch)
+		public override void Act(Command Cmd, Character Player, TickDispatch Dispatch)
 		{
 			if (Cmd.Body.ToLower() == "ooc") {
 				return;
@@ -21,9 +21,7 @@ namespace FW.Game.Comms
 			string msg = $"`b[`yOOC`b] `y{Player.Name}: `w{Cmd.Body}`n`n";
 
 			foreach (var p in Dispatch.State.Players) {
-				if (p.Value is PlayerPC) {
-					Dispatch.SendToUser(p.Key, msg);
-				}
+				Dispatch.SendToUser(p.Key, msg);
 			}
 
 			return;
