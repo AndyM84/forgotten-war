@@ -7,7 +7,7 @@ namespace FW.Core
 	public class TickDispatch : DispatchBase<Command, List<Command>>
 	{
 		protected List<Command> _Commands;
-		public Game.State State;
+		public State State;
 
 		public List<Command> Commands { get { return new List<Command>(this._Commands); } }
 
@@ -55,7 +55,7 @@ namespace FW.Core
 			throw new System.NotImplementedException();
 		}
 
-		public void Initialize(Game.State State, List<Command> Commands)
+		public void Initialize(State State, List<Command> Commands)
 		{
 			this._Commands = new List<Command>(Commands);
 			this.State = State;
@@ -73,13 +73,13 @@ namespace FW.Core
 		{
 			var sId = ID;
 
-			if (!AsSocket && (!this.State.Players.ContainsKey(ID) || !(this.State.Players[ID] is Models.PlayerPC))) {
+			if (!AsSocket && !this.State.Players.ContainsKey(ID)) {
 				return;
 			}
 
 			if (!AsSocket) {
-				sId = ((Models.PlayerPC)this.State.Players[ID]).SocketID;
-				Message = this.AttemptColor(Message, ((Models.PlayerPC)this.State.Players[ID]).ShowColor);
+				sId = (this.State.Players[ID]).SocketID;
+				Message = this.AttemptColor(Message, this.State.Players[ID].ShowColor);
 			}
 
 			this.SetResult(new Command {
@@ -95,12 +95,12 @@ namespace FW.Core
 		{
 			var sId = ID;
 
-			if (!AsSocket && (!this.State.Players.ContainsKey(ID) || !(this.State.Players[ID] is Models.PlayerPC))) {
+			if (!AsSocket && !this.State.Players.ContainsKey(ID)) {
 				return;
 			}
 
 			if (!AsSocket) {
-				sId = ((Models.PlayerPC)this.State.Players[ID]).SocketID;
+				sId = this.State.Players[ID].SocketID;
 			}
 
 			this.SetResult(new Command {

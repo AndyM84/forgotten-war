@@ -12,7 +12,7 @@ namespace FW.Game.Comms
 		}
 
 
-		public override void Act(Command Cmd, PlayerPC Player, TickDispatch Dispatch)
+		public override void Act(Command Cmd, Character Player, TickDispatch Dispatch)
 		{
 			if (Cmd.Body.ToLower() == "emote") {
 				return;
@@ -27,7 +27,7 @@ namespace FW.Game.Comms
 			msg += $"{Cmd.Body}`0`n`n";
 
 			foreach (var p in Dispatch.State.Players) {
-				if (p.Value is PlayerPC && p.Value.VnumLocation == Player.VnumLocation) {
+				if (p.Value.Location.Vnum == Player.Location.Vnum) {
 					Dispatch.SendToUser(p.Key, msg);
 				}
 			}

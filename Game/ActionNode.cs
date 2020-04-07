@@ -64,7 +64,7 @@ namespace FW.Game
 				}
 
 				var cmd = c.Prefix.ToLower();
-				var player = (PlayerPC)Dispatch.State.GetPlayerBySocketID(c.ID);
+				var player = Dispatch.State.GetPlayerBySocketID(c.ID);
 
 				if (player == null) {
 					continue;
@@ -82,7 +82,7 @@ namespace FW.Game
 			return;
 		}
 
-		public void DoCommands(Command Cmd, PlayerPC Player, TickDispatch Dispatch)
+		public void DoCommands(Command Cmd, Character Player, TickDispatch Dispatch)
 		{
 			StringBuilder sb = new StringBuilder("`nAvailable commands:`n`n");
 
@@ -93,7 +93,7 @@ namespace FW.Game
 
 			sb.Append("`n`n");
 
-			Dispatch.SendToUser(Player.ID, sb.ToString());
+			Dispatch.SendToUser(Player.Vnum, sb.ToString());
 
 			return;
 		}

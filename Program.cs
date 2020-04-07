@@ -26,7 +26,7 @@ namespace FW
 			var state = new State();
 
 			state.CurrentUserID = 0;
-			state.Players = new Dictionary<int, Player>();
+			state.Players = new Dictionary<int, Character>();
 			state.PlayerSocketLookup = new Dictionary<int, int>();
 			logger.AddAppender(new ConsoleAppender());
 			logger.AddAppender(new FileAppender(ch.GetParameter("lf", "log-file", "fw-" + DateTime.Now.ToString("yyyy-MM-dd") + ".log"), FileAppenderOutputTypes.PLAIN));

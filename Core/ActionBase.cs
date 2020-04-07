@@ -23,6 +23,6 @@
 		}
 
 
-		public abstract void Act(Command Cmd, Models.PlayerPC Player, TickDispatch Dispatch);
+		public abstract void Act(Command Cmd, Models.Character Player, TickDispatch Dispatch);
 	}
 }

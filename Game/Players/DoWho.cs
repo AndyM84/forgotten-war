@@ -14,16 +14,16 @@ namespace FW.Game.Players
 		}
 
 
-		public override void Act(Command Cmd, PlayerPC Player, TickDispatch Dispatch)
+		public override void Act(Command Cmd, Character Player, TickDispatch Dispatch)
 		{
 			StringBuilder sb = new StringBuilder("`n=== Online Players ===`n");
 
 			foreach (var p in Dispatch.State.Players) {
-				if (p.Value is PlayerPC && ((PlayerPC)p.Value).ConnectionState == ConnectionStates.Connected) {
+				if (p.Value.ConnectionState == ConnectionStates.Connected) {
 					sb.Append("`b---`0 ");
 					sb.Append(p.Value.Name);
 
-					if (p.Value.ID == Player.ID) {
+					if (p.Value.Vnum == Player.Vnum) {
 						sb.Append(" `w(YOU)`0");
 					}
 
@@ -32,7 +32,7 @@ namespace FW.Game.Players
 			}
 
 			sb.Append("======================`n`n");
-			Dispatch.SendToUser(Player.ID, sb.ToString());
+			Dispatch.SendToUser(Player.Vnum, sb.ToString());
 
 			return;
 		}
