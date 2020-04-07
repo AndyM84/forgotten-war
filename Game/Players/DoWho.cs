@@ -16,7 +16,7 @@ namespace FW.Game.Players
 
 		public override void Act(Command Cmd, Character Player, TickDispatch Dispatch)
 		{
-			StringBuilder sb = new StringBuilder("`n=== Online Players ===`n");
+			StringBuilder sb = new StringBuilder("=== Online Players ===`n");
 
 			foreach (var p in Dispatch.State.Players) {
 				if (p.Value.ConnectionState == ConnectionStates.Connected) {

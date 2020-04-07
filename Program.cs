@@ -99,7 +99,7 @@ namespace FW
 				"Xitan's Roomo",
 				new Vector3(0.0f, 0.0f, 0.0f),
 				new Exit[1] {
-					new Exit(4, 3, Directions.South, false, true)
+					new Exit(4, 3, Directions.West, false, true)
 				},
 				true,
 				true,
@@ -113,7 +113,7 @@ namespace FW
 				"Kyssandra's Room",
 				new Vector3(0.0f, 0.0f, 0.0f),
 				new Exit[1] {
-					new Exit(5, 3, Directions.West, false, true)
+					new Exit(5, 3, Directions.South, false, true)
 				},
 				true,
 				true,

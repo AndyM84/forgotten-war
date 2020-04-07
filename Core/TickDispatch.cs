@@ -79,7 +79,7 @@ namespace FW.Core
 
 			if (!AsSocket) {
 				sId = (this.State.Players[ID]).SocketID;
-				Message = this.AttemptColor(Message, this.State.Players[ID].ShowColor);
+				Message = "\n" + this.AttemptColor(Message, this.State.Players[ID].ShowColor);
 			}
 
 			this.SetResult(new Command {
