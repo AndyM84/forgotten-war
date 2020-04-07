@@ -105,7 +105,7 @@ namespace FW
 				true,
 				Biomes.Interior,
 				Terrains.Interior,
-				@"",
+				@"There isn't much left of this room's floor as far as you can see, it's mostly covered with all manner of paraphernalia.  Among the many things strewn about are wood working tools, books, weapons, strange armor, and a half-finished painting in a back corner.  One of the notebooks appears to say ""Xitan's Bridge Designs.""  You notice there are obvious paths through the clutter you can walk through, one of which leads to a pillow and rolled up blanket on the floor.",
 				null,
 				20));
 			state.AddRoom(new Room(
