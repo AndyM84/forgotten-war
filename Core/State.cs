@@ -9,6 +9,18 @@ namespace FW.Core
 		public int CurrentUserID;
 		public Dictionary<int, Character> Players { get; set; }
 		public Dictionary<int, int> PlayerSocketLookup { get; set; }
+		public Dictionary<int, Room> Rooms { get; set; }
+
+
+		public State()
+		{
+			this.CurrentUserID = 0;
+			this.Players = new Dictionary<int, Character>();
+			this.PlayerSocketLookup = new Dictionary<int, int>();
+			this.Rooms = new Dictionary<int, Room>();
+
+			return;
+		}
 
 
 		public int AddPlayer(Character Player)
@@ -20,6 +32,13 @@ namespace FW.Core
 			this.PlayerSocketLookup.Add(Player.SocketID, Player.Vnum);
 
 			return this.CurrentUserID;
+		}
+
+		public void AddRoom(Room room)
+		{
+			this.Rooms.Add(room.Vnum, room);
+
+			return;
 		}
 
 		public int GetPlayerIDBySocketID(int ID)

@@ -26,7 +26,7 @@ namespace FW.Game.Players
 					tmp.Name = "NewUser" + Dispatch.State.CurrentUserID;
 					tmp.ShowColor = true;
 					tmp.SocketID = c.ID;
-					tmp.Location = new Location(new Vector3(0.0f, 0.0f, 0.0f), 0);
+					tmp.Location = new Location(new Vector3(0.0f, 0.0f, 0.0f), 1);
 
 					tmp.Vnum = Dispatch.State.AddPlayer(tmp);
 					Dispatch.SendToUser(c.ID, "Welcome to Forgotten War!\n\n", true);
@@ -40,6 +40,10 @@ namespace FW.Game.Players
 
 					if (player.ConnectionState == ConnectionStates.NamePrompt) {
 						bool goodName = true;
+
+						if (c.Body.Contains(" ")) {
+							goodName = false;
+						}
 
 						foreach (var p in Dispatch.State.Players) {
 							if (c.Body.ToLower() == p.Value.Name.ToLower()) {

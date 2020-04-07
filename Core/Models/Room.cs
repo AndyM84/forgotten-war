@@ -11,6 +11,7 @@ namespace FW.Core.Models
 		public string                       Description { get; set; }
 		public Dictionary<Directions, Exit> Exits { get; set; }
 		public int                          Mana { get; set; }
+		public string                       Name { get; set; }
 		public bool                         NoCombat { get; set; }
 		public bool                         NoMagic { get; set; }
 		public List<Object>                 Objects { get; set; }
@@ -20,6 +21,7 @@ namespace FW.Core.Models
 
 		public Room(
 			int vnum,
+			string name,
 			Vector3 coordinate,
 			Exit[] exits,
 			bool noCombat,
@@ -35,6 +37,7 @@ namespace FW.Core.Models
 			this.Description = description;
 			this.Exits = new Dictionary<Directions, Exit>();
 			this.Mana = mana;
+			this.Name = name;
 			this.NoCombat = noCombat;
 			this.NoMagic = noMagic;
 			this.Objects = new List<Object>(objects ?? Array.Empty<Object>());
