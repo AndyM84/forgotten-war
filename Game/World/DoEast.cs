@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Text;
-
-using FW.Core;
+﻿using FW.Core;
 using FW.Core.Models;
 
 namespace FW.Game.World
 {
-	public class DoLook : ActionBase
+	public class DoEast : ActionBase
 	{
-		public DoLook()
-			: base("look", "look", "Displays details on the currently occupied room for a character")
+		public DoEast()
+			: base("east", "east", "Attempts to move a character east through an available exit")
 		{
 			return;
 		}
@@ -17,6 +14,14 @@ namespace FW.Game.World
 
 		public override void Act(Command Cmd, Character Player, TickDispatch Dispatch)
 		{
+			var destination = Utilities.GetNextRoomInDirection(Player.Location.Vnum, Directions.East, Player, Dispatch);
+
+			if (destination == null) {
+				return;
+			}
+
+			Player.Location.Vnum = destination.Vnum;
+
 			var output = Utilities.GetRoomOutput(Player.Location.Vnum, Player, Dispatch);
 
 			if (!string.IsNullOrWhiteSpace(output)) {
