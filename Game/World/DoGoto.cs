@@ -9,7 +9,7 @@ namespace FW.Game.World
 	public class DoGoto : ActionBase
 	{
 		public DoGoto(Logger Logger)
-			: base("goto", "goto", "Allows an administrator to change their location without having to travel", Logger)
+			: base("goto", "goto", "Allows an administrator to change their location without having to travel", Logger, Mortalities.Immortal)
 		{
 			return;
 		}
