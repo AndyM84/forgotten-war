@@ -87,6 +87,12 @@ namespace FW.Game.Players
 						foreach (var p in Dispatch.State.Players) {
 							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 just joined!`n");
 						}
+
+						var output = World.Utilities.GetRoomOutput(player.Location.Vnum, player, Dispatch);
+
+						if (!string.IsNullOrWhiteSpace(output)) {
+							Dispatch.SendToUser(player.Vnum, output);
+						}
 					}
 				} else if (c.Type == CommandTypes.DISCONNECTED) {
 					var player = Dispatch.State.GetPlayerBySocketID(c.ID);
