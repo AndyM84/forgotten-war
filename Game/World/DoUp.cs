@@ -21,6 +21,7 @@ namespace FW.Game.World
 				return;
 			}
 
+			var oldRoom = Player.Location.Vnum;
 			Player.Location.Vnum = destination.Vnum;
 
 			var output = Utilities.GetRoomOutput(Player.Location.Vnum, Player, Dispatch);
@@ -28,6 +29,7 @@ namespace FW.Game.World
 			if (!string.IsNullOrWhiteSpace(output)) {
 				Dispatch.SendToUser(Player.Vnum, output);
 				Utilities.DoRoomJoin(Player, Dispatch);
+				Utilities.DoRoomLeave(oldRoom, Player, Dispatch);
 			}
 
 			return;

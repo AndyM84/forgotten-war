@@ -31,12 +31,14 @@ namespace FW.Game.World
 					return;
 				}
 
+				var oldRoom = Player.Location.Vnum;
 				Player.Location.Vnum = vnum;
 				var output = Utilities.GetRoomOutput(vnum, Player, Dispatch);
 
 				if (!string.IsNullOrWhiteSpace(output)) {
 					Dispatch.SendToUser(Player.Vnum, output);
 					Utilities.DoRoomJoin(Player, Dispatch);
+					Utilities.DoRoomLeave(oldRoom, Player, Dispatch);
 				}
 			} catch (FormatException) {
 				this.Log(LogLevels.ERROR, $"Failed to perform GOTO for user '{Player.Name}', bad VNUM format: {Cmd.Body}");
