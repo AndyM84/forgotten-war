@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.World
 {
 	public class DoSouth : ActionBase
 	{
-		public DoSouth()
-			: base("south", "south", "Attempts to move a character south through an available exit")
+		public DoSouth(Logger Logger)
+			: base("south", "south", "Attempts to move a character south through an available exit", Logger)
 		{
 			return;
 		}

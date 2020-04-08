@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Text;
-
-using FW.Core;
+﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.World
 {
 	public class DoLook : ActionBase
 	{
-		public DoLook()
-			: base("look", "look", "Displays details on the currently occupied room for a character")
+		public DoLook(Logger Logger)
+			: base("look", "look", "Displays details on the currently occupied room for a character", Logger)
 		{
 			return;
 		}

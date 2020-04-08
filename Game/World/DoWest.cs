@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.World
 {
 	public class DoWest : ActionBase
 	{
-		public DoWest()
-			: base("west", "west", "Attempts to move a character west through an available exit")
+		public DoWest(Logger Logger)
+			: base("west", "west", "Attempts to move a character west through an available exit", Logger)
 		{
 			return;
 		}

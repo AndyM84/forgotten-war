@@ -28,7 +28,7 @@ namespace FW.Game
 			foreach (var asm in AppDomain.CurrentDomain.GetAssemblies()) {
 				foreach (var t in asm.GetTypes()) {
 					if (baseActType.IsAssignableFrom(t) && !t.IsAbstract) {
-						var tmp = Activator.CreateInstance(t);
+						var tmp = Activator.CreateInstance(t, Logger);
 						
 						if (tmp != null) {
 							var cmd = ((ActionBase)tmp).Command.ToLower();

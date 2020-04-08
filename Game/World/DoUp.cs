@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.World
 {
 	public class DoUp : ActionBase
 	{
-		public DoUp()
-			: base("up", "up", "Attempts to move a character up through an available exit")
+		public DoUp(Logger Logger)
+			: base("up", "up", "Attempts to move a character up through an available exit", Logger)
 		{
 			return;
 		}

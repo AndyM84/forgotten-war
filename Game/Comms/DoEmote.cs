@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.Comms
 {
 	public class DoEmote : ActionBase
 	{
-		public DoEmote()
-			: base("emote", "emote <rp action>", "Send a dynamic role-play action to the current room")
+		public DoEmote(Logger Logger)
+			: base("emote", "emote <rp action>", "Send a dynamic role-play action to the current room", Logger)
 		{
 			return;
 		}

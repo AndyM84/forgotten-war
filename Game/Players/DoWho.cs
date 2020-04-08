@@ -2,13 +2,14 @@
 
 using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.Players
 {
 	public class DoWho : ActionBase
 	{
-		public DoWho()
-			: base("who", "who", "Display a list of online visible players")
+		public DoWho(Logger Logger)
+			: base("who", "who", "Display a list of online visible players", Logger)
 		{
 			return;
 		}
