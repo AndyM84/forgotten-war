@@ -85,7 +85,7 @@ namespace FW.Game.Players
 						}
 
 						foreach (var p in Dispatch.State.Players) {
-							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 just joined!\n\n");
+							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 just joined!`n");
 						}
 					}
 				} else if (c.Type == CommandTypes.DISCONNECTED) {
@@ -97,7 +97,7 @@ namespace FW.Game.Players
 
 					foreach (var p in Dispatch.State.Players) {
 						if (Dispatch.State.GetPlayerIDBySocketID(c.ID) != p.Value.Vnum && player.ConnectionState == ConnectionStates.Connected) {
-							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 has disconnected!\n\n");
+							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 has disconnected!`n");
 						}
 					}
 
