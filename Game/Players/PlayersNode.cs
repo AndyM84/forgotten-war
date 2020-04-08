@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 using FW.Core;
 using FW.Core.Models;
@@ -23,6 +24,7 @@ namespace FW.Game.Players
 				if (c.Type == CommandTypes.CONNECTED) {
 					var tmp = new Character();
 					tmp.ConnectionState = ConnectionStates.NamePrompt;
+					tmp.Mortality = Mortalities.Mortal;
 					tmp.Name = "NewUser" + Dispatch.State.CurrentUserID;
 					tmp.ShowColor = true;
 					tmp.SocketID = c.ID;
@@ -57,6 +59,18 @@ namespace FW.Game.Players
 
 						if (!goodName) {
 							continue;
+						}
+
+						var admins = new List<string>() {
+							"xitan",
+							"kyssandra",
+							"neryndil"
+						};
+
+						foreach (var a in admins) {
+							if (c.Body.ToLower() == a) {
+								player.Mortality = Mortalities.Admin;
+							}
 						}
 
 						player.Name = c.Body;
