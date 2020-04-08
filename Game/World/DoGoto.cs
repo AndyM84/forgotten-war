@@ -36,6 +36,7 @@ namespace FW.Game.World
 
 				if (!string.IsNullOrWhiteSpace(output)) {
 					Dispatch.SendToUser(Player.Vnum, output);
+					Utilities.DoRoomJoin(Player, Dispatch);
 				}
 			} catch (FormatException) {
 				this.Log(LogLevels.ERROR, $"Failed to perform GOTO for user '{Player.Name}', bad VNUM format: {Cmd.Body}");

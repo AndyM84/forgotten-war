@@ -62,5 +62,20 @@ namespace FW.Game.World
 
 			return sb.ToString();
 		}
+
+		public static void DoRoomJoin(Character Player, TickDispatch Dispatch)
+		{
+			string text = $"{Player.Name} has entered the room.`n";
+
+			foreach (var p in Dispatch.State.Players) {
+				// We can put visibility checks and such in here
+
+				if (p.Value.Vnum != Player.Vnum) {
+					Dispatch.SendToUser(p.Value.Vnum, text);
+				}
+			}
+
+			return;
+		}
 	}
 }

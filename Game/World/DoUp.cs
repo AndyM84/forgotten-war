@@ -27,6 +27,7 @@ namespace FW.Game.World
 
 			if (!string.IsNullOrWhiteSpace(output)) {
 				Dispatch.SendToUser(Player.Vnum, output);
+				Utilities.DoRoomJoin(Player, Dispatch);
 			}
 
 			return;
