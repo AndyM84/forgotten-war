@@ -29,6 +29,15 @@ namespace FW.Game.World
 				return;
 			}
 
+			switch (Player.Pose) {
+				case Poses.Sitting:
+				case Poses.Laying:
+				case Poses.Sleeping:
+					Dispatch.SendToUser(Player.Vnum, "You can't move if you are resting!");
+
+					return;
+			}
+
 			var direction = Directions.North;
 
 			switch (Cmd.Body) {
@@ -108,6 +117,10 @@ namespace FW.Game.World
 		{
 			string text = $"{Player.Name} has entered the room.`n";
 
+			if (Player.Pose == Poses.Turtling) {
+				text = $"{Player.Name} enters the room slowly, crab-walking while they impersonate a turtle.`n";
+			}
+
 			foreach (var p in Dispatch.State.Players) {
 				// We can put visibility checks and such in here
 
@@ -122,6 +135,10 @@ namespace FW.Game.World
 		protected void DoRoomLeave(int Vnum, Character Player, TickDispatch Dispatch)
 		{
 			string text = $"{Player.Name} has left the room.`n";
+
+			if (Player.Pose == Poses.Turtling) {
+				text = $"{Player.Name} leaves the room slowly, crab-walking while they impersonate a turtle.`n";
+			}
 
 			foreach (var p in Dispatch.State.Players) {
 				// We can put visibility checks and such in here
