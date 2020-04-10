@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.Players
 {
 	public class DoQuit : ActionBase
 	{
-		public DoQuit()
-			: base("quit", "quit", "Disconnect from the game")
+		public DoQuit(Logger Logger)
+			: base("quit", "quit", "Disconnect from the game", Logger)
 		{
 			return;
 		}

@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.Comms
 {
 	public class DoSay : ActionBase
 	{
-		public DoSay()
-			: base("say", "say <message>", "Broadcast a spoken message to the current room")
+		public DoSay(Logger Logger)
+			: base("say", "say <message>", "Broadcast a spoken message to the current room", Logger)
 		{
 			return;
 		}

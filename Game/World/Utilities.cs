@@ -62,5 +62,35 @@ namespace FW.Game.World
 
 			return sb.ToString();
 		}
+
+		public static void DoRoomJoin(Character Player, TickDispatch Dispatch)
+		{
+			string text = $"{Player.Name} has entered the room.`n";
+
+			foreach (var p in Dispatch.State.Players) {
+				// We can put visibility checks and such in here
+
+				if (p.Value.Location.Vnum == Player.Location.Vnum && p.Value.Vnum != Player.Vnum) {
+					Dispatch.SendToUser(p.Value.Vnum, text);
+				}
+			}
+
+			return;
+		}
+
+		public static void DoRoomLeave(int Vnum, Character Player, TickDispatch Dispatch)
+		{
+			string text = $"{Player.Name} has left the room.`n";
+
+			foreach (var p in Dispatch.State.Players) {
+				// We can put visibility checks and such in here
+
+				if (p.Value.Location.Vnum == Vnum && p.Value.Vnum != Player.Vnum) {
+					Dispatch.SendToUser(p.Value.Vnum, text);
+				}
+			}
+
+			return;
+		}
 	}
 }

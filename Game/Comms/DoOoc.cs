@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.Comms
 {
 	public class DoOoc : ActionBase
 	{
-		public DoOoc()
-			: base("ooc", "ooc <message>", "Send a public 'out of character' message")
+		public DoOoc(Logger Logger)
+			: base("ooc", "ooc <message>", "Send a public 'out of character' message", Logger)
 		{
 			return;
 		}

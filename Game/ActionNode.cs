@@ -10,7 +10,7 @@ namespace FW.Game
 {
 	public class ActionNode : GameNode
 	{
-		protected List<string> _ActionList;
+		protected Dictionary<string, Mortalities> _ActionList;
 		protected Dictionary<string, ActionBase> _Actions;
 		protected int _ActionWidth;
 
@@ -22,13 +22,13 @@ namespace FW.Game
 
 			this._ActionWidth = 8;
 			Type baseActType = typeof(ActionBase);
-			this._ActionList = new List<string>();
+			this._ActionList = new Dictionary<string, Mortalities>();
 			this._Actions = new Dictionary<string, ActionBase>();
 
 			foreach (var asm in AppDomain.CurrentDomain.GetAssemblies()) {
 				foreach (var t in asm.GetTypes()) {
 					if (baseActType.IsAssignableFrom(t) && !t.IsAbstract) {
-						var tmp = Activator.CreateInstance(t);
+						var tmp = Activator.CreateInstance(t, Logger);
 						
 						if (tmp != null) {
 							var cmd = ((ActionBase)tmp).Command.ToLower();
@@ -44,10 +44,10 @@ namespace FW.Game
 				}
 			}
 
-			this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", "commands", "Display the list of all available commands"));
+			this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", "commands", "Display the list of all available commands"), Mortalities.Mortal);
 
 			foreach (var action in this._Actions) {
-				this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", action.Value.Command, action.Value.Description));
+				this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", action.Value.Command, action.Value.Description), action.Value.MinMortality);
 			}
 
 			this.Log(LogLevels.DEBUG, "Initialized game ACTION node");
@@ -74,7 +74,7 @@ namespace FW.Game
 					this.DoCommands(c, player, Dispatch);
 				}
 
-				if (this._Actions.ContainsKey(cmd)) {
+				if (this._Actions.ContainsKey(cmd) && this._Actions[cmd].MinMortality <= player.Mortality) {
 					this._Actions[cmd].Act(c, player, Dispatch);
 				}
 			}
@@ -87,7 +87,11 @@ namespace FW.Game
 			StringBuilder sb = new StringBuilder("`nAvailable commands:`n`n");
 
 			foreach (var a in this._ActionList) {
-				sb.Append(a);
+				if (a.Value > Player.Mortality) {
+					continue;
+				}
+
+				sb.Append(a.Key);
 				sb.Append("`n");
 			}
 

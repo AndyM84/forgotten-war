@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.World
 {
 	public class DoEast : ActionBase
 	{
-		public DoEast()
-			: base("east", "east", "Attempts to move a character east through an available exit")
+		public DoEast(Logger Logger)
+			: base("east", "east", "Attempts to move a character east through an available exit", Logger)
 		{
 			return;
 		}
@@ -20,12 +21,15 @@ namespace FW.Game.World
 				return;
 			}
 
+			var oldRoom = Player.Location.Vnum;
 			Player.Location.Vnum = destination.Vnum;
 
 			var output = Utilities.GetRoomOutput(Player.Location.Vnum, Player, Dispatch);
 
 			if (!string.IsNullOrWhiteSpace(output)) {
 				Dispatch.SendToUser(Player.Vnum, output);
+				Utilities.DoRoomJoin(Player, Dispatch);
+				Utilities.DoRoomLeave(oldRoom, Player, Dispatch);
 			}
 
 			return;

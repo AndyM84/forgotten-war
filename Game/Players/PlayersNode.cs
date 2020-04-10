@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 using FW.Core;
 using FW.Core.Models;
@@ -23,6 +24,7 @@ namespace FW.Game.Players
 				if (c.Type == CommandTypes.CONNECTED) {
 					var tmp = new Character();
 					tmp.ConnectionState = ConnectionStates.NamePrompt;
+					tmp.Mortality = Mortalities.Mortal;
 					tmp.Name = "NewUser" + Dispatch.State.CurrentUserID;
 					tmp.ShowColor = true;
 					tmp.SocketID = c.ID;
@@ -59,6 +61,18 @@ namespace FW.Game.Players
 							continue;
 						}
 
+						var admins = new List<string>() {
+							"xitan",
+							"kyssandra",
+							"neryndil"
+						};
+
+						foreach (var a in admins) {
+							if (c.Body.ToLower() == a) {
+								player.Mortality = Mortalities.Admin;
+							}
+						}
+
 						player.Name = c.Body;
 						player.ConnectionState = ConnectionStates.ColorPrompt;
 
@@ -71,7 +85,13 @@ namespace FW.Game.Players
 						}
 
 						foreach (var p in Dispatch.State.Players) {
-							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 just joined!\n\n");
+							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 just joined!`n");
+						}
+
+						var output = World.Utilities.GetRoomOutput(player.Location.Vnum, player, Dispatch);
+
+						if (!string.IsNullOrWhiteSpace(output)) {
+							Dispatch.SendToUser(player.Vnum, output);
 						}
 					}
 				} else if (c.Type == CommandTypes.DISCONNECTED) {
@@ -83,7 +103,7 @@ namespace FW.Game.Players
 
 					foreach (var p in Dispatch.State.Players) {
 						if (Dispatch.State.GetPlayerIDBySocketID(c.ID) != p.Value.Vnum && player.ConnectionState == ConnectionStates.Connected) {
-							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 has disconnected!\n\n");
+							Dispatch.SendToUser(p.Value.Vnum, $"`b[`yINFO`b]`0 `c{player.Name}`0 has disconnected!`n");
 						}
 					}
 

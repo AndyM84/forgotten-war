@@ -1,12 +1,13 @@
 ﻿using FW.Core;
 using FW.Core.Models;
+using Stoic.Log;
 
 namespace FW.Game.World
 {
 	public class DoUp : ActionBase
 	{
-		public DoUp()
-			: base("up", "up", "Attempts to move a character up through an available exit")
+		public DoUp(Logger Logger)
+			: base("up", "up", "Attempts to move a character up through an available exit", Logger)
 		{
 			return;
 		}
@@ -20,12 +21,15 @@ namespace FW.Game.World
 				return;
 			}
 
+			var oldRoom = Player.Location.Vnum;
 			Player.Location.Vnum = destination.Vnum;
 
 			var output = Utilities.GetRoomOutput(Player.Location.Vnum, Player, Dispatch);
 
 			if (!string.IsNullOrWhiteSpace(output)) {
 				Dispatch.SendToUser(Player.Vnum, output);
+				Utilities.DoRoomJoin(Player, Dispatch);
+				Utilities.DoRoomLeave(oldRoom, Player, Dispatch);
 			}
 
 			return;
