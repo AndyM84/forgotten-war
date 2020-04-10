@@ -30,15 +30,17 @@ namespace FW.Game
 					if (baseActType.IsAssignableFrom(t) && !t.IsAbstract) {
 						var tmp = Activator.CreateInstance(t, Logger);
 						
-						if (tmp != null) {
-							var cmd = ((ActionBase)tmp).Command.ToLower();
-							this._Actions.Add(cmd, (ActionBase)tmp);
+						if (tmp != null && ((ActionBase)tmp).Actions.Count > 0) {
+							foreach (var a in ((ActionBase)tmp).Actions) {
+								var cmd = a.Key;
+								this._Actions.Add(cmd, (ActionBase)tmp);
 
-							if (cmd.Length > this._ActionWidth) {
-								this._ActionWidth = cmd.Length;
+								if (cmd.Length > this._ActionWidth) {
+									this._ActionWidth = cmd.Length;
+								}
+
+								this.Log(LogLevels.DEBUG, " - Loaded the '" + cmd + "' action");
 							}
-
-							this.Log(LogLevels.DEBUG, " - Loaded the '" + cmd + "' action");
 						}
 					}
 				}
@@ -47,7 +49,9 @@ namespace FW.Game
 			this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", "commands", "Display the list of all available commands"), Mortalities.Mortal);
 
 			foreach (var action in this._Actions) {
-				this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", action.Value.Command, action.Value.Description), action.Value.MinMortality);
+				if (action.Value.Actions[action.Key].Visible) {
+					this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", action.Key, action.Value.Actions[action.Key].Description), action.Value.Actions[action.Key].MinMortality);
+				}
 			}
 
 			this.Log(LogLevels.DEBUG, "Initialized game ACTION node");
@@ -74,7 +78,7 @@ namespace FW.Game
 					this.DoCommands(c, player, Dispatch);
 				}
 
-				if (this._Actions.ContainsKey(cmd) && this._Actions[cmd].MinMortality <= player.Mortality) {
+				if (this._Actions.ContainsKey(cmd) && this._Actions[cmd].Actions[cmd].MinMortality <= player.Mortality) {
 					this._Actions[cmd].Act(c, player, Dispatch);
 				}
 			}
@@ -94,8 +98,6 @@ namespace FW.Game
 				sb.Append(a.Key);
 				sb.Append("`n");
 			}
-
-			sb.Append("`n`n");
 
 			Dispatch.SendToUser(Player.Vnum, sb.ToString());
 

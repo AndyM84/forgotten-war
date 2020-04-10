@@ -78,6 +78,16 @@
 		Admin
 	}
 
+	public enum Poses
+	{
+		Standing,
+		Sitting,
+		Laying,
+		Crouching,
+		Turtling,
+		Sleeping
+	}
+
 	public enum Races
 	{
 		Fae,

@@ -1,30 +1,35 @@
-﻿using FW.Core.Models;
+﻿using System.Collections.Generic;
+
+using FW.Core.Models;
 using Stoic.Log;
 
 namespace FW.Core
 {
 	public abstract class ActionBase
 	{
-		protected string _Command;
-		protected string _Description;
+		protected Dictionary<string, Action> _Actions;
 		protected Logger _Logger;
-		protected Mortalities _MinMortality;
-		protected string _Syntax;
 
 
-		public string Command { get { return this._Command; } }
-		public string Description { get { return this._Description; } }
-		public Mortalities MinMortality { get { return this._MinMortality; } }
-		public string Syntax { get { return this._Syntax; } }
+		public Dictionary<string, Action> Actions { get { return this._Actions; } }
 
 
 		protected ActionBase(string Command, string Syntax, string Description, Logger Logger, Mortalities MinMortality = Mortalities.Mortal)
+			: this(new Action[1] { new Action(Command, Description, Syntax, MinMortality) }, Logger)
 		{
-			this._Command = Command;
-			this._Description = Description;
+			return;
+		}
+
+		protected ActionBase(Action[] Actions, Logger Logger)
+		{
+			this._Actions = new Dictionary<string, Action>();
 			this._Logger = Logger;
-			this._MinMortality = MinMortality;
-			this._Syntax = Syntax;
+
+			if (Actions.Length > 0) {
+				foreach (var a in Actions) {
+					this._Actions.Add(a.Command.ToLower(), a);
+				}
+			}
 
 			return;
 		}

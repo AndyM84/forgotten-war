@@ -13,6 +13,7 @@ namespace FW.Core.Models
 		public double                  Fatigue { get; set; }
 		public double                  Luck { get; set; }
 		public double                  Mental { get; set; }
+		public Poses                   Pose { get; set; }
 		public Races                   Race { get; set; }
 
 		#endregion
