@@ -76,11 +76,11 @@ namespace FW.Game.Players
 						player.Name = c.Body;
 						player.ConnectionState = ConnectionStates.ColorPrompt;
 
-						Dispatch.SendToUser(player.Vnum, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (Y/n)? ");
+						Dispatch.SendToUser(player.Vnum, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ");
 					} else if (player.ConnectionState == ConnectionStates.ColorPrompt) {
 						player.ConnectionState = ConnectionStates.Connected;
 
-						if (c.Body.ToLower() == "n") {
+						if (c.Body.ToLower() == "n" || c.Body.ToLower() == "no") {
 							player.ShowColor = false;
 						}
 
