@@ -21,6 +21,8 @@ namespace FW.Game.Players
 
 			foreach (var p in Dispatch.State.Players) {
 				if (p.Value.ConnectionState == ConnectionStates.Connected || Player.Mortality == Mortalities.Admin) {
+					// TODO: Should eventually make it so that imm's see only the mortality but not connected state, but not high priority -AndyM
+
 					if (Player.Mortality == Mortalities.Admin) {
 						sb.Append("`b");
 
