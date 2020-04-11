@@ -22,7 +22,6 @@ namespace FW.Game.Players
 			foreach (var p in Dispatch.State.Players) {
 				if (p.Value.ConnectionState == ConnectionStates.Connected || Player.Mortality == Mortalities.Admin) {
 					if (Player.Mortality == Mortalities.Admin) {
-						sb.Append("`b---`0 ");
 						sb.Append("`b");
 
 						switch (p.Value.Mortality) {
@@ -39,6 +38,29 @@ namespace FW.Game.Players
 
 								break;
 						}
+
+						sb.Append("`0 `y");
+
+						switch (p.Value.ConnectionState) {
+							case ConnectionStates.NamePrompt:
+								sb.Append("NAME");
+
+								break;
+							case ConnectionStates.PasswordPrompt:
+								sb.Append("PASS");
+
+								break;
+							case ConnectionStates.ColorPrompt:
+								sb.Append("COLR");
+
+								break;
+							case ConnectionStates.Connected:
+								sb.Append("CONN");
+
+								break;
+						}
+
+						sb.Append("`0 ");
 					}
 
 					sb.Append(p.Value.Name);
