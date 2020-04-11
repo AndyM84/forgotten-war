@@ -50,7 +50,7 @@ namespace FW.Game
 
 			foreach (var action in this._Actions) {
 				if (action.Value.Actions[action.Key].Visible) {
-					this._ActionList.Add(string.Format("{0,-" + this._ActionWidth + "} {1}", action.Key, action.Value.Actions[action.Key].Description), action.Value.Actions[action.Key].MinMortality);
+					this._ActionList.Add(string.Format("   {0,-" + this._ActionWidth + "} {1}", action.Key, action.Value.Actions[action.Key].Description), action.Value.Actions[action.Key].MinMortality);
 				}
 			}
 
