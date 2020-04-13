@@ -79,7 +79,7 @@ node {
 			])
 
 			dir("repo") {
-				currentBranch = powershell(returnStdout: true, script: "git rev-parse --abbrev-ref HEAD")
+				currentBranch = env.BRANCH_NAME
 				currentCommit = powershell(returnStdout: true, script: "git rev-parse HEAD")
 			}
 		}
