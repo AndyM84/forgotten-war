@@ -57,6 +57,7 @@ properties([
 ])
 
 node {
+	def currentBranch
 	def currentCommit
 	def currentVersion = "${params.versionPrefix}.${env.BUILD_NUMBER}"
 
@@ -78,10 +79,9 @@ node {
 			])
 
 			dir("repo") {
+				currentBranch = powershell(returnStdout: true, script: "git rev-parse --abbrev-ref HEAD")
 				currentCommit = powershell(returnStdout: true, script: "git rev-parse HEAD")
 			}
-
-			//notifyGithub(currentCommit, 'PENDING', 'Build Underway')
 		}
 
 		stage('System Information') {
@@ -95,14 +95,17 @@ node {
 				powershell "dotnet publish -c Release -r win-x64 -o .\\dist\\windows-v${currentVersion}\\ --self-contained true"
 				powershell "Set-Content .\\dist\\windows-v${currentVersion}\\version.txt \"${currentVersion}\""
 				powershell "Set-Content .\\dist\\windows-v${currentVersion}\\commit.txt \"${currentCommit}\""
+				powershell "Set-Content .\\dist\\windows-v${currentVersion}\\branch.txt \"${currentBranch}\""
 
 				powershell "dotnet publish -c Release -r linux-x64 -o .\\dist\\linux-v${currentVersion}\\ --self-contained true"
 				powershell "Set-Content .\\dist\\linux-v${currentVersion}\\version.txt \"${currentVersion}\""
 				powershell "Set-Content .\\dist\\linux-v${currentVersion}\\commit.txt \"${currentCommit}\""
+				powershell "Set-Content .\\dist\\linux-v${currentVersion}\\branch.txt \"${currentBranch}\""
 
 				powershell "dotnet publish -c Release -r osx-x64 -o .\\dist\\macos-v${currentVersion}\\ --self-contained true"
 				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\version.txt \"${currentVersion}\""
 				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\commit.txt \"${currentCommit}\""
+				powershell "Set-Content .\\dist\\macos-v${currentVersion}\\branch.txt \"${currentBranch}\""
 
 				archiveArtifacts(artifacts: "dist\\**\\*")
 			}
