@@ -21,7 +21,7 @@ namespace FW.Game.Comms
 
 			string msg = $"`g{Player.Name} says, \"";
 
-			msg += $"{Cmd.Body}\"`0`n`n";
+			msg += $"{Cmd.Body}`g\"`0`n`n";
 
 			foreach (var p in Dispatch.State.Players) {
 				if (p.Value.Location.Vnum == Player.Location.Vnum) {

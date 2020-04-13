@@ -19,7 +19,7 @@ namespace FW.Game.Comms
 				return;
 			}
 
-			string msg = $"`b[`yOOC`b] `y{Player.Name}: `w{Cmd.Body}`n`n";
+			string msg = $"`b[`yOOC`b] `y{Player.Name}: `w{Cmd.Body}`0`n`n";
 
 			foreach (var p in Dispatch.State.Players) {
 				Dispatch.SendToUser(p.Key, msg);
