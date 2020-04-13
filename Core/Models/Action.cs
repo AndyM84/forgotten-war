@@ -9,7 +9,7 @@
 		public bool Visible { get; set; }
 
 
-		public Action(string Command, string Description, string Syntax, Mortalities MinMortality = Mortalities.Mortal, bool Visible = false)
+		public Action(string Command, string Description, string Syntax, Mortalities MinMortality = Mortalities.Mortal, bool Visible = true)
 		{
 			this.Command = Command;
 			this.Description = Description;

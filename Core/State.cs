@@ -6,18 +6,24 @@ namespace FW.Core
 {
 	public class State
 	{
+		public string Branch { get; set; }
+		public string Commit { get; set; }
 		public int CurrentUserID;
 		public Dictionary<int, Character> Players { get; set; }
 		public Dictionary<int, int> PlayerSocketLookup { get; set; }
 		public Dictionary<int, Room> Rooms { get; set; }
+		public string Version { get; set; }
 
 
 		public State()
 		{
+			this.Branch = "master";
+			this.Commit = "000000";
 			this.CurrentUserID = 0;
 			this.Players = new Dictionary<int, Character>();
 			this.PlayerSocketLookup = new Dictionary<int, int>();
 			this.Rooms = new Dictionary<int, Room>();
+			this.Version = "0.0.0.0";
 
 			return;
 		}

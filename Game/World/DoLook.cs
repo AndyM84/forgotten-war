@@ -35,21 +35,27 @@ namespace FW.Game.World
 
 			var inRoom = new Dictionary<string, string>();
 			var room = Dispatch.State.Rooms[Player.Location.Vnum];
-			var poseDescs = new Dictionary<Poses, string>() {
-				{ Poses.Standing, "is standing here.`n" },
-				{ Poses.Sitting, "is sitting here.`n" },
-				{ Poses.Laying, "is laying here.`n" },
-				{ Poses.Crouching, "is crouching here.`n" },
-				{ Poses.Turtling, "is curled up in a ball with their back arched, looking oddly like a turtle.`n" },
-				{ Poses.Sleeping, "is sleeping here.`n" }
+			var poseDescs = new Dictionary<Poses, System.Tuple<string, string>>() {
+				{ Poses.Standing,  new System.Tuple<string, string>("is standing here.`n", "You are standing here.`n") },
+				{ Poses.Sitting,   new System.Tuple<string, string>("is sitting here.`n", "You are sitting here.`n") },
+				{ Poses.Laying,    new System.Tuple<string, string>("is laying here.`n", "You are laying here.`n") },
+				{ Poses.Crouching, new System.Tuple<string, string>("is crouching here.`n", "You are crouching here.`n") },
+				{ Poses.Turtling,  new System.Tuple<string, string>("is curled up in a ball with their back arched, looking oddly like a turtle.`n", "You are curled up in a ball with your back arched, looking very much like a turtle.`n") },
+				{ Poses.Sleeping,  new System.Tuple<string, string>("is sleeping here.`n", "You are sleeping here.`n") }
 			};
 
 			// TODO: Order to build list is as follows: objects, mobs, characters
 			// Everything should get a 'short' version and then a 'long' version so we can look at specific items if there are dupes
 
+			if (lCmd == Player.Name.ToLower() || lCmd == "me") {
+				Dispatch.SendToUser(Player.Vnum, poseDescs[Player.Pose].Item2);
+
+				return;
+			}
+
 			foreach (var p in Dispatch.State.Players) {
 				if (p.Value.Location.Vnum == room.Vnum && p.Value.Vnum != Player.Vnum) {
-					inRoom.Add(p.Value.Name.ToLower(), $"{p.Value.Name} {poseDescs[p.Value.Pose]}");
+					inRoom.Add(p.Value.Name.ToLower(), $"{p.Value.Name} {poseDescs[p.Value.Pose].Item1}");
 				}
 			}
 

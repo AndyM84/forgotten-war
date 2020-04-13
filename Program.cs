@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 
 using FW.Core;
@@ -41,6 +42,10 @@ namespace FW
 			game.LinkNode(new Game.World.WorldNode(ref logger));
 			game.LinkNode(new Game.Players.PlayersNode(ref logger));
 			logger.Output();
+
+			state.Branch = (File.Exists("branch.txt")) ? File.ReadAllText("branch.txt").Trim() : "master";
+			state.Commit = (File.Exists("commit.txt")) ? File.ReadAllText("commit.txt").Trim() : "000000";
+			state.Version = (File.Exists("version.txt")) ? File.ReadAllText("version.txt").Trim() : "0.0.0.0";
 
 			#region Rooms (Temp)
 

@@ -33,7 +33,7 @@ namespace FW.Game.World
 				case Poses.Sitting:
 				case Poses.Laying:
 				case Poses.Sleeping:
-					Dispatch.SendToUser(Player.Vnum, "You can't move if you are resting!");
+					Dispatch.SendToUser(Player.Vnum, "You can't move if you are resting!`n");
 
 					return;
 			}
