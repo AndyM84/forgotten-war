@@ -24,7 +24,7 @@ namespace FW.Game.Players
 					// TODO: Should eventually make it so that imm's see only the mortality but not connected state, but not high priority -AndyM
 
 					if (Player.Mortality == Mortalities.Admin) {
-						sb.Append("`b");
+						sb.Append("`B");
 
 						switch (p.Value.Mortality) {
 							case Mortalities.Admin:
@@ -62,7 +62,7 @@ namespace FW.Game.Players
 								break;
 						}
 
-						sb.Append("`0 ");
+						sb.Append("`0 `W");
 					}
 
 					sb.Append(p.Value.Name);
