@@ -23,7 +23,8 @@ namespace FW.Game
 			if (lCmd == "help") {
 				sb.Append("Help is available on the following topics:`n`n");
 				sb.Append("   color`n");
-				sb.Append("   commands`n`n");
+				sb.Append("   commands`n");
+				sb.Append("   gameinfo`n`n");
 				sb.Append("Enter a topic with the following syntax: help <topic>`n");
 
 				Dispatch.SendToUser(Player.Vnum, sb.ToString());
@@ -31,7 +32,7 @@ namespace FW.Game
 				return;
 			}
 
-			if (lCmd == "color") {
+			if (lCmd == "color" || lCmd == "colors") {
 				sb.Append("`YC`Bo`Rl`Co`Mr`w is accessed with the ` character.`n`n");
 				sb.Append("Just type ` followed by one of the following:`n`n");
 				sb.Append("   k - Black   K - Light Black`n");
@@ -45,6 +46,14 @@ namespace FW.Game
 			} else if (lCmd == "commands") {
 				sb.Append("To see a list of your available commands, send the following:`n`n");
 				sb.Append("   commands`n");
+			} else if (lCmd == "gameinfo") {
+				sb.Append("This is Forgotten War!`n`n");
+				sb.Append("   Version:  " + Dispatch.State.Version + "`n");
+				sb.Append("   Branch:   " + Dispatch.State.Branch + "`n");
+				sb.Append("   Commit:   " + Dispatch.State.Commit + "`n");
+				sb.Append("   Creators: Kyssandra`n");
+				sb.Append("             Neryndil`n");
+				sb.Append("             Xitan`n");
 			} else {
 				sb.Append("There were no help topics that matched your query.`n");
 			}
