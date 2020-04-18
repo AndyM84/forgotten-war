@@ -26,12 +26,13 @@ namespace FW.Game.Players
 					tmp.ConnectionState = ConnectionStates.NamePrompt;
 					tmp.Mortality = Mortalities.Mortal;
 					tmp.Name = "NewUser" + Dispatch.State.CurrentUserID;
+					tmp.Prompt = "`n< %stime% >`n";
 					tmp.ShowColor = true;
 					tmp.SocketID = c.ID;
 					tmp.Location = new Location(new Vector3(0.0f, 0.0f, 0.0f), 1);
 
 					tmp.Vnum = Dispatch.State.AddPlayer(tmp);
-					Dispatch.SendToUser(c.ID, "Welcome to Forgotten War!\n\n", true);
+					Dispatch.SendToUser(c.ID, "Welcome to Forgotten War!`n", true);
 					Dispatch.SendToUser(c.ID, "What is your name? ", true);
 				} else if (c.Type == CommandTypes.RECEIVED) {
 					var player = Dispatch.State.GetPlayerBySocketID(c.ID);
@@ -49,7 +50,7 @@ namespace FW.Game.Players
 
 						foreach (var p in Dispatch.State.Players) {
 							if (c.Body.ToLower() == p.Value.Name.ToLower()) {
-								Dispatch.SendToUser(player.Vnum, "Sorry, somebody is already using that name, please try again: ");
+								Dispatch.SendToUser(player.SocketID, "Sorry, somebody is already using that name, please try again: ", true);
 
 								goodName = false;
 
@@ -70,13 +71,14 @@ namespace FW.Game.Players
 						foreach (var a in admins) {
 							if (c.Body.ToLower() == a) {
 								player.Mortality = Mortalities.Admin;
+								player.Prompt = "`n< %loc% / %stime% >`n";
 							}
 						}
 
 						player.Name = c.Body;
 						player.ConnectionState = ConnectionStates.ColorPrompt;
 
-						Dispatch.SendToUser(player.Vnum, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ");
+						Dispatch.SendToUser(player.SocketID, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ", true);
 					} else if (player.ConnectionState == ConnectionStates.ColorPrompt) {
 						player.ConnectionState = ConnectionStates.Connected;
 
