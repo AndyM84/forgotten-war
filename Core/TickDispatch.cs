@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using FW.Core.Models;
 using Stoic.Chain;
 
 namespace FW.Core
@@ -7,6 +8,7 @@ namespace FW.Core
 	public class TickDispatch : DispatchBase<Command, List<Command>>
 	{
 		protected List<Command> _Commands;
+		protected List<PromptTokenBase> _PromptTokens;
 		public State State;
 
 		public List<Command> Commands { get { return new List<Command>(this._Commands); } }
@@ -50,6 +52,21 @@ namespace FW.Core
 			return Message;
 		}
 
+		public string AttemptPrompt(string Message, Character Player)
+		{
+			var prompt = Player.Prompt;
+
+			foreach (var p in this._PromptTokens) {
+				foreach (var tok in p.PromptTokens) {
+					if (prompt.Contains(tok.Token) && tok.MinMortality <= Player.Mortality) {
+						prompt = prompt.Replace(tok.Token, p.GenerateSegment(Player, this.State));
+					}
+				}
+			}
+
+			return Message + prompt;
+		}
+
 		public override void Initialize()
 		{
 			throw new System.NotImplementedException();
@@ -59,6 +76,17 @@ namespace FW.Core
 		{
 			this._Commands = new List<Command>(Commands);
 			this.State = State;
+
+			System.Type basePromptType = typeof(PromptTokenBase);
+			this._PromptTokens = new List<PromptTokenBase>();
+
+			foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies()) {
+				foreach (var t in asm.GetTypes()) {
+					if (basePromptType.IsAssignableFrom(t) && !t.IsAbstract) {
+						this._PromptTokens.Add((PromptTokenBase)System.Activator.CreateInstance(t));
+					}
+				}
+			}
 
 			this.MakeStateful();
 
@@ -79,7 +107,11 @@ namespace FW.Core
 
 			if (!AsSocket) {
 				sId = (this.State.Players[ID]).SocketID;
-				Message = "\n" + this.AttemptColor(Message, this.State.Players[ID].ShowColor);
+
+				Message = this.AttemptPrompt(Message, this.State.Players[ID]);
+				Message = this.AttemptColor($"`n{Message}", this.State.Players[ID].ShowColor);
+			} else {
+				Message = this.AttemptColor($"`n{Message}", true);
 			}
 
 			this.SetResult(new Command {
