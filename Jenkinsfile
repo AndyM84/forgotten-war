@@ -50,7 +50,7 @@ Exit 0
 }
 
 properties([
-	copyArtifactPermission('forgotten-war-deploy'),
+	copyArtifactPermission('../forgotten-war-deploy'),
 	parameters([
 			[$class: 'PersistentStringParameterDefinition', defaultValue: params.versionPrefix ?: "0.1.0", description: 'Prefix version number', name: 'versionPrefix', successfulOnly: false]
 	])
