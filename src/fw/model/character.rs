@@ -7,65 +7,68 @@ use std::time::Duration;
 
 pub struct Character {
     // Attribute properties
-    pub Attributes: HashMap<String, u32>,
-    pub Class: enums::Classes,
-    pub Drunk: f32,
-    pub Fatigue: f32,
-    pub Luck: f32,
-    pub Mental: f32,
-    pub Pose: enums::Poses,
-    pub Race: enums::Races,
+    pub attributes: HashMap<String, u32>,
+    pub class: enums::Classes,
+    pub drunk: f32,
+    pub fatigue: f32,
+    pub luck: f32,
+    pub mental: f32,
+    pub pose: enums::Poses,
+    pub race: enums::Races,
     // Connection properties
-    pub ConnectionState: enums::ConnectionStates,
-    pub Created: DateTime::<Utc>,
-    pub PlayedTime: Duration,
-    pub Prompt: String,
-    pub ShowColor: bool,
-    pub SocketID: i32,
+    pub connection_state: enums::ConnectionStates,
+    pub created: DateTime::<Utc>,
+    pub played_time: Duration,
+    pub prompt: String,
+    pub show_color: bool,
+    pub socket_id: i32,
     // Ident properties
-    pub Aliveness: enums::Alivenesses,
-    pub Birthdate: DateTime::<Utc>,
-    pub Citizenship: enums::Citizenships,
-    pub Location: location::Location,
-    pub Mortality: enums::Mortalities,
-    pub Name: String,
-    pub Vnum: u32
+    pub aliveness: enums::Alivenesses,
+    pub birthdate: DateTime::<Utc>,
+    pub citizenship: enums::Citizenships,
+    pub location: location::Location,
+    pub mortality: enums::Mortalities,
+    pub name: String,
+    pub vnum: u32
 }
 
 impl fmt::Display for Character {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Char '{}' #{}", self.Name, self.Vnum)
+        write!(f, "Char '{}' #{}", self.name, self.vnum)
     }
 }
 
-pub fn build_empty_character() -> Character {
-    Character {
-        Attributes: HashMap::new(),
-        Class: enums::Classes::None,
-        Drunk: 0.0,
-        Fatigue: 0.0,
-        Luck: 0.0,
-        Mental: 0.0,
-        Pose: enums::Poses::Standing,
-        Race: enums::Races::Ebban,
-        ConnectionState: enums::ConnectionStates::Disconnected,
-        Created: Utc::now(),
-        PlayedTime: Duration::new(0, 0),
-        Prompt: String::from(""),
-        ShowColor: false,
-        SocketID: 0,
-        Aliveness: enums::Alivenesses::Dead,
-        Birthdate: Utc::now(),
-        Citizenship: enums::Citizenships::None,
-        Location: location::Location::empty(),
-        Mortality: enums::Mortalities::Mortal,
-        Name: String::from(""),
-        Vnum: 0
+impl Character {
+    pub fn new() -> Character {
+        Character {
+            attributes: HashMap::new(),
+            class: enums::Classes::None,
+            drunk: 0.0,
+            fatigue: 0.0,
+            luck: 0.0,
+            mental: 0.0,
+            pose: enums::Poses::Standing,
+            race: enums::Races::Ebban,
+            connection_state: enums::ConnectionStates::Disconnected,
+            created: Utc::now(),
+            played_time: Duration::new(0, 0),
+            prompt: String::from(""),
+            show_color: false,
+            socket_id: 0,
+            aliveness: enums::Alivenesses::Dead,
+            birthdate: Utc::now(),
+            citizenship: enums::Citizenships::None,
+            location: location::Location::empty(),
+            mortality: enums::Mortalities::Mortal,
+            name: String::from(""),
+            vnum: 0
+        }
     }
-}
 
-pub fn build_character_from_vnum(vnum: u32) -> Character {
-    let mut tmp = build_empty_character();
-
-    tmp
+    // pub fn new_from_vnum(vnum: u32) -> Character {
+    //     let mut tmp = build_empty_character();
+    //     tmp.vnum = vnum;
+    //
+    //     tmp
+    // }
 }
