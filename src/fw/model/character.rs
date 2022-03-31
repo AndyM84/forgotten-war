@@ -29,7 +29,8 @@ pub struct Character {
     pub location: location::Location,
     pub mortality: enums::Mortalities,
     pub name: String,
-    pub vnum: u32
+    pub vnum: u32,
+    pub cmd_queue: Vec<String>,
 }
 
 impl fmt::Display for Character {
@@ -61,14 +62,15 @@ impl Character {
             location: location::Location::empty(),
             mortality: enums::Mortalities::Mortal,
             name: String::from(""),
-            vnum: 0
+            vnum: 0,
+            cmd_queue: Vec::new()
         }
     }
 
-    // pub fn new_from_vnum(vnum: u32) -> Character {
-    //     let mut tmp = build_empty_character();
-    //     tmp.vnum = vnum;
-    //
-    //     tmp
-    // }
+    pub fn new_from_vnum(vnum: u32) -> Character {
+        let mut tmp = Character::new();
+        tmp.vnum = vnum;
+
+        tmp
+    }
 }
