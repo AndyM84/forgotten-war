@@ -43,6 +43,10 @@ fn handle_client(mut stream: TcpStream, chan: Sender<SockMsg>) {
 }
 
 fn main() {
+    // NOTE!!
+    //   - Might try making a thread/channel just for accepting sockets and process the accepted
+    //     sockets later on in the main loop?
+
     let (chan_sender, chan_recvr): (Sender<SockMsg>, Receiver<SockMsg>) = mpsc::channel();
     let mut chars: Vec<Character>        = Vec::new();
     let mut threads: Vec<JoinHandle<()>> = Vec::new();
