@@ -3,7 +3,9 @@ use crate::fw::model::{ enums, location };
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
 use std::fmt;
+use std::sync::Arc;
 use std::time::Duration;
+use crate::{SafeQueue, SockMsg};
 
 pub struct Character {
     // Attribute properties
@@ -31,6 +33,8 @@ pub struct Character {
     pub name: String,
     pub vnum: u32,
     pub cmd_queue: Vec<String>,
+    pub chan_send: Arc<SafeQueue<SockMsg>>,
+    pub chan_recv: Arc<SafeQueue<SockMsg>>,
 }
 
 impl fmt::Display for Character {
@@ -63,7 +67,9 @@ impl Character {
             mortality: enums::Mortalities::Mortal,
             name: String::from(""),
             vnum: 0,
-            cmd_queue: Vec::new()
+            cmd_queue: Vec::new(),
+            chan_send: Arc::new(SafeQueue::<SockMsg>::new()),
+            chan_recv: Arc::new(SafeQueue::<SockMsg>::new()),
         }
     }
 
