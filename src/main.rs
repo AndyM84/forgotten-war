@@ -14,7 +14,7 @@ use std::sync::mpsc;
 use std::sync::Arc;
 use std::thread;
 
-fn handle_client(mut stream: TcpStream, fd: usize, chan_send: Arc<SafeQueue<SockMsg>>, chan_recv: Arc<SafeQueue<SockMsg>>) {
+fn handle_client_recv(mut stream: TcpStream, fd: usize, chan_recv: Arc<SafeQueue<SockMsg>>) {
     let mut data = [0 as u8; 50]; // using 50 byte buffer
     let mut last_size = 0 as usize;
 
@@ -49,12 +49,20 @@ fn handle_client(mut stream: TcpStream, fd: usize, chan_send: Arc<SafeQueue<Sock
             });
         }
     }
+}
 
-    while chan_send.len() > 0 {
-        let tmp = chan_send.pop_front();
+fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>) {
+    loop {
+        println!("BOOP?A!");
 
-        println!("Sending to #{}: {}", tmp.fd, tmp.msg);
-        stream.write(tmp.msg.as_ref()).unwrap();
+        while chan_send.len() > 0 {
+            let tmp = chan_send.pop_front();
+
+            println!("Sending to #{}: {}", tmp.fd, tmp.msg);
+            stream.write(tmp.msg.as_ref()).unwrap();
+        }
+
+        sleep(Duration::new(0, 5000000));
     }
 }
 
@@ -84,17 +92,19 @@ fn main() {
     });
 
     loop {
-        for stream in listen_recv.try_recv() {
-            println!("New connection from {}", stream.peer_addr().unwrap());
+        for stream_recv in listen_recv.try_recv() {
+            println!("New connection from {}", stream_recv.peer_addr().unwrap());
 
             let new_fd = chars.len() + 1;
+            let stream_send = stream_recv.try_clone().unwrap();
             chars.push(Character::new_from_vnum(new_fd.clone() as u32));
 
-            let chan_send = Arc::clone(&chars[chars.len() - 1].chan_send);
             let chan_recv = Arc::clone(&chars[chars.len() - 1].chan_recv);
+            let chan_send = Arc::clone(&chars[chars.len() - 1].chan_send);
 
             threads.push(thread::spawn(move || {
-                handle_client(stream, new_fd, chan_send, chan_recv);
+                handle_client_recv(stream_recv, new_fd, chan_recv);
+                handle_client_send(stream_send, chan_send);
             }));
         }
 

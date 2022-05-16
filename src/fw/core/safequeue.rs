@@ -3,7 +3,7 @@
 use std::any::Any;
 use std::collections::VecDeque;
 use std::ops::Deref;
-use std::sync::{Mutex, Condvar, Arc};
+use std::sync::{Mutex, Condvar, Arc, MutexGuard};
 
 use self::size_limits::DEQUE_SIZE_LIMIT_BYTES;
 
@@ -39,28 +39,34 @@ impl<T: Any> SafeQueue<T> {
 		return self.deque.lock().unwrap().len();
 	}
 
-	pub fn push_back(&self, elem: T) {
-		let mut guard = self.cv_full.wait_while(self.deque.lock().unwrap(), |deque| {
+	fn empty_guard(&self) -> MutexGuard<VecDeque<T>> {
+		return self.cv_empty.wait_while(self.deque.lock().unwrap(), |deque| {
+			deque.is_empty()
+		}).unwrap();
+	}
+
+	fn full_guard(&self) -> MutexGuard<VecDeque<T>> {
+		return self.cv_full.wait_while(self.deque.lock().unwrap(), |deque| {
 			deque.len() * self.t_size >= DEQUE_SIZE_LIMIT_BYTES
 		}).unwrap();
+	}
+
+	pub fn push_back(&self, elem: T) {
+		let mut guard = self.full_guard();
 
 		guard.push_back(elem);
 		self.cv_empty.notify_one();
 	}
 
 	pub fn push_front(&self, elem: T) {
-		let mut guard = self.cv_full.wait_while(self.deque.lock().unwrap(), |deque| {
-			deque.len() * self.t_size >= DEQUE_SIZE_LIMIT_BYTES
-		}).unwrap();
+		let mut guard = self.full_guard();
 
 		guard.push_front(elem);
 		self.cv_empty.notify_one();
 	}
 
 	pub fn pop_back(&self) -> T {
-		let mut guard = self.cv_empty.wait_while(self.deque.lock().unwrap(), |deque| {
-			deque.is_empty()
-		}).unwrap();
+		let mut guard = self.empty_guard();
 
 		let popped_el = guard.pop_back().unwrap();
 		self.cv_full.notify_one();
@@ -69,9 +75,7 @@ impl<T: Any> SafeQueue<T> {
 	}
 
 	pub fn pop_front(&self) -> T {
-		let mut guard = self.cv_empty.wait_while(self.deque.lock().unwrap(), |deque| {
-			deque.is_empty()
-		}).unwrap();
+		let mut guard = self.empty_guard();
 
 		let popped_el = guard.pop_front().unwrap();
 		self.cv_full.notify_one();
