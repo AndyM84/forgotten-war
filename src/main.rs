@@ -53,8 +53,6 @@ fn handle_client_recv(mut stream: TcpStream, fd: usize, chan_recv: Arc<SafeQueue
 
 fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>) {
     loop {
-        println!("BOOP?A!");
-
         while chan_send.len() > 0 {
             let tmp = chan_send.pop_front();
 
@@ -104,6 +102,9 @@ fn main() {
 
             threads.push(thread::spawn(move || {
                 handle_client_recv(stream_recv, new_fd, chan_recv);
+            }));
+
+            threads.push(thread::spawn(move || {
                 handle_client_send(stream_send, chan_send);
             }));
         }
@@ -115,7 +116,7 @@ fn main() {
                 println!("#{}: {}", msg.fd, msg.msg);
                 ch.chan_send.push_back(SockMsg {
                     fd: ch.vnum as usize,
-                    msg: format!("You sent: {}", msg.msg),
+                    msg: format!("You sent: {}\n", msg.msg),
                 })
             }
         }
