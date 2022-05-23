@@ -1,8 +1,10 @@
+#[derive(Debug, PartialEq, Eq)]
 pub enum Alivenesses {
     Alive,
     Dead
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Biomes {
     Glacier,
     Tundra,
@@ -28,10 +30,12 @@ pub enum Biomes {
     FreshwaterLake
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Citizenships {
     None
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Classes {
     None,
     Cleric,
@@ -48,6 +52,7 @@ pub enum Classes {
     Mercenary
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum ConnectionStates {
     Disconnected,
     NamePrompt,
@@ -56,6 +61,7 @@ pub enum ConnectionStates {
     Connected
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Directions {
     North,
     South,
@@ -65,12 +71,14 @@ pub enum Directions {
     Down
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Mortalities {
     Mortal,
     Immortal,
     Admin
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Poses {
     Standing,
     Sitting,
@@ -80,6 +88,7 @@ pub enum Poses {
     Sleeping
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Races {
     Fae,
     Satyr,
@@ -96,6 +105,7 @@ pub enum Races {
     Ebban
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Terrains {
     Air,
     Beach,

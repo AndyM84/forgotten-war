@@ -2,15 +2,13 @@
 
 use std::any::Any;
 use std::collections::VecDeque;
-use std::ops::Deref;
-use std::sync::{Mutex, Condvar, Arc, MutexGuard};
+use std::sync::{Mutex, Condvar, MutexGuard};
 
 use self::size_limits::DEQUE_SIZE_LIMIT_BYTES;
 
 mod size_limits {
 	pub const KILOBYTE: usize = 1000;
 	pub const MEGABYTE: usize = 1000 * KILOBYTE;
-	pub const FILE_SIZE_LIMIT_BYTES: usize = 10 * MEGABYTE;
 	pub const DEQUE_SIZE_LIMIT_BYTES: usize = 100 * MEGABYTE;
 }
 
