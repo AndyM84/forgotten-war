@@ -53,10 +53,13 @@ fn handle_client_recv(mut stream: TcpStream, fd: u32, chan_recv: Arc<SafeQueue<S
             true
         },
         Err(err) => {
-            println!("An error occurred, terminating connection with {}", stream.peer_addr().unwrap());
-            println!("{}", err);
+            let os_err = err.raw_os_error().unwrap();
 
-            stream.shutdown(Shutdown::Both).unwrap();
+            if os_err != 10053 && os_err != 10093 {
+                println!("An error occurred, terminating connection with {}", stream.peer_addr().unwrap());
+
+                stream.shutdown(Shutdown::Both);
+            }
 
             false
         }
@@ -90,7 +93,7 @@ fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>)
             let tmp = chan_send.pop_front();
 
             if tmp.state == SockMsgStates::Disconnect {
-                stream.shutdown(Shutdown::Both).unwrap();
+                stream.shutdown(Shutdown::Both);
 
                 break 'outer;
             }
@@ -106,6 +109,7 @@ fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>)
 fn main() {
     let mut char_index: u32 = 0;
     let mut conn_index: u32 = 0;
+    let mut char_conn: HashMap<u32, u32> = HashMap::new();
     let mut conn_char: HashMap<u32, u32> = HashMap::new();
     let mut chars: HashMap<u32, Character> = HashMap::new();
     let mut conns: HashMap<u32, ConnHandler> = HashMap::new();
@@ -175,6 +179,7 @@ fn main() {
             chars.insert(new_vnum.clone(), char);
             conns.insert(new_conn.clone(), ConnHandler::new(new_vnum.clone(), recv_thread, send_thread, stream_copy));
 
+            char_conn.insert(new_vnum.clone(), new_conn.clone());
             conn_char.insert(new_conn, new_vnum);
         }
 
@@ -219,7 +224,7 @@ fn main() {
         for msg in messages {
             for (vnum, ch) in &chars {
                 ch.chan_send.push_back(SockMsg {
-                    fd: *vnum,
+                    fd: char_conn[vnum],
                     msg: format!("{}\n", msg.msg_contents.clone()),
                     state: SockMsgStates::Active
                 });
@@ -235,8 +240,32 @@ fn main() {
         sleep(Duration::new(0, 5000000));
     }
 
-    // close the socket server
-    drop(listener);
+    println!("Beginning shutdown process..");
+    sleep(Duration::new(1, 50000000));
 
+    print!("  Disconnecting any active clients...");
+
+    for (vnum, ch) in &chars {
+        ch.chan_send.push_back(SockMsg {
+            fd: char_conn[vnum],
+            msg: String::from("The server is shutting down. Until next time...\n\n"),
+            state: SockMsgStates::Active
+        });
+
+        ch.chan_send.push_back(SockMsg {
+            fd: char_conn[vnum],
+            msg: String::new(),
+            state: SockMsgStates::Disconnect
+        });
+    }
+
+    println!(" DONE");
+
+    print!("  Closing listener socket..");
+    drop(listener);
+    println!(" DONE");
+    println!("Shutdown complete.");
+
+    println!();
     println!("Thanks for hosting!");
 }
