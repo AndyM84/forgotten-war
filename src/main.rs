@@ -243,7 +243,7 @@ fn main() {
     println!("Beginning shutdown process..");
     sleep(Duration::new(1, 50000000));
 
-    print!("  Disconnecting any active clients...");
+    print!("  Disconnecting any active clients..");
 
     for (vnum, ch) in &chars {
         ch.chan_send.push_back(SockMsg {
