@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 chrono = "0.4"
 vector3d = "*"
+signal-hook = "*"
+lazy_static = "*"
