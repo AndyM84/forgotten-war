@@ -94,7 +94,7 @@ fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>)
             let tmp = chan_send.pop_front();
 
             if tmp.state == SockMsgStates::Disconnect {
-                stream.shutdown(Shutdown::Both);
+                stream.shutdown(Shutdown::Both).expect("error shutting down stream");
 
                 break 'outer;
             }
