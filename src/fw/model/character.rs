@@ -23,7 +23,7 @@ pub struct Character {
     pub played_time: Duration,
     pub prompt: String,
     pub show_color: bool,
-    pub socket_id: i32,
+    pub socket_id: u32,
     // Ident properties
     pub aliveness: enums::Alivenesses,
     pub birthdate: DateTime::<Utc>,

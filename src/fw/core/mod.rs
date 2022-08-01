@@ -2,4 +2,4 @@ pub mod connhandler;
 pub mod mudmsg;
 pub mod sockmsg;
 pub mod safequeue;
-pub mod FW;
+pub mod fw;
