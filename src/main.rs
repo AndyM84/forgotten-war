@@ -17,6 +17,7 @@ use std::sync::mpsc;
 use std::sync::Arc;
 use std::thread;
 use crate::fw::core::connhandler::ConnHandler;
+use crate::fw::model::enums;
 
 extern crate signal_hook;
 
@@ -157,11 +158,15 @@ fn main() {
             fw.conn_index += 1;
             let new_conn = fw.conn_index.clone();
 
-            println!("New connection from {}, conn {} vnum {}", stream_recv.peer_addr().unwrap(), new_conn, new_vnum);
+            println!("New connection from {}, conn {} vnum {}",
+                     stream_recv.peer_addr().unwrap(),
+                     new_conn,
+                     new_vnum);
 
             let stream_send = stream_recv.try_clone().unwrap();
             let stream_copy = stream_recv.try_clone().unwrap();
-            let char = Character::new_from_vnum(new_vnum.clone());
+            let mut char = Character::new_from_vnum(new_vnum.clone());
+            char.connection_state = enums::ConnectionStates::Connected;
 
             let chan_recv = Arc::clone(&char.chan_recv);
             let chan_send = Arc::clone(&char.chan_send);
@@ -189,13 +194,15 @@ fn main() {
         }
 
         for msg in messages {
-            for (vnum, ch) in &fw.chars {
-                ch.chan_send.push_back(SockMsg {
-                    fd: fw.char_conn[vnum].clone(),
-                    msg: format!("{}\n", msg.msg_contents.clone()),
-                    state: SockMsgStates::Active
-                });
-            }
+            // for (vnum, ch) in &fw.chars {
+            //     ch.chan_send.push_back(SockMsg {
+            //         fd: fw.char_conn[vnum].clone(),
+            //         msg: format!("{}\n", msg.msg_contents.clone()),
+            //         state: SockMsgStates::Active
+            //     });
+            // }
+
+
         }
 
         unsafe {

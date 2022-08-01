@@ -58,7 +58,8 @@ pub enum ConnectionStates {
     NamePrompt,
     PasswordPrompt,
     ColorPrompt,
-    Connected
+    Connected,
+    LoggedIn
 }
 
 #[derive(Debug, PartialEq, Eq)]

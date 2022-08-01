@@ -8,5 +8,6 @@ pub enum MudMsgTypes {
 pub struct MudMsg {
 	pub msg_type: MudMsgTypes,
 	pub msg_owner: u32,
-	pub msg_contents: String
+	pub msg_contents: String,
+	pub msg_as_socket: bool
 }
