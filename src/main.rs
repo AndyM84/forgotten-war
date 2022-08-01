@@ -58,7 +58,7 @@ fn handle_client_recv(mut stream: TcpStream, fd: u32, chan_recv: Arc<SafeQueue<S
             if os_err != 10053 && os_err != 10093 {
                 println!("An error occurred, terminating connection with {}", stream.peer_addr().unwrap());
 
-                stream.shutdown(Shutdown::Both);
+                stream.shutdown(Shutdown::Both).expect("failed to shut down stream");
             }
 
             false
@@ -66,18 +66,18 @@ fn handle_client_recv(mut stream: TcpStream, fd: u32, chan_recv: Arc<SafeQueue<S
     } {
         if last_size > 0 {
             let tmp = SockMsg {
-                fd,
+                fd: fd.clone(),
                 msg: String::from_utf8(Vec::from(&data[0..last_size])).unwrap().replace("\r\n", "").replace("\n", ""),
                 state: SockMsgStates::Active
             };
 
-            println!("Message from client #{}: {}", tmp.fd, tmp.msg);
+            println!("Message from client #{}: {}", tmp.fd.clone(), tmp.msg);
             chan_recv.push_back(tmp);
         } else if last_size == 0 {
             stream.shutdown(Shutdown::Both).unwrap();
 
             chan_recv.push_back(SockMsg {
-                fd,
+                fd: fd.clone(),
                 msg: String::new(),
                 state: SockMsgStates::Disconnect
             });
@@ -188,30 +188,30 @@ fn main() {
                 let msg = ch.chan_recv.pop_front();
 
                 if !conns.contains_key(&ch.vnum) {
-                    disconnected.push(ch.vnum);
+                    disconnected.push(ch.vnum.clone());
 
                     continue;
                 }
 
                 if msg.msg.len() == 0 {
                     conns[&ch.vnum].shutdown();
-                    disconnected.push(ch.vnum);
-                    println!("Connection #{} was disconnected", ch.vnum);
+                    disconnected.push(ch.vnum.clone());
+                    println!("Connection #{} was disconnected", ch.vnum.clone());
 
                     messages.push(MudMsg {
                         msg_type: MudMsgTypes::Disconnect,
-                        msg_owner: *vnum,
-                        msg_contents: format!("{} has disconnected", ch.vnum)
+                        msg_owner: (*vnum).clone(),
+                        msg_contents: format!("{} has disconnected", ch.vnum.clone())
                     });
 
                     continue;
                 }
 
-                println!("#{}: {}", msg.fd, msg.msg);
+                println!("#{}: {}", msg.fd.clone(), msg.msg);
                 messages.push(MudMsg {
                     msg_type: MudMsgTypes::Command,
-                    msg_owner: *vnum,
-                    msg_contents: format!("{} sent: {}", *vnum, msg.msg)
+                    msg_owner: (*vnum).clone(),
+                    msg_contents: format!("{} sent: {}", (*vnum).clone(), msg.msg)
                 });
             }
         }
@@ -224,7 +224,7 @@ fn main() {
         for msg in messages {
             for (vnum, ch) in &chars {
                 ch.chan_send.push_back(SockMsg {
-                    fd: char_conn[vnum],
+                    fd: char_conn[vnum].clone(),
                     msg: format!("{}\n", msg.msg_contents.clone()),
                     state: SockMsgStates::Active
                 });
@@ -232,7 +232,7 @@ fn main() {
         }
 
         unsafe {
-            if !KEEP_RUNNING {
+            if !KEEP_RUNNING.clone() {
                 break;
             }
         }
@@ -247,13 +247,13 @@ fn main() {
 
     for (vnum, ch) in &chars {
         ch.chan_send.push_back(SockMsg {
-            fd: char_conn[vnum],
+            fd: char_conn[vnum].clone(),
             msg: String::from("The server is shutting down. Until next time...\n\n"),
             state: SockMsgStates::Active
         });
 
         ch.chan_send.push_back(SockMsg {
-            fd: char_conn[vnum],
+            fd: char_conn[vnum].clone(),
             msg: String::new(),
             state: SockMsgStates::Disconnect
         });
