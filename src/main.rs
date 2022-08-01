@@ -99,8 +99,13 @@ fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>)
                 break 'outer;
             }
 
-            println!("Sending: {}", tmp.msg);
-            stream.write(tmp.msg.as_ref()).unwrap();
+            unsafe {
+                if KEEP_RUNNING.clone() {
+                    println!("Sending: {}", tmp.msg);
+                }
+            }
+
+            stream.write(tmp.msg.as_ref()).expect("stream closed before client send could complete");
         }
 
         sleep(Duration::new(0, 5000000));
@@ -145,9 +150,6 @@ fn main() {
     });
 
     loop {
-        let mut messages: Vec<MudMsg> = Vec::new();
-        let mut disconnected: Vec<u32> = Vec::new();
-
         for stream_recv in listen_recv.try_recv() {
             fw.char_index += 1;
             let new_vnum = fw.char_index.clone();
@@ -179,40 +181,9 @@ fn main() {
             fw.conn_char.insert(new_conn, new_vnum);
         }
 
-        for (vnum, ch) in &fw.chars {
-            while ch.chan_recv.len() > 0 {
-                let msg = ch.chan_recv.pop_front();
+        let (messages, disconnects) = fw.process_tick();
 
-                if !fw.conns.contains_key(&ch.vnum) {
-                    disconnected.push(ch.vnum.clone());
-
-                    continue;
-                }
-
-                if msg.msg.len() == 0 {
-                    fw.conns[&ch.vnum].shutdown();
-                    disconnected.push(ch.vnum.clone());
-                    println!("Connection #{} was disconnected", ch.vnum.clone());
-
-                    messages.push(MudMsg {
-                        msg_type: MudMsgTypes::Disconnect,
-                        msg_owner: (*vnum).clone(),
-                        msg_contents: format!("{} has disconnected", ch.vnum.clone())
-                    });
-
-                    continue;
-                }
-
-                println!("#{}: {}", msg.fd.clone(), msg.msg);
-                messages.push(MudMsg {
-                    msg_type: MudMsgTypes::Command,
-                    msg_owner: (*vnum).clone(),
-                    msg_contents: format!("{} sent: {}", (*vnum).clone(), msg.msg)
-                });
-            }
-        }
-
-        for ch in &disconnected {
+        for ch in &disconnects {
             fw.chars.remove(ch);
             fw.conns.remove(ch);
         }
@@ -247,7 +218,11 @@ fn main() {
             msg: String::from("The server is shutting down. Until next time...\n\n"),
             state: SockMsgStates::Active
         });
+    }
 
+    sleep(Duration::new(1, 50000000));
+
+    for (vnum, ch) in &fw.chars {
         ch.chan_send.push_back(SockMsg {
             fd: fw.char_conn[vnum].clone(),
             msg: String::new(),
