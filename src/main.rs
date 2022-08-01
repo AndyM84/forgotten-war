@@ -3,6 +3,7 @@ mod fw;
 use fw::core::mudmsg::{MudMsg, MudMsgTypes};
 use fw::core::safequeue::SafeQueue;
 use fw::core::sockmsg::{SockMsg, SockMsgStates};
+use fw::core::FW::FW;
 use fw::model::character::{Character};
 
 use std::collections::HashMap;
@@ -107,12 +108,7 @@ fn handle_client_send(mut stream: TcpStream, chan_send: Arc<SafeQueue<SockMsg>>)
 }
 
 fn main() {
-    let mut char_index: u32 = 0;
-    let mut conn_index: u32 = 0;
-    let mut char_conn: HashMap<u32, u32> = HashMap::new();
-    let mut conn_char: HashMap<u32, u32> = HashMap::new();
-    let mut chars: HashMap<u32, Character> = HashMap::new();
-    let mut conns: HashMap<u32, ConnHandler> = HashMap::new();
+    let mut fw: FW = FW::new();
     let (listen_send, listen_recv): (Sender<TcpStream>, Receiver<TcpStream>) = mpsc::channel();
 
     reg_for_sigs();
@@ -153,11 +149,11 @@ fn main() {
         let mut disconnected: Vec<u32> = Vec::new();
 
         for stream_recv in listen_recv.try_recv() {
-            char_index += 1;
-            let new_vnum = char_index.clone();
+            fw.char_index += 1;
+            let new_vnum = fw.char_index.clone();
 
-            conn_index += 1;
-            let new_conn = conn_index.clone();
+            fw.conn_index += 1;
+            let new_conn = fw.conn_index.clone();
 
             println!("New connection from {}, conn {} vnum {}", stream_recv.peer_addr().unwrap(), new_conn, new_vnum);
 
@@ -176,25 +172,25 @@ fn main() {
                 handle_client_send(stream_send, chan_send);
             });
 
-            chars.insert(new_vnum.clone(), char);
-            conns.insert(new_conn.clone(), ConnHandler::new(new_vnum.clone(), recv_thread, send_thread, stream_copy));
+            fw.chars.insert(new_vnum.clone(), char);
+            fw.conns.insert(new_conn.clone(), ConnHandler::new(new_vnum.clone(), recv_thread, send_thread, stream_copy));
 
-            char_conn.insert(new_vnum.clone(), new_conn.clone());
-            conn_char.insert(new_conn, new_vnum);
+            fw.char_conn.insert(new_vnum.clone(), new_conn.clone());
+            fw.conn_char.insert(new_conn, new_vnum);
         }
 
-        for (vnum, ch) in &chars {
+        for (vnum, ch) in &fw.chars {
             while ch.chan_recv.len() > 0 {
                 let msg = ch.chan_recv.pop_front();
 
-                if !conns.contains_key(&ch.vnum) {
+                if !fw.conns.contains_key(&ch.vnum) {
                     disconnected.push(ch.vnum.clone());
 
                     continue;
                 }
 
                 if msg.msg.len() == 0 {
-                    conns[&ch.vnum].shutdown();
+                    fw.conns[&ch.vnum].shutdown();
                     disconnected.push(ch.vnum.clone());
                     println!("Connection #{} was disconnected", ch.vnum.clone());
 
@@ -217,14 +213,14 @@ fn main() {
         }
 
         for ch in &disconnected {
-            chars.remove(ch);
-            conns.remove(ch);
+            fw.chars.remove(ch);
+            fw.conns.remove(ch);
         }
 
         for msg in messages {
-            for (vnum, ch) in &chars {
+            for (vnum, ch) in &fw.chars {
                 ch.chan_send.push_back(SockMsg {
-                    fd: char_conn[vnum].clone(),
+                    fd: fw.char_conn[vnum].clone(),
                     msg: format!("{}\n", msg.msg_contents.clone()),
                     state: SockMsgStates::Active
                 });
@@ -245,15 +241,15 @@ fn main() {
 
     print!("  Disconnecting any active clients..");
 
-    for (vnum, ch) in &chars {
+    for (vnum, ch) in &fw.chars {
         ch.chan_send.push_back(SockMsg {
-            fd: char_conn[vnum].clone(),
+            fd: fw.char_conn[vnum].clone(),
             msg: String::from("The server is shutting down. Until next time...\n\n"),
             state: SockMsgStates::Active
         });
 
         ch.chan_send.push_back(SockMsg {
-            fd: char_conn[vnum].clone(),
+            fd: fw.char_conn[vnum].clone(),
             msg: String::new(),
             state: SockMsgStates::Disconnect
         });

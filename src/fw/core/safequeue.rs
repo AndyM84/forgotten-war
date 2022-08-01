@@ -45,7 +45,7 @@ impl<T: Any> SafeQueue<T> {
 
 	fn full_guard(&self) -> MutexGuard<VecDeque<T>> {
 		return self.cv_full.wait_while(self.deque.lock().unwrap(), |deque| {
-			deque.len() * self.t_size >= DEQUE_SIZE_LIMIT_BYTES
+			deque.len() * self.t_size.clone() >= DEQUE_SIZE_LIMIT_BYTES
 		}).unwrap();
 	}
 
