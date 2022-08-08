@@ -19,7 +19,7 @@ pub struct FW {
 }
 
 impl FW {
-	pub fn disconnect_user<'a>(&mut self, ch: &'a Character, include_char: bool) -> &'a Character {
+	pub fn disconnect_user(&mut self, ch: Character, include_char: bool) -> Character {
 		for _ch in &self.chars {
 			if _ch.socket_id == ch.socket_id {
 				if !include_char {
@@ -162,9 +162,9 @@ impl FW {
 		self.disconnects = Vec::new();
 		self.messages = Vec::new();
 
-		for mut ch in &self.chars {
+		for mut ch in self.chars {
 			if ch.connection_state == enums::ConnectionStates::Disconnected {
-				ch = self.disconnect_user(ch, false);
+				ch = self.disconnect_user(ch.clone(), false);
 
 				continue;
 			}
@@ -179,14 +179,14 @@ impl FW {
 				let msg = ch.chan_recv.pop_front();
 
 				if !self.conns.contains_key(&ch.vnum) {
-					ch = self.disconnect_user(ch, false);
+					ch = self.disconnect_user(&mut ch, false);
 
 					continue;
 				}
 
 				if msg.msg.len() == 0 {
 					self.conns[&ch.vnum].shutdown();
-					ch = self.disconnect_user(ch, false);
+					ch = self.disconnect_user(&mut ch, false);
 					println!("Connection #{} was disconnected", ch.vnum.clone());
 
 					continue;
