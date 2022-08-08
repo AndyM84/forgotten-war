@@ -19,7 +19,7 @@ pub struct FW {
 }
 
 impl FW {
-	pub fn disconnect_user(&mut self, ch: &mut Character, include_char: bool) {
+	pub fn disconnect_user<'a>(&mut self, ch: &'a Character, include_char: bool) -> &'a Character {
 		for _ch in &self.chars {
 			if _ch.socket_id == ch.socket_id {
 				if !include_char {
@@ -50,9 +50,11 @@ impl FW {
 			identifier: ch.socket_id.clone(),
 			is_socket: true
 		});
+
+		ch
 	}
 
-	fn handle_new_user(&mut self, ch: &mut Character) {
+	fn handle_new_user<'a>(&mut self, mut ch: &'a mut Character) -> &'a mut Character {
 		// Update lookups (char_idx, char_conn, conn_char) when successfully identified
 
 		if ch.connection_state == enums::ConnectionStates::Connected {
@@ -69,6 +71,8 @@ impl FW {
 												String::from("What is your name?"),
 												true);
 		}
+
+		ch
 	}
 
 	pub fn new() -> Self {
@@ -154,19 +158,19 @@ impl FW {
 		});
 	}
 
-	pub fn tick(&mut self) {
+	pub fn tick(mut self) {
 		self.disconnects = Vec::new();
 		self.messages = Vec::new();
 
-		for ch in &self.chars {
+		for mut ch in &self.chars {
 			if ch.connection_state == enums::ConnectionStates::Disconnected {
-				self.disconnect_user(&ch, false);
+				ch = self.disconnect_user(ch, false);
 
 				continue;
 			}
 
 			if ch.connection_state != enums::ConnectionStates::LoggedIn {
-				self.handle_new_user(&mut ch);
+				ch = self.handle_new_user(&mut ch);
 
 				continue;
 			}
@@ -175,14 +179,14 @@ impl FW {
 				let msg = ch.chan_recv.pop_front();
 
 				if !self.conns.contains_key(&ch.vnum) {
-					self.disconnect_user(&mut ch, false);
+					ch = self.disconnect_user(ch, false);
 
 					continue;
 				}
 
 				if msg.msg.len() == 0 {
 					self.conns[&ch.vnum].shutdown();
-					self.disconnect_user(&mut ch, false);
+					ch = self.disconnect_user(ch, false);
 					println!("Connection #{} was disconnected", ch.vnum.clone());
 
 					continue;
