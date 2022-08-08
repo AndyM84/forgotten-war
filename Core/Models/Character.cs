@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using FW.Core.DbModels;
+
 namespace FW.Core.Models
 {
 	public class Character
@@ -21,6 +23,7 @@ namespace FW.Core.Models
 		#region Connection Properties
 
 		public ConnectionStates        ConnectionState { get; set; }
+		public DateTime                Connected { get; set; }
 		public DateTime                Created { get; set; }
 		public TimeSpan                PlayedTime { get; set; }
 		public string                  Prompt { get; set; }
@@ -45,6 +48,30 @@ namespace FW.Core.Models
 		public Character()
 		{
 			this.Attributes = new Dictionary<string, int>();
+
+			return;
+		}
+
+
+		public void HydrateFromPlayerChar(PlayerChar Char)
+		{
+			this.Class       = (Classes)Char.Class;
+			this.Drunk       = Char.Drunk;
+			this.Fatigue     = Char.Fatigue;
+			this.Luck        = Char.Luck;
+			this.Mental      = Char.Mental;
+			this.Pose        = (Poses)Char.Pose;
+			this.Race        = (Races)Char.Race;
+			this.Created     = Char.Created ?? DateTime.UtcNow;
+			this.PlayedTime  = TimeSpan.FromMilliseconds(Char.PlayedTime);
+			this.Prompt      = Char.Prompt;
+			this.Aliveness   = (Alivenesses)Char.Aliveness;
+			this.Birthdate   = Char.Birthdate ?? DateTime.UnixEpoch;
+			this.Citizenship = (Citizenships)Char.Citizenship;
+			this.Location    = new Location(new System.Numerics.Vector3(Char.PosX, Char.PosY, Char.PosZ), Char.PosVnum);
+			this.Mortality   = (Mortalities)Char.Mortality;
+			this.Name        = Char.Name;
+			this.Vnum        = Char.Vnum;
 
 			return;
 		}

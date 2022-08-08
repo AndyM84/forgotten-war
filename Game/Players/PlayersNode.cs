@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Numerics;
+
+using BCrypt.Net;
+using Dapper;
+using MySql.Data.MySqlClient;
+using Stoic.Log;
 
 using FW.Core;
+using FW.Core.DbModels;
 using FW.Core.Models;
-using Stoic.Log;
 
 namespace FW.Game.Players
 {
@@ -22,14 +26,15 @@ namespace FW.Game.Players
 		{
 			foreach (var c in Dispatch.Commands) {
 				if (c.Type == CommandTypes.CONNECTED) {
-					var tmp = new Character();
-					tmp.ConnectionState = ConnectionStates.NamePrompt;
-					tmp.Mortality = Mortalities.Mortal;
-					tmp.Name = "NewUser" + Dispatch.State.CurrentUserID;
-					tmp.Prompt = "`n< %stime% >`n";
-					tmp.ShowColor = true;
-					tmp.SocketID = c.ID;
-					tmp.Location = new Location(new Vector3(0.0f, 0.0f, 0.0f), 1);
+					var tmp = new Character {
+						ConnectionState = ConnectionStates.NamePrompt,
+						Mortality       = Mortalities.Mortal,
+						Name            = "NewUser" + Dispatch.State.CurrentUserID,
+						Prompt          = "`n< %stime% >`n",
+						ShowColor       = true,
+						SocketID        = c.ID,
+						Location        = new Location(new Vector3(0.0f, 0.0f, 0.0f), 1)
+					};
 
 					tmp.Vnum = Dispatch.State.AddPlayer(tmp);
 					Dispatch.SendToUser(c.ID, "Welcome to Forgotten War!`n", true);
@@ -44,7 +49,11 @@ namespace FW.Game.Players
 					if (player.ConnectionState == ConnectionStates.NamePrompt) {
 						bool goodName = true;
 
-						if (c.Body.Contains(" ")) {
+						if (c.Body.Contains(' ')) {
+							goodName = false;
+						}
+
+						if (c.Body.Length > 24) {
 							goodName = false;
 						}
 
@@ -62,23 +71,113 @@ namespace FW.Game.Players
 							continue;
 						}
 
-						var admins = new List<string>() {
-							"xitan",
-							"kyssandra",
-							"neryndil"
-						};
+						bool existingUser = false;
+						PlayerChar tmp    = new PlayerChar();
+						var nameLower     = c.Body.ToLower();
 
-						foreach (var a in admins) {
-							if (c.Body.ToLower() == a) {
-								player.Mortality = Mortalities.Admin;
-								player.Prompt = "`n< %loc% / %stime% >`n";
+						try {
+							using var conn = new MySqlConnection(Dispatch.State.Config.DbDsn);
+							var pChar = conn.QuerySingleOrDefault<PlayerChar>("SELECT * FROM `PlayerChar` WHERE `NameLowered` = @Name", new { Name = nameLower });
+
+							if (pChar != null) {
+								existingUser = true;
+								tmp          = pChar;
 							}
+						} catch (MySqlException mex) {
+							Log(LogLevels.ERROR, $"Error searching for player character: {mex.Number} - {mex.Message}");
 						}
 
-						player.Name = c.Body;
-						player.ConnectionState = ConnectionStates.ColorPrompt;
+						if (existingUser) {
+							Dispatch.State.SetPlayerVnum(tmp.Vnum, player.Vnum);
+							player.HydrateFromPlayerChar(tmp);
 
-						Dispatch.SendToUser(player.SocketID, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ", true);
+							if (tmp.PasswordNeedsChanged) {
+								player.ConnectionState = ConnectionStates.ResetPassword;
+								Dispatch.SendToUser(player.SocketID, "Enter a New Password: ", true);
+							} else {
+								player.ConnectionState = ConnectionStates.PasswordPrompt;
+								Dispatch.SendToUser(player.SocketID, "Enter Your Password: ", true);
+							}
+
+							continue;
+						}
+						
+						player.Name = c.Body;
+						player.ConnectionState = ConnectionStates.NewPassword;
+
+						Dispatch.SendToUser(player.SocketID, "Create Your Password: ", true);
+					} else if (player.ConnectionState == ConnectionStates.NewPassword) {
+						if (c.Body.Length > 56 || c.Body.Length < 3) {
+							Dispatch.SendToUser(player.SocketID, "Password must be between 6 and 56 characters long..`n", true);
+							Dispatch.SendToUser(player.SocketID, "Enter a New Password: ", true);
+
+							continue;
+						}
+
+						try {
+							var newPass    = BCrypt.Net.BCrypt.EnhancedHashPassword(c.Body);
+							using var conn = new MySqlConnection(Dispatch.State.Config.DbDsn);
+							
+							conn.Execute(@"INSERT INTO `PlayerChar` (`Created`, `Prompt`, `Birthdate`, `Name`, `NameLowered`, `Password`, `PosVnum`) VALUES (NOW(), '`n< %stime% >`n', NOW(), @Name, @NameLowered, @Password, 1)", new {
+								Name        = player.Name,
+								NameLowered = player.Name.ToLower(),
+								Password    = newPass
+							});
+
+							var vnum = conn.QueryFirst<int>("SELECT Vnum FROM `PlayerChar` WHERE `NameLowered` = @NameLowered", new { NameLowered = player.Name.ToLower() });							
+							Dispatch.State.SetPlayerVnum(vnum, player.Vnum);
+							player.Vnum = vnum;
+
+							player.ConnectionState = ConnectionStates.ColorPrompt;
+							Dispatch.SendToUser(player.SocketID, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ", true);
+						} catch (MySqlException mex) {
+							Log(LogLevels.ERROR, $"Error searching for player character: {mex.Number} - {mex.Message}");
+						}
+					} else if (player.ConnectionState == ConnectionStates.ResetPassword) {
+						if (c.Body.Length > 56 || c.Body.Length < 3) {
+							Dispatch.SendToUser(player.SocketID, "Password must be between 6 and 56 characters long..`n", true);
+							Dispatch.SendToUser(player.SocketID, "Enter a New Password: ", true);
+
+							continue;
+						}
+
+						try {
+							var newPass    = BCrypt.Net.BCrypt.EnhancedHashPassword(c.Body);
+							using var conn = new MySqlConnection(Dispatch.State.Config.DbDsn);
+							
+							conn.Execute("UPDATE `PlayerChar` SET `Password` = @Password, `PasswordNeedsChanged` = 0 WHERE `Vnum` = @Vnum LIMIT 1", new { Password = newPass, player.Vnum });
+
+							player.ConnectionState = ConnectionStates.ColorPrompt;
+							Dispatch.SendToUser(player.SocketID, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ", true);
+						} catch (MySqlException mex) {
+							Log(LogLevels.ERROR, $"Error searching for player character: {mex.Number} - {mex.Message}");
+						}
+					} else if (player.ConnectionState == ConnectionStates.PasswordPrompt) {
+						try {
+							using var conn = new MySqlConnection(Dispatch.State.Config.DbDsn);
+							var pass = conn.QuerySingleOrDefault<string>("SELECT `Password` FROM `PlayerChar` WHERE `Vnum` = @Vnum", new { player.Vnum });
+
+							if (string.IsNullOrWhiteSpace(pass)) {
+								Log(LogLevels.WARNING, $"Couldn't find password for pchar #{player.Vnum} ({player.Name})");
+
+								Dispatch.DisconnectUser(player.SocketID, true);
+								Dispatch.State.RemovePlayer(player.Vnum);
+
+								continue;
+							}
+
+							if (BCrypt.Net.BCrypt.EnhancedVerify(c.Body, pass)) {
+								player.ConnectionState = ConnectionStates.ColorPrompt;
+								Dispatch.SendToUser(player.SocketID, $"Hi there, {player.Name}, do you want to use `gc`bo`rl`co`yr`0 (y/n)? ", true);
+
+								continue;
+							}
+
+							Dispatch.SendToUser(player.SocketID, "Incorrect Password..`n", true);
+							Dispatch.SendToUser(player.SocketID, "Enter Your Password: ", true);
+						} catch (MySqlException mex) {
+							Log(LogLevels.ERROR, $"Error searching for player character: {mex.Number} - {mex.Message}");
+						}
 					} else if (player.ConnectionState == ConnectionStates.ColorPrompt) {
 						player.ConnectionState = ConnectionStates.Connected;
 

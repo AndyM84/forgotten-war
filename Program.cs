@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 
+using Dapper;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+
 using FW.Core;
 using FW.Core.Models;
 using Stoic.Chain;
@@ -19,20 +23,99 @@ namespace FW
 
 		static void Main(string[] args)
 		{
+			#region Initialization
+
 			Console.CancelKeyPress += new ConsoleCancelEventHandler(SigIntHandler);
 
-			var ch = new ConsoleHelper(args);
+			var state  = new State();
+			var ch     = new ConsoleHelper(args);
 			var logger = new Logger(LogLevels.DEBUG);
-			var serv = new SocketServer(10, Convert.ToInt32(ch.GetParameter("p", "port", "6055")), ref logger);
-			var state = new State();
+
+			state.Config = new Config {
+				DbDsn   = string.Empty,
+				LogFile = $"fw-{DateTime.UtcNow.ToString("yyyy-MM-dd")}.log",
+				Port    = 6055
+			};
+
+			if (File.Exists("config.json")) {
+				try {
+					var oldConfig = (Config)state.Config.Clone();
+					state.Config  = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+
+					if (string.IsNullOrWhiteSpace(state.Config.LogFile)) {
+						state.Config.LogFile = oldConfig.LogFile;
+					}
+
+					if (state.Config.Port < 1024) {
+						state.Config.Port = oldConfig.Port;
+					}
+				} catch (Exception e) {
+					logger.Log(LogLevels.WARNING, $"Failed to read config file, but it exists, check file: {e.Message}");
+				}
+			} else {
+				logger.Log(LogLevels.NOTICE, "No config file found, continuing with defaults");
+			}
+
+			var serv = new SocketServer(10, Convert.ToInt32(ch.GetParameter("p", "port", state.Config.Port.ToString())), ref logger);
 
 			logger.AddAppender(new ConsoleAppender());
-			logger.AddAppender(new FileAppender(ch.GetParameter("lf", "log-file", "fw-" + DateTime.Now.ToString("yyyy-MM-dd") + ".log"), FileAppenderOutputTypes.PLAIN));
+			logger.AddAppender(new FileAppender(ch.GetParameter("lf", "log-file", state.Config.LogFile), FileAppenderOutputTypes.PLAIN));
 
 			logger.Log(LogLevels.DEBUG, "Initialized game console subsystem");
 			logger.Log(LogLevels.DEBUG, "Initialized game logging subsystem");
 			logger.Log(LogLevels.DEBUG, "Initialized game socket subsystem");
 			logger.Log(LogLevels.DEBUG, "Initialized game state subsystem");
+			logger.Output();
+
+			using (var conn = new MySqlConnection(state.Config.DbDsn)) {
+				logger.Log(LogLevels.INFO, "Beginning database migration..");
+
+				Type migrationBaseType = typeof(MigrationBase);
+				var migrations         = new List<MigrationBase>();
+
+				foreach (var asm in AppDomain.CurrentDomain.GetAssemblies()) {
+					foreach (var t in asm.GetTypes()) {
+						if (migrationBaseType.IsAssignableFrom(t) && !t.IsAbstract) {
+							migrations.Add((MigrationBase)Activator.CreateInstance(t));
+						}
+					}
+				}
+
+				migrations.Sort((a, b) => a.Name.CompareTo(b.Name));
+
+				if (migrations.Count > 0) {
+					List<string> existingMigrations = new List<string>();
+
+					try {
+						existingMigrations = conn.Query<string>("SELECT `FileName` FROM `Migration` ORDER BY `ID` ASC").AsList();
+					} catch { }
+
+					foreach (var mig in migrations) {
+						string logLine = $" -> Executing migration '{mig.Name}'.. ";
+
+						if (existingMigrations.Contains(mig.Name)) {
+							logLine += "SKIPPED (Already Executed)";
+							logger.Log(LogLevels.INFO, logLine);
+
+							continue;
+						}
+
+						try {
+							conn.Execute(mig.Sql);
+							conn.Execute($"INSERT INTO `Migration` (`FileName`) VALUES (@FileName)", new { FileName = mig.Name });
+
+							logLine += "SUCCESS";
+						} catch (MySqlException mex) {
+							logLine += $"ERROR ({mex.ErrorCode} - {mex.Message})";
+						}
+
+						logger.Log(LogLevels.INFO, logLine);
+					}
+				} else {
+					logger.Log(LogLevels.DEBUG, "No database migrations to perform, migration complete");
+				}
+			}
+
 			logger.Log(LogLevels.INFO, "Finished initializing game subsystems");
 			logger.Output();
 
@@ -149,11 +232,13 @@ namespace FW
 
 			#endregion
 
+			#endregion
+
 			int errCount = 0;
 			
 			while (ShouldRun) {
-				var disp = new TickDispatch();
 				bool gotSockErr = false;
+				var disp        = new TickDispatch();
 
 				try {
 					disp.Initialize(state, serv.Poll());

@@ -34,7 +34,15 @@
 
 	public enum Citizenships
 	{
-		None
+		None,
+		Milport,
+		Bullowharf,
+		Cloudmouth,
+		Stillia,
+		Esyeese,
+		Brig,
+		Kabrol,
+		Hattahara
 	}
 
 	public enum Classes
@@ -57,6 +65,8 @@
 	{
 		NamePrompt,
 		PasswordPrompt,
+		NewPassword,
+		ResetPassword,
 		ColorPrompt,
 		Connected
 	}

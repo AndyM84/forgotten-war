@@ -5,7 +5,7 @@ namespace FW.Core.Models
 	public class Location
 	{
 		public Vector3 Coordinate { get; set; }
-		public int  Vnum { get; set; }
+		public int     Vnum { get; set; }
 
 
 		public Location(Vector3 coordinate, int vnum)
