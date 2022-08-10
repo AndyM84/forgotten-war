@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+
+using Dapper;
+using MySql.Data.MySqlClient;
 
 using FW.Core.DbModels;
 
@@ -72,6 +76,62 @@ namespace FW.Core.Models
 			this.Mortality   = (Mortalities)Char.Mortality;
 			this.Name        = Char.Name;
 			this.Vnum        = Char.Vnum;
+
+			return;
+		}
+
+		public void SaveToDb(MySqlConnection Conn, bool AddPlayedTime = false)
+		{
+			StringBuilder sql = new("UPDATE `PlayerChar` SET ");
+			sql.Append("`Class` = @Class, ");
+			sql.Append("`Drunk` = @Drunk, ");
+			sql.Append("`Fatigue` = @Fatigue, ");
+			sql.Append("`Luck` = @Luck, ");
+			sql.Append("`Mental` = @Mental, ");
+			sql.Append("`Pose` = @Pose, ");
+			sql.Append("`Race` = @Race, ");
+			sql.Append("`Prompt` = @Prompt, ");
+			sql.Append("`Aliveness` = @Aliveness, ");
+			sql.Append("`Birthdate` = @Birthdate, ");
+			sql.Append("`Citizenship` = @Citizenship, ");
+			sql.Append("`Mortality` = @Mortality, ");
+			sql.Append("`Name` = @Name, ");
+			sql.Append("`NameLowered` = @NameLowered, ");
+			sql.Append("`PosX` = @PosX, ");
+			sql.Append("`PosY` = @PosY, ");
+			sql.Append("`PosZ` = @PosZ, ");
+			sql.Append("`PosVnum` = @PosVnum");
+
+			if (AddPlayedTime) {
+				this.PlayedTime += (DateTime.UtcNow - this.Connected);
+				this.Connected   = DateTime.UtcNow;
+
+				sql.Append($", `PlayedTime` = {this.PlayedTime.TotalMilliseconds}");
+			}
+
+			sql.Append(" WHERE `Vnum` = @Vnum LIMIT 1");
+
+			Conn.Execute(sql.ToString(), new {
+				this.Class,
+				this.Drunk,
+				this.Fatigue,
+				this.Luck,
+				this.Mental,
+				this.Pose,
+				this.Race,
+				this.Prompt,
+				this.Aliveness,
+				this.Birthdate,
+				this.Citizenship,
+				this.Mortality,
+				this.Name,
+				NameLowered = this.Name.ToLower(),
+				PosX        = this.Location.Coordinate.X,
+				PosY        = this.Location.Coordinate.Y,
+				PosZ        = this.Location.Coordinate.Z,
+				PosVnum     = this.Location.Vnum,
+				this.Vnum
+			});
 
 			return;
 		}
