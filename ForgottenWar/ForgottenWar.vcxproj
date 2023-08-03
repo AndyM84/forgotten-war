@@ -103,6 +103,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(WindowsSdkDir)lib\10.0.10240.0\um;$(WindowsSdkDir)lib\10.0.10240.0\shared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
