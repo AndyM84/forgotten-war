@@ -23,8 +23,7 @@ namespace Threading
 
 	LockCriticalSection::~LockCriticalSection()
 	{
-		if (!this->m_Error)
-		{
+		if (!this->m_Error) {
 #if defined(FW_WINDOWS)
 			DeleteCriticalSection(&this->m_Critsec);
 #elif defined(FW_UNIX)
@@ -37,8 +36,7 @@ namespace Threading
 
 	fwbool LockCriticalSection::Block()
 	{
-		if (this->m_Error)
-		{
+		if (this->m_Error) {
 			return false;
 		}
 
@@ -51,8 +49,7 @@ namespace Threading
 
 		return true;
 #elif defined(FW_UNIX)
-		if (pthread_mutex_lock(&this->m_Critsec) != 0)
-		{
+		if (pthread_mutex_lock(&this->m_Critsec) != 0) {
 			this->isError = true;
 
 			return(false);
@@ -72,8 +69,7 @@ namespace Threading
 
 	fwvoid LockCriticalSection::Release()
 	{
-		if (this->m_Error || !this->m_Blocked)
-		{
+		if (this->m_Error || !this->m_Blocked) {
 			return;
 		}
 
@@ -82,12 +78,9 @@ namespace Threading
 
 		this->m_Blocked = false;
 #elif defined(FW_UNIX)
-		if (pthread_mutex_unlock(&this->m_Critsec) == 0)
-		{
+		if (pthread_mutex_unlock(&this->m_Critsec) == 0) {
 			this->m_Blocked = false;
-		}
-		else
-		{
+		} else {
 			this->m_Error = true;
 		}
 #endif

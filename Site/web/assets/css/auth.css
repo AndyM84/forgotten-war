@@ -1,0 +1,111 @@
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: center;
+	align-items: center;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	background-color: #f5f5f5;
+}
+
+.form-login {
+	width: 100%;
+	max-width: 330px;
+	padding: 15px;
+	margin: auto;
+}
+
+	.form-login .checkbox {
+		font-weight: 400;
+	}
+
+	.form-login .form-control {
+		position: relative;
+		box-sizing: border-box;
+		height: auto;
+		padding: 10px;
+		font-size: 16px;
+	}
+
+		.form-login .form-control:focus {
+			z-index: 2;
+		}
+
+	.form-login input[type="email"] {
+		margin-bottom: -1px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	.form-login input[type="password"] {
+		margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+.form-register {
+	width: 100%;
+	max-width: 330px;
+	padding: 15px;
+	margin: auto;
+}
+
+	.form-register .checkbox {
+		font-weight: 400;
+	}
+
+	.form-register .form-control {
+		position: relative;
+		box-sizing: border-box;
+		height: auto;
+		padding: 10px;
+		font-size: 16px;
+	}
+
+	.form-register .form-control:focus {
+		z-index: 2;
+	}
+
+	.form-register input.top {
+		margin-bottom: -1px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	.form-register input.bottom {
+		margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+.form-reset1 {
+	width: 100%;
+	max-width: 330px;
+	padding: 15px;
+	margin: auto;
+}
+
+	.form-reset1 .form-control {
+		position: relative;
+		box-sizing: border-box;
+		height: auto;
+		padding: 10px;
+		font-size: 16px;
+	}
+
+	.form-reset1 .form-control:focus {
+		z-index: 2;
+	}
+
+	.form-reset1 input[type="email"] {
+		margin-bottom: 10px;
+	}

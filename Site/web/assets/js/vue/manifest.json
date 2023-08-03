@@ -1,0 +1,24 @@
+{
+  "front.js": {
+    "file": "assets/front.dd26bb58.js",
+    "src": "front.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor.caf1ffb9.js"
+    ],
+    "dynamicImports": [
+      "../../vite/modulepreload-polyfill"
+    ],
+    "css": [
+      "assets/front.02a404b3.css"
+    ]
+  },
+  "_vendor.caf1ffb9.js": {
+    "file": "assets/vendor.caf1ffb9.js"
+  },
+  "../../vite/modulepreload-polyfill": {
+    "file": "assets/modulepreload-polyfill.b7f2da20.js",
+    "src": "../../vite/modulepreload-polyfill",
+    "isDynamicEntry": true
+  }
+}

@@ -24,7 +24,7 @@ namespace Logging
 		return;
 	}
 
-	LogData& LogData::operator=(LogData other)
+	LogData &LogData::operator=(LogData other)
 	{
 		this->m_Key = other.m_Key;
 		this->m_Message = other.m_Message;

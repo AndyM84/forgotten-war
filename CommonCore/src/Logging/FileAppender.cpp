@@ -33,7 +33,7 @@ namespace Logging
 		return;
 	}
 
-	FileAppender& FileAppender::operator=(FileAppender other)
+	FileAppender &FileAppender::operator=(FileAppender other)
 	{
 		this->m_Name = other.m_Name;
 		this->m_Filename = other.m_Filename;
@@ -54,38 +54,37 @@ namespace Logging
 	{
 		std::stringstream ss;
 
-		switch (data.GetLevel())
-		{
-			case LOG_CRITICAL:
-				ss << "CRITICAL [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->OutputToFile(ss.str());
+		switch (data.GetLevel()) {
+		case LOG_CRITICAL:
+			ss << "CRITICAL [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->OutputToFile(ss.str());
 
-				break;
-			case LOG_INFO:
-				ss << "INFO [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->OutputToFile(ss.str());
+			break;
+		case LOG_INFO:
+			ss << "INFO [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->OutputToFile(ss.str());
 
-				break;
-			case LOG_WARN:
-				ss << "WARN [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->OutputToFile(ss.str());
+			break;
+		case LOG_WARN:
+			ss << "WARN [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->OutputToFile(ss.str());
 
-				break;
-			case LOG_DEBUG:
-				ss << "DEBUG [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->OutputToFile(ss.str());
+			break;
+		case LOG_DEBUG:
+			ss << "DEBUG [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->OutputToFile(ss.str());
 
-				break;
-			case LOG_TRACE:
-				ss << "TRACE [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->OutputToFile(ss.str());
+			break;
+		case LOG_TRACE:
+			ss << "TRACE [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->OutputToFile(ss.str());
 
-				break;
-			case LOG_ERROR:
-				ss << "ERROR [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->OutputToFile(ss.str());
+			break;
+		case LOG_ERROR:
+			ss << "ERROR [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->OutputToFile(ss.str());
 
-				break;
+			break;
 		}
 
 		return;
@@ -93,8 +92,7 @@ namespace Logging
 
 	fwvoid FileAppender::ReOpen()
 	{
-		if (this->m_LogFile.is_open())
-		{
+		if (this->m_LogFile.is_open()) {
 			this->Close();
 		}
 
@@ -105,8 +103,7 @@ namespace Logging
 
 	fwvoid FileAppender::Close()
 	{
-		if (this->m_LogFile.is_open())
-		{
+		if (this->m_LogFile.is_open()) {
 			this->m_LogFile.close();
 		}
 
@@ -115,8 +112,7 @@ namespace Logging
 
 	fwvoid FileAppender::Open()
 	{
-		if (this->m_LogFile.is_open())
-		{
+		if (this->m_LogFile.is_open()) {
 			return;
 		}
 
@@ -127,8 +123,7 @@ namespace Logging
 
 	fwvoid FileAppender::OutputToFile(fwstr line)
 	{
-		if (!this->m_LogFile.is_open())
-		{
+		if (!this->m_LogFile.is_open()) {
 			return;
 		}
 

@@ -4,8 +4,7 @@
 
 GameCore::~GameCore()
 {
-	for (auto player : this->world.players)
-	{
+	for (auto player : this->world.players) {
 		player.second.reset();
 	}
 
@@ -61,8 +60,7 @@ fwbool GameCore::Setup(const GameConfig &config)
 
 fwbool GameCore::Destroy()
 {
-	for (auto cmd : this->commands)
-	{
+	for (auto cmd : this->commands) {
 		delete cmd.second;
 	}
 
@@ -75,23 +73,19 @@ fwbool GameCore::Destroy()
 
 FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 {
-	if (this->world.gameState == FW::GAME_STATES::FWGAME_STARTING)
-	{
+	if (this->world.gameState == FW::GAME_STATES::FWGAME_STARTING) {
 		this->world.gameState = FW::GAME_STATES::FWGAME_RUNNING;
 	}
 
 	// go through all the players
-	for (auto p : this->world.players)
-	{
+	for (auto p : this->world.players) {
 		auto player = p.second;
 
-		if (!player || player->GetState() == PLAYER_DISCONNECTED || player->GetState() == PLAYER_INVALID)
-		{
+		if (!player || player->GetState() == PLAYER_DISCONNECTED || player->GetState() == PLAYER_INVALID) {
 			continue;
 		}
 
-		if (player->GetState() == PLAYER_IDLE && player->GetIdleTime() > PLAYER_IDLE_LIMIT)
-		{
+		if (player->GetState() == PLAYER_IDLE && player->GetIdleTime() > PLAYER_IDLE_LIMIT) {
 			this->SendToClient(player->GetClient(), "You have timed out, please reconnect when you've got time to pay attention to us.");
 			this->CloseClient(player->GetClient());
 
@@ -102,8 +96,7 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 		auto buf = player->GetNextMessage();
 		this->playerLock.Release();
 
-		if (buf)
-		{
+		if (buf) {
 			std::stringstream ss;
 
 			ss << "GameCore - Processing message from #" << player->GetID() << ": " << buf->GetRaw();
@@ -111,8 +104,7 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 
 			auto cmd = buf->GetCmd();
 
-			if (player->GetState() == PLAYER_AWAITINGNAME)
-			{
+			if (player->GetState() == PLAYER_AWAITINGNAME) {
 				auto tok = buf->GetTokens();
 
 				player->SetName(tok[0]);
@@ -132,30 +124,21 @@ FW::GAME_STATES GameCore::GameLoop(fwfloat Delta)
 			// our 'parser'
 			auto cmdIter = this->commands.find(cmd);
 
-			if (cmdIter != this->commands.end())
-			{
+			if (cmdIter != this->commands.end()) {
 				this->world.gameState = cmdIter->second->Process(*this, this->world, buf, player);
-			}
-			else
-			{
+			} else {
 				this->SendToClient(player->GetClient(), "That is not a known command.");
 			}
 
-			if (this->world.gameState == FW::GAME_STATES::FWGAME_HOTBOOTING)
-			{
+			if (this->world.gameState == FW::GAME_STATES::FWGAME_HOTBOOTING) {
 				this->SendToClient(player->GetClient(), "Sounds good boss, hotbooting.\n\n");
 				this->BroadcastToAllButPlayer(player->GetClient(), "Hold that thought, we'll be right back..\n\n");
-			}
-			else if (this->world.gameState == FW::GAME_STATES::FWGAME_STOPPING)
-			{
+			} else if (this->world.gameState == FW::GAME_STATES::FWGAME_STOPPING) {
 				this->SendToClient(player->GetClient(), "Sounds good boss, shutting down.\n\n");
 				this->BroadcastToAllButPlayer(player->GetClient(), "The server is shutting down, who knows if we'll be back.\n\n");
 			}
-		}
-		else
-		{
-			if (player->GetState() == PLAYER_CONNECTING)
-			{
+		} else {
+			if (player->GetState() == PLAYER_CONNECTING) {
 				this->SendToClient(player->GetClient(), "Please enter your name: ");
 				player->SetState(PLAYER_AWAITINGNAME);
 			}
@@ -172,8 +155,7 @@ fwvoid GameCore::SaveState()
 
 fwvoid GameCore::RestoreState(std::vector<fwclient> clients)
 {
-	for (auto client : clients)
-	{
+	for (auto client : clients) {
 		auto plyr = std::make_shared<Player>(client.plyrid, client.sockfd, client.addr, PLAYER_CONNECTING);
 		this->world.players.insert(std::pair<fwuint, std::shared_ptr<Player>>(client.plyrid, plyr));
 	}
@@ -193,10 +175,8 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 	fwuint nId = 0;
 	this->playerLock.Block();
 
-	for (auto player : this->world.players)
-	{
-		if (player.first >= nId)
-		{
+	for (auto player : this->world.players) {
+		if (player.first >= nId) {
 			nId = player.first + 1;
 		}
 	}
@@ -212,23 +192,21 @@ fwclient GameCore::ClientConnected(fwuint ID, const sockaddr_in Address)
 
 fwclient GameCore::ClientReceived(fwuint ID, ServerMessage Message)
 {
-	if (!Message.IsValid())
-	{
-		return fwclient { ID, 0, NULL, CCLIENT_INVALID };
+	if (!Message.IsValid()) {
+		return fwclient{ ID, 0, NULL, CCLIENT_INVALID };
 	}
 
 	this->playerLock.Block();
 	auto player = this->GetPlayerBySocket(ID);
 
-	if (player)
-	{
+	if (player) {
 		auto msg = Message;
 		player->AddBufferMessage(std::make_shared<ServerMessage>(msg));
 	}
 
 	this->playerLock.Release();
 
-	return (player) ? fwclient(player->GetClient()) : fwclient { ID, 0, NULL, CCLIENT_INVALID };
+	return (player) ? fwclient(player->GetClient()) : fwclient{ ID, 0, NULL, CCLIENT_INVALID };
 }
 
 fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
@@ -236,8 +214,7 @@ fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 	auto player = this->GetPlayerBySocket(ID);
 	auto playerIter = this->world.players.find(player->GetID());
 
-	if (playerIter != this->world.players.end())
-	{
+	if (playerIter != this->world.players.end()) {
 		auto id = player->GetID();
 		player.reset();
 
@@ -245,18 +222,17 @@ fwclient GameCore::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 		this->world.players.erase(playerIter);
 		this->playerLock.Release();
 
-		return fwclient { ID, id, Address, CCLIENT_DISCONNECTED };
+		return fwclient{ ID, id, Address, CCLIENT_DISCONNECTED };
 	}
 
-	return fwclient { ID, 0, NULL, CCLIENT_INVALID };
+	return fwclient{ ID, 0, NULL, CCLIENT_INVALID };
 }
 
 /* GameCore methods */
 
 fwvoid GameCore::Log(const Logging::LogLevel Level, const fwstr Message)
 {
-	if (this->arbiter)
-	{
+	if (this->arbiter) {
 		this->arbiter->SendLog(Level, Message.c_str());
 	}
 
@@ -265,8 +241,7 @@ fwvoid GameCore::Log(const Logging::LogLevel Level, const fwstr Message)
 
 fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message)
 {
-	if (Message.empty())
-	{
+	if (Message.empty()) {
 		return;
 	}
 
@@ -274,17 +249,14 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message)
 
 	tmp += Message;
 
-	if (Message[Message.length() - 1] != ' ' && Message[Message.length() - 1] != '\n' && Message[Message.length() - 1] != '\r')
-	{
+	if (Message[Message.length() - 1] != ' ' && Message[Message.length() - 1] != '\n' && Message[Message.length() - 1] != '\r') {
 		tmp += ' ';
 	}
 
-	if (this->arbiter)
-	{
+	if (this->arbiter) {
 		auto plr = this->world.players.find(Client.plyrid);
 
-		if (plr != this->world.players.end() && plr->second->GetState() == PLAYER_STATES::PLAYER_CONNECTED && this->world.gameState == FW::GAME_STATES::FWGAME_RUNNING)
-		{
+		if (plr != this->world.players.end() && plr->second->GetState() == PLAYER_STATES::PLAYER_CONNECTED && this->world.gameState == FW::GAME_STATES::FWGAME_RUNNING) {
 			tmp = this->doPrompt(plr->second, tmp);
 		}
 
@@ -296,8 +268,7 @@ fwvoid GameCore::SendToClient(const fwclient Client, const fwstr Message)
 
 fwvoid GameCore::CloseClient(const fwclient Client)
 {
-	if (this->arbiter)
-	{
+	if (this->arbiter) {
 		this->arbiter->CloseClient(Client.sockfd);
 	}
 
@@ -306,15 +277,12 @@ fwvoid GameCore::CloseClient(const fwclient Client)
 
 fwvoid GameCore::BroadcastToAllButPlayer(const fwclient Client, const fwstr Message)
 {
-	if (Message.empty())
-	{
+	if (Message.empty()) {
 		return;
 	}
 
-	for (auto player : this->world.players)
-	{
-		if (player.first != Client.plyrid && player.second->GetState() == PLAYER_STATES::PLAYER_CONNECTED)
-		{
+	for (auto player : this->world.players) {
+		if (player.first != Client.plyrid && player.second->GetState() == PLAYER_STATES::PLAYER_CONNECTED) {
 			this->SendToClient(player.second->GetClient(), Message);
 		}
 	}
@@ -324,15 +292,12 @@ fwvoid GameCore::BroadcastToAllButPlayer(const fwclient Client, const fwstr Mess
 
 fwvoid GameCore::BroadcastToAll(const fwstr Message)
 {
-	if (Message.empty())
-	{
+	if (Message.empty()) {
 		return;
 	}
 
-	for (auto player : this->world.players)
-	{
-		if (player.second->GetState() == PLAYER_STATES::PLAYER_CONNECTED)
-		{
+	for (auto player : this->world.players) {
+		if (player.second->GetState() == PLAYER_STATES::PLAYER_CONNECTED) {
 			this->SendToClient(player.second->GetClient(), Message);
 		}
 	}
@@ -342,10 +307,8 @@ fwvoid GameCore::BroadcastToAll(const fwstr Message)
 
 std::shared_ptr<Player> GameCore::GetPlayerBySocket(fwuint SockFD)
 {
-	for (auto player : this->world.players)
-	{
-		if (player.second->GetClient().sockfd == SockFD)
-		{
+	for (auto player : this->world.players) {
+		if (player.second->GetClient().sockfd == SockFD) {
 			return player.second;
 		}
 	}
@@ -355,24 +318,20 @@ std::shared_ptr<Player> GameCore::GetPlayerBySocket(fwuint SockFD)
 
 fwstr GameCore::doColor(const fwstr original)
 {
-	if (original.length() < 1)
-	{
+	if (original.length() < 1) {
 		return original;
 	}
 
 	fwstr result;
 
-	for (fwuint i = 0; i < original.length(); ++i)
-	{
-		if (original[i] != '`')
-		{
+	for (fwuint i = 0; i < original.length(); ++i) {
+		if (original[i] != '`') {
 			result += original[i];
 
 			continue;
 		}
 
-		if (original[i + 1] == '`')
-		{
+		if (original[i + 1] == '`') {
 			result += '`';
 
 			continue;
@@ -380,8 +339,7 @@ fwstr GameCore::doColor(const fwstr original)
 
 		result += "\u001b";
 
-		switch (original[++i])
-		{
+		switch (original[++i]) {
 		case '0': // [0m
 			result += "[0m";
 			break;
@@ -446,16 +404,14 @@ fwstr GameCore::doColor(const fwstr original)
 
 fwstr GameCore::doPrompt(std::shared_ptr<Player> Player, const fwstr original)
 {
-	if (original.length() < 1)
-	{
+	if (original.length() < 1) {
 		return original;
 	}
 
 	auto loc = Player->GetLocation();
 	std::stringstream ss;
 
-	if (original[original.length() - 1] != '\n')
-	{
+	if (original[original.length() - 1] != '\n') {
 		ss << "\n\n";
 	}
 

@@ -1,0 +1,40 @@
+BEGIN TRY
+	BEGIN TRANSACTION;
+
+	IF NOT EXISTS(SELECT * FROM [INFORMATION_SCHEMA].[TABLES] WHERE [TABLE_SCHEMA] = 'dbo' AND [TABLE_NAME] = 'UserDevice')
+	BEGIN
+		SET ANSI_NULLS ON;
+		SET QUOTED_IDENTIFIER ON;
+
+		CREATE TABLE [dbo].[UserDevice] (
+			[ID] INT IDENTITY(1,1) NOT NULL,
+			[UserID] INT NOT NULL,
+			[Identifier] NVARCHAR(256) NOT NULL,
+			[LinkPhrase] NVARCHAR(35) NOT NULL,
+			[Created] DATETIME2(7) NOT NULL,
+			[Linked] DATETIME2(7) NULL,
+			[LastActive] DATETIME2(7) NULL
+			CONSTRAINT [PK_dbo.UserDevice] PRIMARY KEY CLUSTERED (
+				[ID] ASC
+			) WITH (
+				PAD_INDEX = OFF,
+				STATISTICS_NORECOMPUTE = OFF,
+				IGNORE_DUP_KEY = OFF,
+				ALLOW_ROW_LOCKS = ON,
+				ALLOW_PAGE_LOCKS = ON
+			) ON [PRIMARY]
+		) ON [PRIMARY];
+
+		PRINT '''UserDevice'' table was created'
+	END
+	ELSE
+		PRINT '''UserDevice'' table already exists'
+
+	COMMIT
+END TRY
+BEGIN CATCH
+	PRINT 'There was an error in the script, rolling back'
+	ROLLBACK
+
+	SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage
+END CATCH

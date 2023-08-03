@@ -15,10 +15,8 @@ namespace Commands
 		ss = std::stringstream("");
 		ss << "`g" << Player->GetName() << " says, '" << Message->GetSansCmd() << "'.";
 
-		for (auto plr : World.players)
-		{
-			if (plr.first == Player->GetID() || !plr.second->IsInLocation(Player->GetLocation()))
-			{
+		for (auto plr : World.players) {
+			if (plr.first == Player->GetID() || !plr.second->IsInLocation(Player->GetLocation())) {
 				continue;
 			}
 

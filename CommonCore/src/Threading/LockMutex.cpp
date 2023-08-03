@@ -10,13 +10,11 @@ namespace Threading
 #if defined(FW_WINDOWS)
 		this->m_Mutex = CreateMutex(NULL, false, NULL);
 
-		if (this->m_Mutex == NULL)
-		{
+		if (this->m_Mutex == NULL) {
 			this->m_Error = true;
 		}
 #elif defined(FW_UNIX)
-		if (pthread_mutex_init(&this->m_Mutex, NULL) != 0)
-		{
+		if (pthread_mutex_init(&this->m_Mutex, NULL) != 0) {
 			this->m_Error = true;
 		}
 #endif
@@ -26,8 +24,7 @@ namespace Threading
 
 	LockMutex::~LockMutex()
 	{
-		if (!this->m_Error)
-		{
+		if (!this->m_Error) {
 #if defined(FW_WINDOWS)
 			CloseHandle(this->m_Mutex);
 #elif defined(FW_UNIX)
@@ -40,16 +37,14 @@ namespace Threading
 
 	fwbool LockMutex::Block()
 	{
-		if (this->m_Error)
-		{
+		if (this->m_Error) {
 			return false;
 		}
 
 #if defined(FW_WINDOWS)
 		DWORD res = WaitForSingleObject(this->m_Mutex, INFINITE);
 
-		if (res != WAIT_OBJECT_0)
-		{
+		if (res != WAIT_OBJECT_0) {
 			this->m_Error = true;
 
 			return false;
@@ -59,8 +54,7 @@ namespace Threading
 
 		return true;
 #elif defined(FW_WINDOWS)
-		if (pthread_mutex_lock(&this->m_Mutex) != 0)
-		{
+		if (pthread_mutex_lock(&this->m_Mutex) != 0) {
 			this->isError = true;
 
 			return(false);
@@ -82,8 +76,7 @@ namespace Threading
 #if defined(FW_WINDOWS)
 		DWORD res = WaitForSingleObject(this->m_Mutex, timeout);
 
-		if (res != WAIT_OBJECT_0)
-		{
+		if (res != WAIT_OBJECT_0) {
 			this->m_Error = true;
 
 			return(false);
@@ -98,8 +91,7 @@ namespace Threading
 		clock_gettime(CLOCK_REALTIME, &abs_time);
 		abs_time.tv_nsec += timeout;
 
-		if (pthread_mutex_timedlock(&this->m_Mutex, &abs_time) != 0)
-		{
+		if (pthread_mutex_timedlock(&this->m_Mutex, &abs_time) != 0) {
 			this->m_Error = true;
 
 			return(false);
@@ -113,27 +105,20 @@ namespace Threading
 
 	fwvoid LockMutex::Release()
 	{
-		if (this->m_Error || !this->m_Blocked)
-		{
+		if (this->m_Error || !this->m_Blocked) {
 			return;
 		}
 
 #if defined(FW_WINDOWS)
-		if (ReleaseMutex(this->m_Mutex))
-		{
+		if (ReleaseMutex(this->m_Mutex)) {
 			this->m_Blocked = false;
-		}
-		else
-		{
+		} else {
 			this->m_Error = true;
 		}
 #elif defined(FW_UNIX)
-		if (pthread_mutex_unlock(&this->m_Mutex) == 0)
-		{
+		if (pthread_mutex_unlock(&this->m_Mutex) == 0) {
 			this->m_Blocked = false;
-		}
-		else
-		{
+		} else {
 			this->m_Error = true;
 		}
 #endif

@@ -26,8 +26,7 @@ const fwstr GameConfig::ToJson() const
 
 const fwstr GameConfig::ToJson(fwbool formatted) const
 {
-	if (formatted)
-	{
+	if (formatted) {
 		fwstr json("\t{\n\t\t\"exePath\": \"");
 		json += this->m_exePath;
 		json += "\",\n\t\t\"dbSettings\": {\n\t\t\t\"connectionString\": \"";

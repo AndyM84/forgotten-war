@@ -11,17 +11,14 @@ namespace Commands
 		std::stringstream ss;
 		ss << "\n`w[`RWho's Online`w]\n`w------------\n";
 
-		for (auto pl : World.players)
-		{
-			if (pl.second->GetState() != PLAYER_STATES::PLAYER_CONNECTED)
-			{
+		for (auto pl : World.players) {
+			if (pl.second->GetState() != PLAYER_STATES::PLAYER_CONNECTED) {
 				continue;
 			}
 
 			ss << "`W" << pl.second->GetName();
 
-			if (pl.first == Player->GetID())
-			{
+			if (pl.first == Player->GetID()) {
 				ss << " `K(`cYou`K)";
 			}
 

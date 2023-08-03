@@ -4,8 +4,7 @@ namespace Threading
 {
 	fwbool Lock::IsBlocked()
 	{
-		if (this->m_Error)
-		{
+		if (this->m_Error) {
 			return false;
 		}
 

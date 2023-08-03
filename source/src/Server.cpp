@@ -30,18 +30,13 @@ int main(int argc, char *argv[])
 	auto mappedArgs = disp.GetParameterMap(true);
 	auto runIter = mappedArgs.find("run");
 
-	if (runIter != mappedArgs.end() || IS_DEBUG)
-	{
+	if (runIter != mappedArgs.end() || IS_DEBUG) {
 		int result = 0;
 
-		if (disp.NumResults() == 1)
-		{
+		if (disp.NumResults() == 1) {
 			StartFW(9005);
-		}
-		else
-		{
-			if (disp.NumResults() == 2)
-			{
+		} else {
+			if (disp.NumResults() == 2) {
 				auto args = disp.GetRawParameters();
 
 				StartFW(atoi(args[1].c_str()));
@@ -52,10 +47,8 @@ int main(int argc, char *argv[])
 
 		g_StopEvent = CreateEvent(NULL, true, false, NULL);
 
-		while (RunFW() == FW::GAME_STATES::FWGAME_RUNNING)
-		{
-			if (g_StopEvent != NULL && WaitForSingleObject(g_StopEvent, 1) == WAIT_OBJECT_0)
-			{
+		while (RunFW() == FW::GAME_STATES::FWGAME_RUNNING) {
+			if (g_StopEvent != NULL && WaitForSingleObject(g_StopEvent, 1) == WAIT_OBJECT_0) {
 				result = StopFW();
 
 				break;
@@ -81,8 +74,7 @@ bool StartFW(int port)
 
 	auto lpos = exePath.find_last_of('\\');
 
-	if (lpos == fwstr::npos)
-	{
+	if (lpos == fwstr::npos) {
 		lpos = 0;
 	}
 

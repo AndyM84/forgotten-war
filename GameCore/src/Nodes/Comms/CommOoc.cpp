@@ -8,8 +8,7 @@ namespace Commands
 
 	FW::GAME_STATES CommOoc::Process(Libraries::GameLibrary &Sender, World World, std::shared_ptr<ServerMessage> Message, std::shared_ptr<Player> Player)
 	{
-		if (Message->GetTokens().size() < 2)
-		{
+		if (Message->GetTokens().size() < 2) {
 			return World.gameState;
 		}
 

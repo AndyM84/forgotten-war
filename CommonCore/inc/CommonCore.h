@@ -71,8 +71,7 @@ namespace Libraries
 	public:
 		virtual ~GameLibrary()
 		{
-			if (this->arbiter)
-			{
+			if (this->arbiter) {
 				this->arbiter = nullptr;
 			}
 

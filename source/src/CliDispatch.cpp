@@ -37,56 +37,40 @@ fwvoid CliDispatch::SetResult()
 
 CliDispatch &CliDispatch::Initialize(fwint argc, fwchar *argv[])
 {
-	if (argc < 1)
-	{
+	if (argc < 1) {
 		return *this;
 	}
 
-	for (fwint i = 0; i < argc; i++)
-	{
+	for (fwint i = 0; i < argc; i++) {
 		fwstr tmp = argv[i];
 		this->rawParams.push_back(tmp);
 
-		if (this->raw.length() > 0)
-		{
+		if (this->raw.length() > 0) {
 			this->raw += " ";
 		}
 
 		this->raw += tmp;
 
-		if (tmp.substr(0, 1) == "-" && tmp.length() > 1)
-		{
+		if (tmp.substr(0, 1) == "-" && tmp.length() > 1) {
 			auto param = tmp.substr((tmp.substr(1, 1) == "-") ? 2 : 1);
 			auto eq = param.find('=');
 			auto ds = param.find('-');
 
-			if (eq != std::string::npos && eq != (param.length() - 1))
-			{
+			if (eq != std::string::npos && eq != (param.length() - 1)) {
 				this->insertMappedPair(param.substr(0, eq), param.substr(eq + 1));
-			}
-			else if (ds != std::string::npos && ds != (param.length() - 1))
-			{
+			} else if (ds != std::string::npos && ds != (param.length() - 1)) {
 				this->insertMappedPair(param.substr(0, ds), param.substr(ds + 1));
-			}
-			else if ((i + 1) < argc)
-			{
+			} else if ((i + 1) < argc) {
 				this->insertMappedPair(param, argv[++i]);
-			}
-			else
-			{
+			} else {
 				this->insertMappedPair(param, "true");
 			}
-		}
-		else
-		{
+		} else {
 			auto eq = tmp.find('=');
 
-			if (eq != std::string::npos)
-			{
+			if (eq != std::string::npos) {
 				this->insertMappedPair(tmp.substr(0, eq), tmp.substr(eq + 1));
-			}
-			else
-			{
+			} else {
 				this->insertMappedPair(tmp, "true");
 			}
 		}

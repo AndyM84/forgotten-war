@@ -25,8 +25,7 @@ namespace Threading
 	{
 		Thread *ptr = reinterpret_cast<Thread *>(param);
 
-		if (ptr->m_Target && ptr->m_Target->IsValid())
-		{
+		if (ptr->m_Target && ptr->m_Target->IsValid()) {
 			ptr->m_Target->Run();
 		}
 
@@ -50,8 +49,7 @@ namespace Threading
 	{
 		this->m_ThreadStatus = THREAD_TERMINATED;
 
-		if (this->m_Target && this->m_Handle != NULL)
-		{
+		if (this->m_Target && this->m_Handle != NULL) {
 			this->m_Target->SignalTerminate();
 		}
 
@@ -60,8 +58,7 @@ namespace Threading
 
 	fwvoid Thread::CloseThread()
 	{
-		if (this->m_Handle == NULL)
-		{
+		if (this->m_Handle == NULL) {
 			return;
 		}
 

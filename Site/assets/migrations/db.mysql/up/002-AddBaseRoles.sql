@@ -1,0 +1,1 @@
+INSERT INTO `Role` (`Name`, `Created`) VALUES ('Administrator', NOW());

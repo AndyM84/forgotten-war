@@ -5,8 +5,9 @@
 ForgottenWar::ForgottenWar(fwstr ExePath, fwuint Port)
 	: exePath(ExePath)
 {
-	this->logger = nullptr;
-	this->server = new Server::SelectServer(*this, Port);
+	this->port      = Port;
+	this->logger    = nullptr;
+	this->server    = new Server::SelectServer(*this, Port);
 	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
 	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
@@ -16,8 +17,9 @@ ForgottenWar::ForgottenWar(fwstr ExePath, fwuint Port)
 ForgottenWar::ForgottenWar(fwstr ExePath, fwuint Port, Logging::Logger &Logger)
 	: exePath(ExePath)
 {
-	this->logger = &Logger;
-	this->server = new Server::SelectServer(*this, Port, *this->logger);
+	this->port      = Port;
+	this->logger    = &Logger;
+	this->server    = new Server::SelectServer(*this, Port, *this->logger);
 	this->gameEvent = CreateEvent(NULL, true, false, GAME_EVENT_NAME);
 	this->gameState = FW::GAME_STATES::FWGAME_STARTING;
 
@@ -37,27 +39,22 @@ fwvoid ForgottenWar::ClientConnected(fwuint ID, const sockaddr_in Address)
 {
 	std::stringstream ss;
 
-	if (this->game)
-	{
+	if (this->game) {
 		auto gclient = this->game->ClientConnected(ID, Address);
 		this->clients.insert(std::pair<fwuint, fwclient>(ID, fwclient(gclient)));
 
 		ss << "FW - Game returned the following ID for fd #" << ID << " (" << inet_ntoa(Address.sin_addr) << "): " << gclient.plyrid;
 		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
-	}
-	else
-	{
+	} else {
 		fwuint nId = 0;
 
-		for (auto c : this->clients)
-		{
-			if (c.second.plyrid >= nId)
-			{
+		for (auto &c : this->clients) {
+			if (c.second.plyrid >= nId) {
 				nId = c.second.plyrid + 1;
 			}
 		}
 
-		this->clients.insert(std::pair<fwuint, fwclient>(ID, fwclient { ID, nId, Address, CCLIENT_CONNECTING }));
+		this->clients.insert(std::pair<fwuint, fwclient>(ID, fwclient{ ID, nId, Address, CCLIENT_CONNECTING }));
 
 		ss << "FW - Added orphaned new client connected from: " << inet_ntoa(Address.sin_addr);
 		this->log(Logging::LogLevel::LOG_TRACE, ss.str().c_str());
@@ -76,30 +73,22 @@ fwvoid ForgottenWar::ClientReceived(fwuint ID, const Server::SocketMessage &Mess
 	auto msg = ServerMessage();
 	msg.Initialize(Message.Message);
 
-	if (clientIter != this->clients.end() && msg.IsValid())
-	{
+	if (clientIter != this->clients.end() && msg.IsValid()) {
 		auto cmd = msg.GetCmd();
 		auto tok = msg.GetTokens();
 
-		if (cmd == "hotboot" && tok.size() == 2 && tok[1] == HOTBOOT_PASSWORD)
-		{
+		if (cmd == "hotboot" && tok.size() == 2 && tok[1] == HOTBOOT_PASSWORD) {
 			this->gameState = FW::GAME_STATES::FWGAME_HOTBOOTING;
 			SetEvent(this->gameEvent);
-		}
-		else
-		{
+		} else {
 			auto cl = this->game->ClientReceived(ID, msg);
 			(*clientIter).second.state = cl.state;
 		}
-	}
-	else if (clientIter == this->clients.end())
-	{
+	} else if (clientIter == this->clients.end()) {
 		ss = std::stringstream("");
 		ss << "FW - Received input from invalid user #" << ID << ": " << msg.GetRaw();
 		this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
-	}
-	else if (!msg.IsValid())
-	{
+	} else if (!msg.IsValid()) {
 		ss = std::stringstream("");
 		ss << "FW - Received invalid input from user #" << ID << ": " << msg.GetRaw();
 		this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
@@ -113,32 +102,23 @@ fwvoid ForgottenWar::ClientDisconnected(fwuint ID, const sockaddr_in Address)
 	std::stringstream ss;
 	auto clientIter = this->clients.find(ID);
 
-	if (clientIter != this->clients.end())
-	{
-		if (this->game)
-		{
+	if (clientIter != this->clients.end()) {
+		if (this->game) {
 			auto cl = this->game->ClientDisconnected(ID, Address);
 
-			if (cl.state == CCLIENT_DISCONNECTED || cl.state == CCLIENT_INVALID)
-			{
+			if (cl.state == CCLIENT_DISCONNECTED || cl.state == CCLIENT_INVALID) {
 				this->clients.erase(clientIter);
-			}
-			else
-			{
+			} else {
 				ss << "FW - GameCore did not disconnect client #" << ID;
 				this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 			}
-		}
-		else
-		{
+		} else {
 			ss << "FW - Client #" << ID << " has disconnected";
 			this->log(Logging::LogLevel::LOG_DEBUG, ss.str().c_str());
 
 			this->clients.erase(clientIter);
 		}
-	}
-	else
-	{
+	} else {
 		ss << "FW - Received disconnect for non-existent client #" << ID;
 		this->log(Logging::LogLevel::LOG_ERROR, ss.str().c_str());
 	}
@@ -152,8 +132,7 @@ fwvoid ForgottenWar::SendToClient(fwuint ID, fwstr Message)
 {
 	auto client = this->clients.find(ID);
 
-	if (client != this->clients.end() && this->server)
-	{
+	if (client != this->clients.end() && this->server) {
 		this->server->Send(ID, Message);
 	}
 
@@ -164,8 +143,7 @@ fwvoid ForgottenWar::CloseClient(fwuint ID)
 {
 	auto client = this->clients.find(ID);
 
-	if (client != this->clients.end() && this->server)
-	{
+	if (client != this->clients.end() && this->server) {
 		this->server->Close(ID);
 	}
 
@@ -182,22 +160,20 @@ fwvoid ForgottenWar::SendLog(Logging::LogLevel Level, const fwchar *Message)
 fwvoid ForgottenWar::Initialize()
 {
 	// Assign the logger to the librarian if we've got it
-	if (this->logger)
-	{
+	if (this->logger) {
 		this->librarian.SetLogger(*this->logger);
 	}
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Loading GameCore library to start game");
 	this->game = this->librarian.Load(this->exePath + GAME_CORE);
 
-	if (!this->game)
-	{
+	if (!this->game) {
 		this->log(Logging::LogLevel::LOG_CRITICAL, "FW - GameCore was unable to load, abort abort abort");
 
 		return;
 	}
 
-	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Starting the SelectServer");
+	this->log(Logging::LogLevel::LOG_DEBUG, ("FW - Starting the SelectServer on port " + std::to_string(this->port)).c_str());
 	this->server->Initialize();
 
 	this->serverThread = new Threading::Thread(*this->server);
@@ -210,8 +186,7 @@ fwvoid ForgottenWar::Initialize()
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - Setting up the GameCore instance");
 
-	if (this->game)
-	{
+	if (this->game) {
 		this->game->AddArbiter(*this);
 		this->game->Setup(*(this->config));
 	}
@@ -227,16 +202,14 @@ fwvoid ForgottenWar::Initialize()
 
 FW::GAME_STATES ForgottenWar::GameLoop()
 {
-	if (this->game == nullptr)
-	{
+	if (this->game == nullptr) {
 		return FW::GAME_STATES::FWGAME_INVALID;
 	}
 
 	// Check if we need to exit
 	this->gameLock.Block();
 
-	if (this->gameState == FW::GAME_STATES::FWGAME_STOPPING)
-	{
+	if (this->gameState == FW::GAME_STATES::FWGAME_STOPPING) {
 		this->gameLock.Release();
 		this->Stop();
 
@@ -249,8 +222,7 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	fwfloat deltaTime = newTime - this->currentTime;
 	this->currentTime = newTime;
 
-	if (deltaTime > 0.25f)
-	{
+	if (deltaTime > 0.25f) {
 		deltaTime = 0.25f;
 	}
 
@@ -258,15 +230,11 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	auto coreState = this->game->GameLoop(deltaTime);
 
 	// so if we're asked to hotBoot, just do it and restart the loop
-	if (coreState == FW::GAME_STATES::FWGAME_HOTBOOTING)
-	{
+	if (coreState == FW::GAME_STATES::FWGAME_HOTBOOTING) {
 		this->hotbootCore();
 
 		return this->gameState;
-	}
-	// but if we're being asked to stop, copy state and restart loop
-	else if (coreState == FW::GAME_STATES::FWGAME_STOPPING)
-	{
+	} else if (coreState == FW::GAME_STATES::FWGAME_STOPPING) {
 		this->gameLock.Block();
 		this->gameState = coreState;
 		this->gameLock.Release();
@@ -275,14 +243,12 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 	}
 
 	// If we intercepted an UBER IMPORTANT SPECIAL hotboot cmd
-	if (WaitForSingleObject(this->gameEvent, 5) == WAIT_TIMEOUT)
-	{
+	if (WaitForSingleObject(this->gameEvent, 5) == WAIT_TIMEOUT) {
 		return this->gameState;
 	}
 
 	// if we got here, we were TRIGGERED!
-	if (this->gameState == FW::GAME_STATES::FWGAME_HOTBOOTING)
-	{
+	if (this->gameState == FW::GAME_STATES::FWGAME_HOTBOOTING) {
 		this->hotbootCore();
 
 		return this->gameState;
@@ -294,8 +260,7 @@ FW::GAME_STATES ForgottenWar::GameLoop()
 fwvoid ForgottenWar::Stop()
 {
 	// if we're here, we are done-done
-	if (this->game)
-	{
+	if (this->game) {
 		this->game = nullptr;
 		this->librarian.Unload(this->exePath + GAME_CORE);
 	}
@@ -304,8 +269,7 @@ fwvoid ForgottenWar::Stop()
 
 	this->log(Logging::LogLevel::LOG_DEBUG, "FW - The game has shut down, congratumalations");
 
-	if (this->server && this->serverThread)
-	{
+	if (this->server && this->serverThread) {
 		this->server->Stop();
 		this->serverThread->Terminate();
 
@@ -325,8 +289,7 @@ fwvoid ForgottenWar::Stop()
 
 fwvoid ForgottenWar::log(Logging::LogLevel Level, const fwchar *Message)
 {
-	if (this->logger)
-	{
+	if (this->logger) {
 		this->logger->Log(Message, Level);
 	}
 
@@ -335,10 +298,8 @@ fwvoid ForgottenWar::log(Logging::LogLevel Level, const fwchar *Message)
 
 fwvoid ForgottenWar::broadcastMessage(fwstr Message)
 {
-	if (this->server)
-	{
-		for (auto client : this->clients)
-		{
+	if (this->server) {
+		for (auto &client : this->clients) {
 			this->server->Send(client.first, Message);
 		}
 	}
@@ -348,12 +309,9 @@ fwvoid ForgottenWar::broadcastMessage(fwstr Message)
 
 fwvoid ForgottenWar::broadcastMessageToOthers(fwuint ID, fwstr Message)
 {
-	if (this->server)
-	{
-		for (auto client : this->clients)
-		{
-			if (client.first != ID)
-			{
+	if (this->server) {
+		for (auto &client : this->clients) {
+			if (client.first != ID) {
 				this->server->Send(client.first, Message);
 			}
 		}
@@ -371,8 +329,7 @@ fwvoid ForgottenWar::hotbootCore()
 	this->broadcastMessage(HOTBOOT_STRT_MSG);
 
 	// first clear the library if it's there (it may not be if there was a problem)
-	if (this->game)
-	{
+	if (this->game) {
 		this->game->SaveState();
 		this->game = nullptr;
 
@@ -388,8 +345,7 @@ fwvoid ForgottenWar::hotbootCore()
 	this->game = this->librarian.Load(this->exePath + GAME_CORE);
 
 	// if load failed, we must acqu...I mean abort
-	if (!this->game)
-	{
+	if (!this->game) {
 		this->log(Logging::LogLevel::LOG_ERROR, "FW - Failed to load GameCore instance");
 
 		return;
@@ -399,14 +355,12 @@ fwvoid ForgottenWar::hotbootCore()
 	this->game->AddArbiter(*this);
 
 	// if we've got clients, let's send em over
-	if (!this->clients.empty())
-	{
+	if (!this->clients.empty()) {
 		this->log(Logging::LogLevel::LOG_DEBUG, "FW - Found orphaned clients during hotboot, restoring to GameCore");
 
 		std::vector<fwclient> ccopy;
 
-		for (auto client : this->clients)
-		{
+		for (auto &client : this->clients) {
 			ccopy.push_back(fwclient(client.second));
 		}
 
@@ -429,10 +383,9 @@ fwvoid ForgottenWar::hotbootCore()
 fwvoid ForgottenWar::loadConfig()
 {
 	std::ifstream cfg((this->exePath + GAME_CONFIG).c_str(), std::ifstream::binary);
-	this->config = new GameConfig(this->exePath, GameDbSettings { "", "" }, GameAdminSettings { "123456", "123456" });
+	this->config = new GameConfig(this->exePath, GameDbSettings { "", "" }, GameAdminSettings{ "123456", "123456" });
 
-	if (cfg.good())
-	{
+	if (cfg.good()) {
 		// Get file length
 		cfg.seekg(0, cfg.end);
 		int length = (int)cfg.tellg();
@@ -441,14 +394,12 @@ fwvoid ForgottenWar::loadConfig()
 		fwchar *buffer = new char[length];
 		cfg.read(buffer, length);
 
-		char *cleaned = new char[length];
+		char *cleaned = new char[length + 1];
 		auto gcount = cfg.gcount();
 		int j = 0;
 
-		for (int i = 0; i < length; ++i)
-		{
-			if (buffer[i] == 0x0D || buffer[i] == 0x0A || buffer[i] == 0x09)
-			{
+		for (int i = 0; i < (length - 1); ++i) {
+			if (buffer[i] == 0x0D || buffer[i] == 0x0A || buffer[i] == 0x09) {
 				continue;
 			}
 
@@ -469,28 +420,22 @@ fwvoid ForgottenWar::loadConfig()
 		jsmn_init(&parser);
 		r = jsmn_parse(&parser, buffer, strlen(buffer), t, 25);
 
-		if (r > 0)
-		{
-			for (i = 1; i < r; ++i)
-			{
-				if (this->jsonEq(buffer, &t[i], "db"))
-				{
+		if (r > 0) {
+			for (i = 1; i < r; ++i) {
+				if (this->jsonEq(buffer, &t[i], "db")) {
 					this->log(Logging::LogLevel::LOG_DEBUG, "FW - Found db in config");
 					++i;
 
-					if (t[i].type != JSMN_OBJECT)
-					{
+					if (t[i].type != JSMN_OBJECT) {
 						continue;
 					}
 
 					++i;
 
-					if (this->jsonEq(buffer, &t[i], "connectionString"))
-					{
+					if (this->jsonEq(buffer, &t[i], "connectionString")) {
 						++i;
 
-						for (int j = t[i].start; j < t[i].end; ++j)
-						{
+						for (int j = t[i].start; j < t[i].end; ++j) {
 							dbSettings.connectionString += buffer[j];
 						}
 
@@ -499,43 +444,34 @@ fwvoid ForgottenWar::loadConfig()
 						++i;
 					}
 
-					if (this->jsonEq(buffer, &t[i], "tablePrefix"))
-					{
-						for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
-						{
+					if (this->jsonEq(buffer, &t[i], "tablePrefix")) {
+						for (int j = t[i + 1].start; j < t[i + 1].end; ++j) {
 							dbSettings.tablePrefix += buffer[j];
 						}
 
 						++i;
 					}
-				}
-				else if (this->jsonEq(buffer, &t[i], "admin"))
-				{
+				} else if (this->jsonEq(buffer, &t[i], "admin")) {
 					++i;
 
-					if (t[i].type != JSMN_OBJECT)
-					{
+					if (t[i].type != JSMN_OBJECT) {
 						continue;
 					}
 
 					++i;
 
-					if (this->jsonEq(buffer, &t[i], "hotfixPassword"))
-					{
+					if (this->jsonEq(buffer, &t[i], "hotfixPassword")) {
 						++i;
 
-						for (int j = t[i].start; j < t[i].end; ++j)
-						{
+						for (int j = t[i].start; j < t[i].end; ++j) {
 							adminSettings.hotfixPassword += buffer[j];
 						}
 
 						++i;
 					}
 
-					if (this->jsonEq(buffer, &t[i], "shutdownPassword"))
-					{
-						for (int j = t[i + 1].start; j < t[i + 1].end; ++j)
-						{
+					if (this->jsonEq(buffer, &t[i], "shutdownPassword")) {
+						for (int j = t[i + 1].start; j < t[i + 1].end; ++j) {
 							adminSettings.shutdownPassword += buffer[j];
 						}
 
@@ -555,17 +491,14 @@ fwvoid ForgottenWar::loadConfig()
 
 fwbool ForgottenWar::jsonEq(const char *source, jsmntok_t *tok, const char *comp)
 {
-	if (tok->type == JSMN_STRING && strlen(comp) == (tok->end - tok->start))
-	{
+	if (tok->type == JSMN_STRING && strlen(comp) == (tok->end - tok->start)) {
 		fwstr tmp;
 
-		for (fwint i = tok->start; i < tok->end; ++i)
-		{
+		for (fwint i = tok->start; i < tok->end; ++i) {
 			tmp += source[i];
 		}
 
-		if (tmp == comp)
-		{
+		if (tmp == comp) {
 			return true;
 		}
 	}
@@ -575,16 +508,15 @@ fwbool ForgottenWar::jsonEq(const char *source, jsmntok_t *tok, const char *comp
 
 fwfloat ForgottenWar::getTime()
 {
-	if (this->start == 0)
-	{
-		QueryPerformanceCounter((LARGE_INTEGER*)&this->start);
-		QueryPerformanceFrequency((LARGE_INTEGER*)&this->frequency);
+	if (this->start == 0) {
+		QueryPerformanceCounter((LARGE_INTEGER *)&this->start);
+		QueryPerformanceFrequency((LARGE_INTEGER *)&this->frequency);
 
 		return 0.0f;
 	}
 
 	__int64 counter = 0;
-	QueryPerformanceCounter((LARGE_INTEGER*)&counter);
+	QueryPerformanceCounter((LARGE_INTEGER *)&counter);
 
 	return (fwfloat)((counter - this->start) / double(this->frequency));
 }

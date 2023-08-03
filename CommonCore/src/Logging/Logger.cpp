@@ -10,15 +10,13 @@ namespace Logging
 
 	Logger &Logger::GetLogger(const fwstr key)
 	{
-		if (!allLoggers)
-		{
+		if (!allLoggers) {
 			allLoggers = new LoggerMap();
 		}
 
 		LoggerMap::iterator logger = allLoggers->find(key);
 
-		if (logger == allLoggers->end())
-		{
+		if (logger == allLoggers->end()) {
 			allLoggers->insert(LoggerPair(key, new Logger(key)));
 			logger = allLoggers->find(key);
 		}
@@ -64,8 +62,7 @@ namespace Logging
 
 	fwvoid Logger::Log(LogData *data)
 	{
-		if (this->m_ReportingLevel & data->GetLevel())
-		{
+		if (this->m_ReportingLevel & data->GetLevel()) {
 			LogWorker::AddMessage(data);
 		}
 

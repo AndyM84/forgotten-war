@@ -1,0 +1,17 @@
+{
+	"name": "zsf-base",
+	"version": "1.1.0",
+	"scripts": {
+		"dev": "set APP_ENV=development && vite",
+		"build": "vite build"
+	},
+	"dependencies": {
+		"vue": "^3.2"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^2.3",
+		"@vue/compiler-sfc": "^3.2",
+		"vite": "^2.9",
+		"vite-plugin-live-reload": "^2.1"
+	}
+}

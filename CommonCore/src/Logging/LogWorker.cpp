@@ -11,8 +11,7 @@ namespace Logging
 	{
 		m_Lock.Block();
 
-		if (!m_WorkerInstance)
-		{
+		if (!m_WorkerInstance) {
 			m_WorkerInstance = new LogWorker();
 		}
 
@@ -26,12 +25,9 @@ namespace Logging
 		m_WorkerInstance->m_Running = false;
 		m_Lock.Block();
 
-		if (m_Appenders && m_Messages && m_Appenders->size() > 0 && m_Messages->size() > 0)
-		{
-			for (MessageListIter mi = m_Messages->begin(); mi != m_Messages->end();)
-			{
-				for (AppenderListIter ai = m_Appenders->begin(); ai != m_Appenders->end(); ++ai)
-				{
+		if (m_Appenders && m_Messages && m_Appenders->size() > 0 && m_Messages->size() > 0) {
+			for (MessageListIter mi = m_Messages->begin(); mi != m_Messages->end();) {
+				for (AppenderListIter ai = m_Appenders->begin(); ai != m_Appenders->end(); ++ai) {
 					(*ai)->DoAppend(LogData(mi->GetKey(), mi->GetMsg(), mi->GetLevel()));
 				}
 
@@ -40,16 +36,14 @@ namespace Logging
 
 			m_Messages->clear();
 
-			for (AppenderListIter ai = m_Appenders->begin(); ai != m_Appenders->end();)
-			{
+			for (AppenderListIter ai = m_Appenders->begin(); ai != m_Appenders->end();) {
 				ai = m_Appenders->erase(ai);
 			}
 
 			m_Appenders->clear();
 		}
 
-		if (m_WorkerInstance)
-		{
+		if (m_WorkerInstance) {
 			delete m_WorkerInstance;
 			m_WorkerInstance = nullptr;
 		}
@@ -63,8 +57,7 @@ namespace Logging
 	{
 		m_Lock.Block();
 
-		if (!m_Appenders)
-		{
+		if (!m_Appenders) {
 			m_Appenders = new AppenderList();
 		}
 
@@ -76,8 +69,7 @@ namespace Logging
 
 	LogWorker &LogWorker::ChunkSize(fwint size)
 	{
-		if (!m_WorkerInstance)
-		{
+		if (!m_WorkerInstance) {
 			return *m_WorkerInstance;
 		}
 
@@ -101,8 +93,7 @@ namespace Logging
 	{
 		m_Lock.Block();
 
-		if (!m_Messages)
-		{
+		if (!m_Messages) {
 			m_Messages = new MessageList();
 		}
 
@@ -114,26 +105,21 @@ namespace Logging
 
 	fwvoid LogWorker::Run()
 	{
-		if (!m_Appenders || !m_WorkerInstance)
-		{
+		if (!m_Appenders || !m_WorkerInstance) {
 			return;
 		}
 
 		m_WorkerInstance->m_Running = true;
 
-		while (m_WorkerInstance->m_Running)
-		{
+		while (m_WorkerInstance->m_Running) {
 			MessageList *chunk = new MessageList();
 			int count = 0;
 
 			m_Lock.Block();
 
-			if (m_Messages)
-			{
-				for (MessageListIter mi = m_Messages->begin(); mi != m_Messages->end();)
-				{
-					if (count == m_WorkerInstance->m_ChunkSize)
-					{
+			if (m_Messages) {
+				for (MessageListIter mi = m_Messages->begin(); mi != m_Messages->end();) {
+					if (count == m_WorkerInstance->m_ChunkSize) {
 						break;
 					}
 
@@ -146,12 +132,9 @@ namespace Logging
 
 			m_Lock.Release();
 
-			if (count > 0)
-			{
-				for (MessageListIter mi = chunk->begin(); mi != chunk->end();)
-				{
-					for (AppenderListIter ai = m_Appenders->begin(); ai != m_Appenders->end(); ++ai)
-					{
+			if (count > 0) {
+				for (MessageListIter mi = chunk->begin(); mi != chunk->end();) {
+					for (AppenderListIter ai = m_Appenders->begin(); ai != m_Appenders->end(); ++ai) {
 						(*ai)->DoAppend(LogData(mi->GetKey(), mi->GetMsg(), mi->GetLevel()));
 					}
 

@@ -13,12 +13,9 @@ namespace Commands
 		std::stringstream ss;
 		ss << "A Room\n-----------------\nYou are in a room, just like every other.";
 
-		for (auto plr : World.players)
-		{
-			if (plr.second->IsInLocation(Player->GetLocation()))
-			{
-				if (!hasUsers)
-				{
+		for (auto plr : World.players) {
+			if (plr.second->IsInLocation(Player->GetLocation())) {
+				if (!hasUsers) {
 					ss << "\n";
 					hasUsers = true;
 				}

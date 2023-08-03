@@ -10,7 +10,7 @@ namespace Logging
 		: AppenderBase(other.m_Name)
 	{ }
 
-	ConsoleAppender& ConsoleAppender::operator=(ConsoleAppender other)
+	ConsoleAppender &ConsoleAppender::operator=(ConsoleAppender other)
 	{
 		this->m_Name = other.m_Name;
 
@@ -26,38 +26,37 @@ namespace Logging
 	{
 		std::stringstream ss;
 
-		switch (data.GetLevel())
-		{
-			case LOG_CRITICAL:
-				ss << "CRITICAL [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->ColoredOutput(ss.str(),  CONSOLE_COLOR_MAGENTA);
+		switch (data.GetLevel()) {
+		case LOG_CRITICAL:
+			ss << "CRITICAL [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->ColoredOutput(ss.str(), CONSOLE_COLOR_MAGENTA);
 
-				break;
-			case LOG_INFO:
-				ss << "INFO     [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->ColoredOutput(ss.str(), CONSOLE_COLOR_WHITE);
+			break;
+		case LOG_INFO:
+			ss << "INFO     [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->ColoredOutput(ss.str(), CONSOLE_COLOR_WHITE);
 
-				break;
-			case LOG_WARN:
-				ss << "WARN     [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->ColoredOutput(ss.str(), CONSOLE_COLOR_YELLOW);
+			break;
+		case LOG_WARN:
+			ss << "WARN     [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->ColoredOutput(ss.str(), CONSOLE_COLOR_YELLOW);
 
-				break;
-			case LOG_DEBUG:
-				ss << "DEBUG    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->ColoredOutput(ss.str(), CONSOLE_COLOR_CYAN);
+			break;
+		case LOG_DEBUG:
+			ss << "DEBUG    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->ColoredOutput(ss.str(), CONSOLE_COLOR_CYAN);
 
-				break;
-			case LOG_TRACE:
-				ss << "TRACE    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->ColoredOutput(ss.str(), CONSOLE_COLOR_GRAY);
+			break;
+		case LOG_TRACE:
+			ss << "TRACE    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->ColoredOutput(ss.str(), CONSOLE_COLOR_GRAY);
 
-				break;
-			case LOG_ERROR:
-				ss << "ERROR    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
-				this->ColoredOutput(ss.str(), CONSOLE_COLOR_RED);
+			break;
+		case LOG_ERROR:
+			ss << "ERROR    [" << data.GetKey() << "] " << data.GetMsg() << std::endl;
+			this->ColoredOutput(ss.str(), CONSOLE_COLOR_RED);
 
-				break;
+			break;
 		}
 
 		return;
@@ -85,8 +84,7 @@ namespace Logging
 		WHITE             = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
 		};
 		*/
-		switch (foreground)
-		{
+		switch (foreground) {
 		case CONSOLE_COLOR_GRAY:
 #if defined(FW_WINDOWS)
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
@@ -152,7 +150,7 @@ namespace Logging
 
 			break;
 		}
-			
+
 		return;
 	}
 };

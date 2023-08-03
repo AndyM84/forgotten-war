@@ -66,6 +66,7 @@ protected:
 	fwfloat currentTime;
 	fwhandle gameEvent;
 	GameConfig *config;
+	fwuint port;
 
 	const fwstr exePath;
 

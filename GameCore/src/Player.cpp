@@ -1,10 +1,10 @@
 #include <Player.h>
 
 Player::Player(const fwuint PlayerID, const fwuint ClientID, const sockaddr_in Address, const PLAYER_STATES State)
-	: client(fwclient { ClientID, PlayerID, Address, CCLIENT_INVALID }), id(PlayerID)
+	: client(fwclient{ ClientID, PlayerID, Address, CCLIENT_INVALID }), id(PlayerID)
 {
 	this->SetState(State);
-	this->SetLocation(Vector { 0, 0, 0 });
+	this->SetLocation(Vector{ 0, 0, 0 });
 
 	return;
 }
@@ -55,8 +55,7 @@ const fwfloat Player::GetIdleTime() const
 
 fwbool Player::IsInLocation(Vector Location) const
 {
-	if (Location.X == this->location.X && Location.Y == this->location.Y && Location.Z == this->location.Z)
-	{
+	if (Location.X == this->location.X && Location.Y == this->location.Y && Location.Z == this->location.Z) {
 		return true;
 	}
 
@@ -90,8 +89,7 @@ Player &Player::SetState(PLAYER_STATES State)
 {
 	this->state = State;
 
-	switch (this->state)
-	{
+	switch (this->state) {
 	case PLAYER_CONNECTING:
 	case PLAYER_AWAITINGNAME:
 		this->client.state = CCLIENT_CONNECTING;

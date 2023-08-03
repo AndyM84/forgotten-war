@@ -64,8 +64,7 @@ namespace Threading
 		ft.QuadPart = -(10 * static_cast<fwlong>(nanoseconds));
 		timer = CreateWaitableTimer(NULL, TRUE, NULL);
 
-		if (timer == NULL)
-		{
+		if (timer == NULL) {
 			return;
 		}
 

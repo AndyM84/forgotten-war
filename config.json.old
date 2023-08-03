@@ -1,0 +1,4 @@
+{
+	"dbdsn": "Server=localhost;Database=fw;Uid=root;Pwd=P@55word;",
+	"port": 6055
+}
