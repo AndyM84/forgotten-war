@@ -10,11 +10,11 @@ namespace FW.Game.World
 			: base(new Action[7] {
 				new Action("north", "north", "Attempts to move a character north through an available exit"),
 				new Action("south", "south", "Attempts to move a character south through an available exit"),
-				new Action("east", "east", "Attempts to move a character east through an available exit"),
-				new Action("west", "west", "Attempts to move a character west through an available exit"),
-				new Action("up", "up", "Attempts to move a character up through an available exit"),
-				new Action("down", "down", "Attempts to move a character down through an available exit"),
-				new Action("goto", "goto", "Allows an imm to change their location without having to travel", Mortalities.Immortal)
+				new Action("east",  "east",  "Attempts to move a character east through an available exit"),
+				new Action("west",  "west",  "Attempts to move a character west through an available exit"),
+				new Action("up",    "up",    "Attempts to move a character up through an available exit"),
+				new Action("down",  "down",  "Attempts to move a character down through an available exit"),
+				new Action("goto",  "goto",  "Allows an imm to change their location without having to travel", Mortalities.Immortal)
 			}, Logger)
 		{
 			return;
@@ -64,8 +64,9 @@ namespace FW.Game.World
 				return;
 			}
 
-			var oldRoom = Player.Location.Vnum;
-			Player.Location.Vnum = destination.Vnum;
+			var oldRoom                = Player.Location.Vnum;
+			Player.Location.Coordinate = destination.Coordinate;
+			Player.Location.Vnum       = destination.Vnum;
 
 			var output = Utilities.GetRoomOutput(Player.Location.Vnum, Player, Dispatch);
 

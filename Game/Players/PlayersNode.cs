@@ -1,6 +1,6 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
-using BCrypt.Net;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Stoic.Log;
@@ -179,6 +179,7 @@ namespace FW.Game.Players
 							Log(LogLevels.ERROR, $"Error searching for player character: {mex.Number} - {mex.Message}");
 						}
 					} else if (player.ConnectionState == ConnectionStates.ColorPrompt) {
+						player.Connected       = DateTime.UtcNow;
 						player.ConnectionState = ConnectionStates.Connected;
 
 						if (c.Body.ToLower() == "n" || c.Body.ToLower() == "no") {
@@ -200,6 +201,13 @@ namespace FW.Game.Players
 
 					if (player == null) {
 						continue;
+					}
+
+					try {
+						using var conn = new MySqlConnection(Dispatch.State.Config.DbDsn);
+						player.SaveToDb(conn, true);
+					} catch (MySqlException mex) {
+						Log(LogLevels.ERROR, $"Error saving user #{c.ID} to db: {mex.Number} - {mex.Message}");
 					}
 
 					foreach (var p in Dispatch.State.Players) {

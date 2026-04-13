@@ -70,7 +70,7 @@ namespace FW.Game
 				var cmd = c.Prefix.ToLower();
 				var player = Dispatch.State.GetPlayerBySocketID(c.ID);
 
-				if (player == null) {
+				if (player == null || player.ConnectionState != ConnectionStates.Connected) {
 					continue;
 				}
 

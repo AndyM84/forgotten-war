@@ -154,7 +154,7 @@ namespace FW
 			state.AddRoom(new Room(
 				2,
 				"Private Booth",
-				new Vector3(0.0f, 0.0f, 0.0f),
+				new Vector3(-1.0f, 0.0f, 0.0f),
 				new Exit[1] {
 					new Exit(2, 1, Directions.West, false, true)
 				},
@@ -168,7 +168,7 @@ namespace FW
 			state.AddRoom(new Room(
 				3,
 				"Upstairs Hallway",
-				new Vector3(0.0f, 0.0f, 0.0f),
+				new Vector3(0.0f, 1.0f, 0.0f),
 				new Exit[4] {
 					new Exit(3, 1, Directions.Down, false, true),
 					new Exit(3, 4, Directions.East, false, true),
@@ -185,7 +185,7 @@ namespace FW
 			state.AddRoom(new Room(
 				4,
 				"Xitan's Roomo",
-				new Vector3(0.0f, 0.0f, 0.0f),
+				new Vector3(-1.0f, 1.0f, 0.0f),
 				new Exit[1] {
 					new Exit(4, 3, Directions.West, false, true)
 				},
@@ -200,7 +200,7 @@ namespace FW
 			state.AddRoom(new Room(
 				5,
 				"Kyssandra's Room",
-				new Vector3(0.0f, 0.0f, 0.0f),
+				new Vector3(1.0f, 1.0f, 0.0f),
 				new Exit[1] {
 					new Exit(5, 3, Directions.South, false, true)
 				},
@@ -214,7 +214,7 @@ namespace FW
 			state.AddRoom(new Room(
 				6,
 				"Neryndil's Room",
-				new Vector3(0.0f, 0.0f, 0.0f),
+				new Vector3(0.0f, 1.0f, 1.0f),
 				new Exit[1] {
 					new Exit(6, 3, Directions.East, false, true)
 				},
