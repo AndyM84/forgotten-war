@@ -329,7 +329,7 @@ int game_loop(int control)
 	gettimeofday(&last_time, NULL);
 	current_time = (time_t)last_time.tv_sec;
 
-	/* Main loop */
+	/* Game loop */
 	while (!merc_down) {
 		fd_set in_set;
 		fd_set out_set;

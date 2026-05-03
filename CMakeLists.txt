@@ -17,6 +17,7 @@ add_executable(ember
     src/ssm.c
     src/string.c
     src/update.c
+        src/act_basic.c
 )
 
 target_include_directories(ember PRIVATE src)

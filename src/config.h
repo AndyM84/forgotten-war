@@ -5,7 +5,7 @@
 
 /* Connection messages */
 #define CFG_QUIT "Alas, all good things must come to an end.\n\r"
-#define CFG_CONNECT_MSG "Welcome to a MUD based on EmberMUD.\n\r"
+#define CFG_CONNECT_MSG "Welcome to Forgotten War.\n\r"
 #define CFG_ASK_ANSI "Use ANSI Color? [Y/n]: "
 
 /*

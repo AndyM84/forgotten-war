@@ -321,6 +321,26 @@ void do_exits(CHAR_DATA *ch, char *argument)
  ***************************************************************************/
 
 /*
+ * do_ooc() - Say something to everyone out of character.
+ *
+ * System Defined
+ * ------------------------
+ * void  - nothing
+ * char  - character
+ * int   - integer
+ * long  - big number
+ * float - decimal number
+ *
+ * User Defined
+ * ------------------------
+ * ????
+ */
+void do_ooc(CHAR_DATA *ch, char *argument)
+{
+	return;
+}
+
+/*
  * do_say() - Say something to the room.
  */
 void do_say(CHAR_DATA *ch, char *argument)
